@@ -12,4 +12,4 @@ app.get('/test', (req, res) => {
 })
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => {console.log(`App listening on port ${port}`);})
+app.listen(port, () => {console.log(`App listening on port ${port}\n Go to http://localhost:3000`);})
