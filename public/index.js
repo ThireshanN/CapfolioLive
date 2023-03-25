@@ -1,6 +1,6 @@
 //IF LOCALLY USE --> http://localhost:3000/api
-//IF ON AWS USE --> http://ec2-user@ec2-3-27-94-14.ap-southeast-2.compute.amazonaws.com:3000/api
-const URL = 'http://ec2-user@ec2-3-27-94-14.ap-southeast-2.compute.amazonaws.com:3000/api'
+//IF ON AWS USE --> http://ec2-3-27-94-14.ap-southeast-2.compute.amazonaws.com:3000/api
+const URL = 'http://ec2-3-27-94-14.ap-southeast-2.compute.amazonaws.com:3000/api'
 //const URL = 'http://localhost:3000/api'
 
 const ViewComments = async () => {
