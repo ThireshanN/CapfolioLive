@@ -5,8 +5,8 @@ const postComment = async () => {
   
     const a_complex = {
         headers: {
-            "Accept": "text/plain",
-            "Content-Type": "text/plain",
+            //"Accept": "text/plain",
+            //"Content-Type": "text/plain",
             "Access-Control-Allow-Origin": "http://localhost:3000"
         },
         method: "POST",

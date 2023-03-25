@@ -1,6 +1,6 @@
-
 const express = require('express');
 const router = express.Router();
+const path = require('path');
 
 let databaseComments = "";
 
@@ -14,6 +14,8 @@ router.post('/', async (req, res) => {
       return res.status(404).send("no comment found/posted!");
     }
 });
+
+
 
 module.exports = router;
 
