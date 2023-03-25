@@ -1,3 +1,7 @@
+//IF LOCALLY USE --> http://localhost:3000/api
+//IF ON AWS USE --> http://ec2-user@ec2-3-27-94-14.ap-southeast-2.compute.amazonaws.com:3000/api
+const URL = 'http://ec2-user@ec2-3-27-94-14.ap-southeast-2.compute.amazonaws.com:3000/api'
+//const URL = 'http://localhost:3000/api'
 
 const ViewComments = async () => {
     alert("Hello!\nYou will now view the comments");
@@ -9,7 +13,7 @@ const ViewComments = async () => {
         },
         method: "GET"
     }
-    const fetchPromise = await fetch('http://localhost:3000/api', a_complex)
+    const fetchPromise = await fetch(URL, a_complex)
         .then(response => { console.log(response); return response.text(); })
         .then((data) => { console.log(data); allComments = data;})
         .catch((error) => { console.log(error); });
@@ -32,7 +36,8 @@ const PostComments = async () => {
         method: "POST",
         body: inputName + ": " + inputComment,
     }
-    const fetchPromise = await fetch('http://localhost:3000/api', a_complex)
+    
+    const fetchPromise = await fetch(URL, a_complex)
         .then(response => { console.log(response); return response.text(); })
         .then((data) => { console.log(data); allComments = data; })
         .catch((error) => { console.log(error); });
