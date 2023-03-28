@@ -12,4 +12,4 @@ app.get('/test', (req, res) => {
 })
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => {console.log(`App listening on port ${port}\nGo to http://localhost:3000 if testing locally\nGo to http://ec2-3-27-94-14.ap-southeast-2.compute.amazonaws.com:3000 if using aws`);})
+app.listen(port, () => {console.log(`App listening on port ${port}\nGo to http://localhost:3000 if testing locally\nGo to http://ec2-3-27-94-14.ap-southeast-2.compute.amazonaws.com:3000 if using on aws`);})
