@@ -8,13 +8,15 @@ var dns = require('dns');
 
 const IPadresses = dns.getServers();
 console.log(IPadresses);
+console.log(IPadresses[0]);
+const ip = IPadresses[0];
 
 dns.lookupService('127.0.0.1', 22, (err, hostname, service) => {
     console.log(hostname);
     // Prints: localhost ssh
 });
 
-dns.lookupService('192.168.1.1', 22, (err, hostname, service) => {
+dns.lookupService(ip, 22, (err, hostname, service) => {
     console.log(hostname, service);
     // Prints: localhost ssh
 });
