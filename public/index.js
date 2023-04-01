@@ -4,7 +4,7 @@
 const URL = 'http://localhost:3000/api'
 
 const ViewComments = async () => {
-    alert("Hello!\nYou will now view the comments");
+    //alert("Hello!\nYou will now view the comments");
     let allComments = "";
     const a_complex = {
         headers: {
@@ -24,7 +24,7 @@ const ViewComments = async () => {
 
 
 const PostComments = async () => {
-    alert("Hello!\nThank you for posting a comment!");
+    //alert("Hello!\nThank you for posting a comment!");
     const inputComment = document.getElementById("commentP").value;
     const inputName = document.getElementById("nameP").value;
     let allComments = "";

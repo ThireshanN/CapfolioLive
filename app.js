@@ -4,6 +4,10 @@ const cors = require('cors');
 const path = require('path');
 const comments = require('./Routes/comments');
 const mysql = require('mysql');
+var dns = require('dns');
+
+const IPadresses = dns.getServers();
+console.log(IPadresses);
 
 const connection = mysql.createConnection({
     host: "capfoliodb.cnducntmxm4l.ap-southeast-2.rds.amazonaws.com",
@@ -32,18 +36,21 @@ function createTables() {
         });
     });
 }
-createTables(); //ideally call this function once
+//createTables(); //ideally call this function once
 //connection.end();
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 app.use('/api', comments);
 app.get('/test', (req, res) => {
+    //http://localhost:3000/test
     res.send(`Hello. This route works!`);
 })
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => { console.log(`App listening on port ${port}\nGo to http://localhost:3000 if testing locally\nGo to http://ec2-3-27-94-14.ap-southeast-2.compute.amazonaws.com:3000 if using on aws`); });
 
-
 module.exports.connection = connection;
+
+//http://127.0.0.1:3000/
+//http://localhost:3000/
