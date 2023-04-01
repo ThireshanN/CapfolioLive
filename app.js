@@ -9,6 +9,16 @@ var dns = require('dns');
 const IPadresses = dns.getServers();
 console.log(IPadresses);
 
+dns.lookupService('127.0.0.1', 22, (err, hostname, service) => {
+    console.log(hostname);
+    // Prints: localhost ssh
+});
+
+dns.lookupService('192.168.1.1', 22, (err, hostname, service) => {
+    console.log(hostname, service);
+    // Prints: localhost ssh
+});
+
 const connection = mysql.createConnection({
     host: "capfoliodb.cnducntmxm4l.ap-southeast-2.rds.amazonaws.com",
     user: "admin",
