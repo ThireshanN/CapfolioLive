@@ -10,12 +10,10 @@ const IPadresses = dns.getServers();
 console.log(IPadresses);
 console.log(IPadresses[0]);
 const ip = IPadresses[0];
-
 dns.lookupService('127.0.0.1', 22, (err, hostname, service) => {
     console.log(hostname);
     // Prints: localhost ssh
 });
-
 dns.lookupService(ip, 22, (err, hostname, service) => {
     console.log(hostname, service);
     // Prints: localhost ssh
@@ -30,27 +28,25 @@ const connection = mysql.createConnection({
     port: "3306",
     database: "Capfolio"
 });
-function createTables() {
+function abc() {
     connection.connect(function (err) {
         if (err) {
             console.error('Database failed to connect: ' + err.stack);
-            return;
+            throw err;
         }
-        console.log('Database successfully connected.');
-        const sql = "CREATE TABLE test (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), message VARCHAR(255))";
-        connection.query(sql, function (err, result) {
-            if ("Table 'comments' already exists" == err.sqlMessage) {
-                console.log("table already exists! Try another sql statement like ALTER TABLE");
-                process.exit(1);
-                //console.log(err.stack);
-                //throw err;
-            } else {
-                console.log("Table created: " + result);
-            };
+        console.log("Connected!");
+        const sql = "CREATE TABLE test2 (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), address VARCHAR(255))";
+        const sql2 = "ALTER TABLE test2 ADD COLUMN cint INT";
+        connection.query(sql2, function (err, result) {
+            if (err) {
+                console.log(err.sqlMessage);
+                throw err;
+            }
+            console.log("Table created/edited: " + result);
         });
     });
 }
-createTables(); //ideally call this function once
+abc(); //ideally call this function once
 //connection.end();
 
 app.use(express.static(path.join(__dirname, 'public')));
