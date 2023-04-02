@@ -21,6 +21,8 @@ dns.lookupService(ip, 22, (err, hostname, service) => {
     // Prints: localhost ssh
 });
 
+//capfoliodb.cnducntmxm4l.ap-southeast-2.rds.amazonaws.com
+//capfoliodb.cnducntmxm4l.ap-southeast-2.rds.amazonaws.com
 const connection = mysql.createConnection({
     host: "capfoliodb.cnducntmxm4l.ap-southeast-2.rds.amazonaws.com",
     user: "admin",
@@ -35,7 +37,7 @@ function createTables() {
             return;
         }
         console.log('Database successfully connected.');
-        const sql = "CREATE TABLE comments (id INT AUTO_INCREMENT PRIMARY KEY, namee VARCHAR(255), message VARCHAR(255))";
+        const sql = "CREATE TABLE test (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), message VARCHAR(255))";
         connection.query(sql, function (err, result) {
             if ("Table 'comments' already exists" == err.sqlMessage) {
                 console.log("table already exists! Try another sql statement like ALTER TABLE");
@@ -48,7 +50,7 @@ function createTables() {
         });
     });
 }
-//createTables(); //ideally call this function once
+createTables(); //ideally call this function once
 //connection.end();
 
 app.use(express.static(path.join(__dirname, 'public')));
