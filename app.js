@@ -28,6 +28,8 @@ const connection = mysql.createConnection({
     port: "3306",
     database: "Capfolio"
 });
+
+/*
 function abc() {
     connection.connect(function (err) {
         if (err) {
@@ -48,6 +50,16 @@ function abc() {
 }
 abc(); //ideally call this function once
 //connection.end();
+ */
+/*
+// SQL COMMANDS for insertion
+let sql = `INSERT INTO comments(name,message)
+           VALUES('Thireshan',"Testing1234")`;
+
+connection.query(sql);
+connection.end();
+
+ */
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
