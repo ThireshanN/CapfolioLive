@@ -21,7 +21,6 @@ app.get('/test', (req, res) => {
 const port = process.env.PORT || 3000;
 app.listen(port, () => { console.log(`App listening on port ${port}\nGo to http://localhost:3000 if testing locally\nGo to http://${dnsAWS}:3000 if using on aws`); });
 
-module.exports.connection = connection;
 
 
 
