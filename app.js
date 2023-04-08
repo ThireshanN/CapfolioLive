@@ -3,23 +3,62 @@ const app = express();
 const cors = require('cors');
 const path = require('path');
 const comments = require('./Routes/comments');
+const { dnsAWS } = require('./public/address');
 const mysql = require('mysql');
-var dns = require('dns');
+const fs = require('fs');
+const AWS = require('aws-sdk');
 
-const IPadresses = dns.getServers();
-console.log(IPadresses);
-console.log(IPadresses[0]);
-const ip = IPadresses[0];
-dns.lookupService('127.0.0.1', 22, (err, hostname, service) => {
-    console.log(hostname);
-    // Prints: localhost ssh
-});
-dns.lookupService(ip, 22, (err, hostname, service) => {
-    console.log(hostname, service);
-    // Prints: localhost ssh
-});
 
-//capfoliodb.cnducntmxm4l.ap-southeast-2.rds.amazonaws.com
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors());
+app.use('/api', comments);
+app.get('/test', (req, res) => {
+    //http://localhost:3000/test
+    res.send(`Hello. This route works!`);
+})
+
+
+const port = process.env.PORT || 3000;
+app.listen(port, () => { console.log(`App listening on port ${port}\nGo to http://localhost:3000 if testing locally\nGo to http://${dnsAWS}:3000 if using on aws`); });
+
+module.exports.connection = connection;
+
+
+
+
+
+
+/*
+
+const BUCKET_NAME = 'capfoliostorage';
+const ep = new AWS.Endpoint('s3://arn:aws:s3:ap-southeast-2:282697465706:accesspoint/s3accesspoint');
+const s3 = new AWS.S3({
+    endpoint: "s3accesspoint-6ok88abfsiwargpupwyi3xqcr4sihaps2a-s3alias"
+});
+const uploadFile = (fileName) => {
+    // Read content from the file
+    const fileContent = fs.readFileSync(fileName);
+
+    // Setting up S3 upload parameters
+    const params = {
+        Bucket: BUCKET_NAME,
+        Key: 'atree.jpg', // File name you want to save as in S3
+        Body: fileContent
+    };
+
+    // Uploading files to the bucket
+    s3.upload(params, function(err, data) {
+        if (err) {
+            throw err;
+        }
+        console.log(`File uploaded successfully. ${data.Location}`);
+    });
+};
+uploadFile("tree.jpg");
+
+
+
+
 //capfoliodb.cnducntmxm4l.ap-southeast-2.rds.amazonaws.com
 const connection = mysql.createConnection({
     host: "capfoliodb.cnducntmxm4l.ap-southeast-2.rds.amazonaws.com",
@@ -45,22 +84,9 @@ function abc() {
             console.log("Table created/edited: " + result);
         });
     });
+    connection.end();
 }
-abc(); //ideally call this function once
+//abc(); //ideally call this function once
 //connection.end();
 
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors());
-app.use('/api', comments);
-app.get('/test', (req, res) => {
-    //http://localhost:3000/test
-    res.send(`Hello. This route works!`);
-})
-
-const port = process.env.PORT || 3000;
-app.listen(port, () => { console.log(`App listening on port ${port}\nGo to http://localhost:3000 if testing locally\nGo to http://ec2-3-27-94-14.ap-southeast-2.compute.amazonaws.com:3000 if using on aws`); });
-
-module.exports.connection = connection;
-
-//http://127.0.0.1:3000/
-//http://localhost:3000/
+*/
