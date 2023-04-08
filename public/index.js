@@ -1,6 +1,6 @@
 const dnsname = 'ec2-54-206-25-140.ap-southeast-2.compute.amazonaws.com';
-//const URL = `http://${dnsname}:3000/api`;
-const URL = 'http://localhost:3000/api';
+const URL = `http://${dnsname}:3000/api`;
+//const URL = 'http://localhost:3000/api';
 
 const ViewComments = async () => {
     //alert("Hello!\nYou will now view the comments");
