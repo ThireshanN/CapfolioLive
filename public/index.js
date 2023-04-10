@@ -1,4 +1,4 @@
-const dnsname = 'ec2-54-206-25-140.ap-southeast-2.compute.amazonaws.com';
+const dnsname = 'ec2-3-25-252-237.ap-southeast-2.compute.amazonaws.com';
 const URL = `http://${dnsname}:3000/api`;
 //const URL = 'http://localhost:3000/api';
 
