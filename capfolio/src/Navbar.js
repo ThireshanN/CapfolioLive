@@ -2,7 +2,7 @@ import { Link, useMatch, useResolvedPath } from "react-router-dom"
 
 export default function Navbar() {
   return (
-    <nav className="nav">
+      <nav className="navtop">
       <Link to="/" className="site-title">
       <div className="logo"><img src={require('./capfolio-logo-white.png')}  alt="Logo" /></div>
       </Link>

@@ -1,4 +1,6 @@
-﻿* {
+﻿@import url('https://fonts.googleapis.com/css2?family=Sen:wght@700&display=swap');
+
+* {
     box-sizing: border-box;
 }
 
@@ -20,7 +22,7 @@
     padding-left: 50px
 }
 
-.headerleft{
+.headerleft {
     width: 50%;
     margin-left: 5%;
 }
@@ -55,7 +57,7 @@
 .rowcontent{
     margin-top:140px;
 }
-@media screen and (max-width: 800px) 
+@media screen and (max-width: 850px) 
 {
     .column {
         width: 100%;
@@ -96,7 +98,7 @@
 }
 
 .bluebox {
-    margin-top: 100px;
+    margin-top: 0px;
     height: 32vw;
     width: 100%;
     background-color: #00467F;
@@ -111,6 +113,8 @@
 }
 
 .projecttitle {
+    font-family: 'Sen', sans-serif;
+    font-weight: 400;
     display: inline-block;
     align-items: center;
     margin-left: 50px;
@@ -118,7 +122,6 @@
     color: white;
     margin-bottom: 0px;
     margin-top: 50px;
- 
 }
 
 .tech {
@@ -319,21 +322,12 @@ textarea {
     background: #efefef;
     text-align: center;
 }
-.nav default-nav{
-    padding-left: 100px;
-}
 
 .slide{
     padding-right: 0px;
 }
 
-.react-slideshow-container .nav:last-of-type {
-    right: -5% !important;
-}
 
-.react-slideshow-container .nav:first-of-type {
-    left: -5% !important;
-}
 
 .react-slideshow-wrapper.slide {
     width: 100%;

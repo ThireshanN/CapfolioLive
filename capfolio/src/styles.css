@@ -10,7 +10,7 @@ body {
   margin-top: 1rem;
   text-align: center;
 }
-.nav {
+.navtop {
   background-color: #00467F;
   color: white;
   display: flex;
@@ -25,21 +25,21 @@ body {
   font-size: 2rem;
 }
 
-.nav ul {
-  padding: 0;
-  margin: 0;
-  list-style: none;
-  display: flex;
-  gap: 1rem;
+.navtop ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: flex;
+    gap: 1rem;
 }
 
-.nav a {
-  color: inherit;
-  text-decoration: none;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  padding: .25rem;
+.navtop a {
+    color: inherit;
+    text-decoration: none;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: .25rem;
 }
 
 
