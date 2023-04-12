@@ -4,11 +4,11 @@ export default function Navbar() {
   return (
     <nav className="nav">
       <Link to="/" className="site-title">
-      <div className="logo"><img src={require('./capfolio-logo-black.png')}  alt="Logo" /></div>
+      <div className="logo"><img src={require('./capfolio-logo-white.png')}  alt="Logo" /></div>
       </Link>
       <ul>
-        <CustomLink to="/login" className="button2">Login</CustomLink>
-        <CustomLink to="/sign-up" className="button2">SignUp</CustomLink>
+        <CustomLink to="/login" className="button2">Log in</CustomLink>
+        <CustomLink to="/sign-up" className="button2">Sign Up</CustomLink>
       </ul>
     </nav>
   )
