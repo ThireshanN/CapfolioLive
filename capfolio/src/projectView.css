@@ -91,11 +91,13 @@
         margin-left: 25%;
         margin-right: 25%
     }
+
+  
 }
 
 .bluebox {
     margin-top: 100px;
-    height: 40vw;
+    height: 32vw;
     width: 100%;
     background-color: #00467F;
 }
@@ -186,6 +188,8 @@
     .projectInformation h2 {
         color: #00467F;
         font-size: 160%;
+        margin-left:0px;
+        padding-left:0px;
     }
 
 .commentbox {
@@ -335,4 +339,9 @@ textarea {
     width: 100%;
     overflow: hidden;
     box-shadow: rgba(4, 22, 40, 0.47) 0px 8px 24px;
+}
+
+
+.image{
+    padding-top: 10px;
 }
