@@ -42,40 +42,42 @@ const Sidebar = () => {
     return (
       <div>
         <div class='filter-bg'>
-            <h2>Filter</h2>
+            <div className="filters">
+            <h3>Filter</h3>
         <div className="row">
-            <div className="mt-1 me-auto w-50 col-xs-6">
+            <div className="mt-1 me-auto w-25 col-xs-6">
                 <p>Date Range</p>
                 <p>From</p>
-                <Select options={years} />
+                <Select placeholder={<div>Year</div>} options={years} />
             </div>
-            <div className="mt-1 me-auto w-50 col-xs-6">
+            <div className="mt-1 me-auto w-25 col-xs-6">
                 <p><br></br></p>
                 <p><br></br></p>
-                <Select options={semester} />
+                <Select placeholder={<div>Semester</div>} options={semester} />
             </div>
-        </div>
-        <div className="row">
-            <div className="mt-1 me-auto w-50 col-xs-6">
+            <div className="mt-1 me-auto w-25 col-xs-6">
+            <p><br></br></p>
                 <p>To</p>
-                <Select options={years} />
+                <Select placeholder={<div>Year</div>} options={years} />
             </div>
-            <div className="mt-1 me-auto w-50 col-xs-6">
+            <div className="mt-1 me-auto w-25 col-xs-6">
+            <p><br></br></p>
                 <p><br></br></p>
-                <Select options={semester} />
+                <Select placeholder={<div>Semester</div>} options={semester} />
             </div>
         </div>
         <div className="row">
-            <div className="mt-4 me-auto w-50 col-xs-6">
+            <div className="mt-5 me-auto w-50 col-xs-6">
                 <p>Technologies</p>
-                <Select isMulti onChange={handleChange} options={technologies} />
+                <Select placeholder={<div>Made with...</div>} isMulti onChange={handleChange} options={technologies} />
             </div>
-            <div className="mt-4 me-auto w-50 col-xs-6">
+            <div className="mt-5 me-auto w-50 col-xs-6">
                 <p>Awards</p>
-                <Select isMulti onChange={handleChange} options={awarded} />
+                <Select placeholder={<div>Awarded with...</div>} isMulti onChange={handleChange} options={awarded} />
             </div>
         </div>
         </div>
+      </div>
       </div>
     );
   };
