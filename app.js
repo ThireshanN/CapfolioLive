@@ -3,15 +3,17 @@ const app = express();
 const cors = require('cors');
 const path = require('path');
 const comments = require('./Routes/comments');
+const data = require('./Routes/data');
 const { dnsAWS } = require('./public/address');
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const fs = require('fs');
 const AWS = require('aws-sdk');
-
+const { CreateBucketCommand, PutObjectCommand, S3 } = require("@aws-sdk/client-s3");
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 app.use('/api', comments);
+app.use('/data', data);
 app.get('/test', (req, res) => {
     //http://localhost:3000/test
     res.send(`Hello. This route works!`);
@@ -24,27 +26,43 @@ app.listen(port, () => { console.log(`App listening on port ${port}\nGo to http:
 
 
 
-
-
-
 /*
+//#########################################################################################################################################
+//Using SDK V3
+const REGION = "ap-southeast-2";
+const s3ServiceObject = new S3({ region: REGION, credentials: { accessKeyId: 'AKIAUDUQU75VEF3VDCEL', secretAccessKey: '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' } });
+const run = async (fileName) => {
+    try {
+        const fileContent = fs.readFileSync(fileName);
+        const params = { Bucket: "capfoliostorage", Key: "winterTree4.jpg", Body: fileContent, ContentType: "image/jpeg"};
+        const results = await s3ServiceObject.send(new PutObjectCommand(params));
+        console.log("Successfully created " + params.Key + " and uploaded it to " + params.Bucket + "/" + params.Key);
+        return results; // For unit tests.
+    } catch (err) {
+        console.log("Error", err);
+    }
+};
+run("tree.jpg");
 
+//#######################################################################################################################################
+//Using SDK V2
 const BUCKET_NAME = 'capfoliostorage';
-const ep = new AWS.Endpoint('s3://arn:aws:s3:ap-southeast-2:282697465706:accesspoint/s3accesspoint');
-const s3 = new AWS.S3({
-    endpoint: "s3accesspoint-6ok88abfsiwargpupwyi3xqcr4sihaps2a-s3alias"
+const ID = 'AKIAUDUQU75VEF3VDCEL';
+const SECRET = '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';
+const s3 = new AWS.S3({ //initialize s3 client
+    accessKeyId: ID,
+    secretAccessKey: SECRET
 });
 const uploadFile = (fileName) => {
     // Read content from the file
     const fileContent = fs.readFileSync(fileName);
-
     // Setting up S3 upload parameters
     const params = {
         Bucket: BUCKET_NAME,
-        Key: 'atree.jpg', // File name you want to save as in S3
-        Body: fileContent
+        Key: 'winterTree.jpg', // File name you want to save as in S3
+        Body: fileContent,
+        ContentType: "image/jpeg"
     };
-
     // Uploading files to the bucket
     s3.upload(params, function(err, data) {
         if (err) {
@@ -54,10 +72,11 @@ const uploadFile = (fileName) => {
     });
 };
 uploadFile("tree.jpg");
+//#########################################################################################################################################
 
 
-
-
+//#########################################################################################################################################
+//RDS, MySQL
 //capfoliodb.cnducntmxm4l.ap-southeast-2.rds.amazonaws.com
 const connection = mysql.createConnection({
     host: "capfoliodb.cnducntmxm4l.ap-southeast-2.rds.amazonaws.com",
@@ -87,5 +106,5 @@ function abc() {
 }
 //abc(); //ideally call this function once
 //connection.end();
-
+//#########################################################################################################################################
 */
