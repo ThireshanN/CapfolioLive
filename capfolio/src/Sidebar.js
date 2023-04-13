@@ -45,11 +45,23 @@ const Sidebar = () => {
             <h2>Filter</h2>
         <div className="row">
             <div className="mt-1 me-auto w-50 col-xs-6">
-                <p>Year</p>
+                <p>Date Range</p>
+                <p>From</p>
                 <Select options={years} />
             </div>
             <div className="mt-1 me-auto w-50 col-xs-6">
-                <p>Semester</p>
+                <p><br></br></p>
+                <p><br></br></p>
+                <Select options={semester} />
+            </div>
+        </div>
+        <div className="row">
+            <div className="mt-1 me-auto w-50 col-xs-6">
+                <p>To</p>
+                <Select options={years} />
+            </div>
+            <div className="mt-1 me-auto w-50 col-xs-6">
+                <p><br></br></p>
                 <Select options={semester} />
             </div>
         </div>

@@ -10,7 +10,7 @@
     margin: 0 auto;
     border: 10px solid #00467F;
     border-radius: 5px;
-    margin-top: 8%;
+    margin-top: 3%;
 }
 
 .headline{
@@ -18,7 +18,7 @@
     margin-left: 10%;
     margin-top: 6%;
     font-size: 3em;
-    max-width: 60%;
+    max-width: 50%;
 }
 
 .main {
@@ -37,7 +37,7 @@ h1 {
 }
 
 .search {
-    width: 70%;
+    width: 65%;
     padding: 3% 10%;
     
 }
@@ -75,6 +75,6 @@ ul li {
 .illu{
     position: absolute;
     left:65%;
-    top: 20%;
+    top: 15%;
 }
 

@@ -17,9 +17,9 @@ const theme = createTheme({
 
 const Search = () => (
     <div className="search-bg">
-        <div className='headline'>A home dedicated to showcasing bright futures</div>
+        <div className='headline'>A home dedicated to <br></br>showcasing bright futures</div>
         <div className="webzen-logo"><p>Made by the team at</p><img src={require('./webzen-logo-white.png')}  alt="Logo" /></div>
-        <div className="illu"><img src={require('./capfolio-illu.png')}  alt="Logo" /></div>
+        <div className="illu"><img src={require('./capfolio-illu.png')}  alt="Logo" draggable='false'/></div>
         <div className="main">
         <div className="search">
             <TextField
