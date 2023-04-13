@@ -8,6 +8,7 @@ router.get('/', (req, res) => {
     return res.send(databaseComments);
 })
 
+
 //http://localhost:3000/api
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/api
 router.post('/', express.text(), (req, res) => {

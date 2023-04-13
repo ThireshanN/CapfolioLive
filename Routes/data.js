@@ -14,6 +14,7 @@ async function getSQLdata(sql) {
     return data;
 }
 
+
 router.get('/projectData', async (req, res) => {
     const sql = "SELECT * FROM Capfolio.Project";
     const pdata = await getSQLdata(sql);
