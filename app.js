@@ -1,19 +1,20 @@
-const express = require('express');
+import express from 'express';
+import cors from 'cors';
+import path from 'path';
+import { commentRouter } from './Routes/comments.js';
+import { projectRouter } from './Routes/project.js';
+import { dnsAWS } from './public/address.js';
+import { fileURLToPath } from 'url';
+
 const app = express();
-const cors = require('cors');
-const path = require('path');
-const comments = require('./Routes/comments');
-const data = require('./Routes/data');
-const { dnsAWS } = require('./public/address');
-const mysql = require('mysql2');
-const fs = require('fs');
-const AWS = require('aws-sdk');
-const { CreateBucketCommand, PutObjectCommand, S3 } = require("@aws-sdk/client-s3");
+//for ES Module (removed CJS)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
-app.use('/api', comments);
-app.use('/data', data);
+app.use('/api', commentRouter);
+app.use('/project', projectRouter);
 app.get('/test', (req, res) => {
     //http://localhost:3000/test
     res.send(`Hello. This route works!`);

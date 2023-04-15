@@ -1,4 +1,4 @@
-const config = {
+export const config = {
   db: {
     /* don't expose password or any sensitive info, done only for demo */
     host: "capfoliodb.cnducntmxm4l.ap-southeast-2.rds.amazonaws.com",
@@ -10,4 +10,4 @@ const config = {
   listPerPage: 10,
 };
 
-module.exports.sqlconfig = config;
+//module.exports.config = config;
