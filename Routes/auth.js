@@ -5,6 +5,7 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 
 import { Router } from 'express';
 
+
 const router = Router();
 
 export const ensureAuthenticated = (req, res, next) => {
@@ -54,10 +55,13 @@ authRouter.get('/google/callback', passport.authenticate('google', { failureRedi
     res.redirect('/');
 });
 
-authRouter.get('/logout', (req, res) => {
-    req.logout();
-    req.session.destroy();
-    res.redirect('/');
+router.get('/logout', (req, res) => {
+    req.logout(() => {
+        req.session.destroy(() => {
+            res.clearCookie('connect.sid');
+            res.redirect('/');
+        });
+    });
 });
 
 authRouter.get('/status', (req, res) => {
