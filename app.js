@@ -1,3 +1,5 @@
+import session from 'express-session';
+import { authRouter } from './Routes/auth.js';
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
@@ -6,10 +8,21 @@ import { projectRouter } from './Routes/project.js';
 import { dnsAWS } from './public/address.js';
 import { fileURLToPath } from 'url';
 
+
+
 const app = express();
 //for ES Module (removed CJS)
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+app.use(session({
+    secret: 'your-session-secret',
+    resave: false,
+    saveUninitialized: true
+}));
+
+// Add authRouter
+app.use('/auth', authRouter);
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());

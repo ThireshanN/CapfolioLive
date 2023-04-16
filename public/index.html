@@ -8,13 +8,20 @@
     <!-- add icon link -->
     <link rel="icon" href="https://cws.auckland.ac.nz/gas/api/FavIcon" type="image/svg+xml">
     <script defer="true" src="index.js" type="text/javascript"></script>
-    <meta name="google-signin-client_id" content="536962270509-qumc11latg137s0mua3o95qse4rj96rp.apps.googleusercontent.com">
 
 
 </head>
 
 
 <body style="background-color: lavenderblush;">
+
+    <div>
+        <!-- login button element -->
+        <a id="loginButton" href="/auth/google">Login with Google</a>
+        <!-- Add the welcome message and sign-out button elements -->
+        <p id="welcomeMessage" style="display: none;"></p>
+        <button id="signOutButton" onclick="location.href='/auth/logout'" style="display: none;">Sign Out</button>
+    </div>
 
     <div id="comment" style="background-color: lavender;">
         <h1 style="margin-left: 45%; margin-top: 15px; margin-bottom: 15px;"><b> Comment Page</b></h1>
