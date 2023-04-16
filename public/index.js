@@ -2,23 +2,6 @@ const dnsname = 'ec2-3-27-128-129.ap-southeast-2.compute.amazonaws.com';
 //const URL = `http://${dnsname}:3000/api`;
 const URL = 'http://localhost:3000/api';
 
-
-
-function signOut() {
-    var auth2 = google.accounts.id.getAuthInstance();
-    auth2.signOut().then(function () {
-        console.log('User signed out.');
-    });
-}
-
-function onSignIn(credential) {
-    var profile = credential.getBasicProfile();
-    console.log('ID: ' + profile.getId());
-    console.log('Name: ' + profile.getName());
-    console.log('Image URL: ' + profile.getImageUrl());
-    console.log('Email: ' + profile.getEmail());
-}
-
 const ViewComments = async () => {
     //alert("Hello!\nYou will now view the comments");
     let allComments = "";
