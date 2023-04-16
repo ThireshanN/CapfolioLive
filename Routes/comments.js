@@ -1,5 +1,6 @@
 import express from 'express';
 import { ensureAuthenticated } from '../Routes/auth.js';
+import { requireAucklandEmail } from '../Routes/auth.js';
 export const commentRouter = express.Router();
 let databaseComments = "The COMMENTS:\n";
 
@@ -12,7 +13,7 @@ commentRouter.get('/', ensureAuthenticated, (req, res) => {
 
 //http://localhost:3000/api
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/api
-commentRouter.post('/', ensureAuthenticated, express.text(), (req, res) => {
+commentRouter.post('/', requireAucklandEmail, express.text(), (req, res) => {
     console.log(req.body);
     if (req.body.length >= 1) {
         databaseComments += req.body + '\n';

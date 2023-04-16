@@ -12,7 +12,21 @@ export const ensureAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {
         return next();
     }
-    res.status(401).send('Unauthorized: Only authorized users can access this page. Pls sign in bozo');
+    res.status(401).send('logged in users only, besides Madavi');
+};
+export const requireAucklandEmail = (req, res, next) => {
+    if (req.isAuthenticated()) {
+        //console.log('req.user.email:', req.user.id);
+        const userEmail = req.user.emails[0].value;
+        //console.log('req.user.email:', userEmail.endsWith("@aucklanduni.ac.nz"));
+        if (userEmail.endsWith('@aucklanduni.ac.nz')) {
+            return next();
+        } else {
+            return res.status(403).send('Uni students only, besides madavi');
+        }
+    } else {
+        return res.status(401).send('Uni students only, besides madavi');
+    }
 };
 
 export const authRouter = router;
