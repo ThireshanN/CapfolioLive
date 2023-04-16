@@ -2,6 +2,13 @@ const dnsname = 'ec2-3-27-128-129.ap-southeast-2.compute.amazonaws.com';
 //const URL = `http://${dnsname}:3000/api`;
 const URL = 'http://localhost:3000/api';
 
+const setCommentButtonsState = (isEnabled) => {
+    const viewButton = document.getElementById('viewButton');
+    const postButton = document.getElementById('postButton');
+
+    viewButton.disabled = !isEnabled;
+    postButton.disabled = !isEnabled;
+};
 
 const checkAuthenticationStatus = async () => {
     const res = await fetch('/auth/status', { credentials: 'same-origin' });
@@ -18,10 +25,12 @@ const checkAuthenticationStatus = async () => {
         welcomeMessage.innerText = `Welcome, ${userData.displayName}!`;
         welcomeMessage.style.display = 'block';
         signOutButton.style.display = 'block';
+        setCommentButtonsState(true);
     } else {
         loginButton.style.display = 'block';
         welcomeMessage.style.display = 'none';
         signOutButton.style.display = 'none';
+        setCommentButtonsState(false);
     }
 };
 

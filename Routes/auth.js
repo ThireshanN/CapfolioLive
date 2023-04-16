@@ -3,7 +3,18 @@ import express from 'express';
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 
-export const authRouter = express.Router();
+import { Router } from 'express';
+
+const router = Router();
+
+export const ensureAuthenticated = (req, res, next) => {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    res.status(401).send('Unauthorized: Only authorized users can access this page. Pls sign in bozo');
+};
+
+export const authRouter = router;
 
 // Replace these with your own Google Client ID and Secret
 const GOOGLE_CLIENT_ID = '659834162586-hq30vt8gf1vu39pr2u4055t8djk0394d.apps.googleusercontent.com';
@@ -56,3 +67,4 @@ authRouter.get('/status', (req, res) => {
         res.json({ isAuthenticated: false });
     }
 });
+
