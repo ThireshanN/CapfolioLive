@@ -6,6 +6,7 @@ import { Route, Routes } from "react-router-dom";
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import ProjectView from "./projectView";
 import ScrollToTop from "./ScrollToTop";
+
 function App() {
   return (
     <>

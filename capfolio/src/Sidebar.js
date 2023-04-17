@@ -91,22 +91,22 @@ const Sidebar = () => {
             <div className="filters">
             {/* <h3>Filter</h3> */}
         <div className="row">
-            <div className="mt-1 me-auto w-25 col-xs-3">
+            <div className="mt-1 me-auto w-25 col-xs-6">
                 <p>Date Range</p>
                 <p>From</p>
                 <Select placeholder={<div>Year</div>} isClearable={isClearable} options={startYears} />
             </div>
-            <div className="mt-1 me-auto w-25 col-xs-3">
+            <div className="mt-1 me-auto w-25 col-xs-6">
                 <p><br></br></p>
                 <p><br></br></p>
                 <Select placeholder={<div>Semester</div>} isClearable={isClearable} options={startSemester} />
             </div>
-            <div className="mt-1 me-auto w-25 col-xs-3">
+            <div className="mt-1 me-auto w-25 col-xs-6">
             <p><br></br></p>
                 <p>To</p>
                 <Select placeholder={<div>Year</div>} isClearable={isClearable} options={endYears} />
             </div>
-            <div className="mt-1 me-auto w-25 col-xs-3">
+            <div className="mt-1 me-auto w-25 col-xs-6">
             <p><br></br></p>
                 <p><br></br></p>
                 <Select placeholder={<div>Semester</div>} isClearable={isClearable} options={endSemester} />
