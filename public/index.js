@@ -13,6 +13,7 @@ const setCommentButtonsState = (isEnabled) => {
 const checkAuthenticationStatus = async () => {
     const res = await fetch('/auth/status', { credentials: 'same-origin' });
     const data = await res.json();
+    console.log("this is the data from checkAuthenticationStatus:\n" + JSON.stringify(data));
     const isAuthenticated = data.isAuthenticated;
     const userData = data.user;
 
@@ -35,6 +36,8 @@ const checkAuthenticationStatus = async () => {
 };
 
 checkAuthenticationStatus();
+
+
 const ViewComments = async () => {
     //alert("Hello!\nYou will now view the comments");
     let allComments = "";

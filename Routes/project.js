@@ -41,7 +41,7 @@ async function getProjectSchema() {
         //console.log(projectSchema);
     }
     catch (err) {
-        console.error("something went wrong:\n" + err);
+        console.error("something went wrong in the following function: getProjectSchema()\nstart up the database on AWS console to fix this :)" + err);
     }
 };
 getProjectSchema();

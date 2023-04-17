@@ -11,28 +11,26 @@ import session from 'express-session';
 import './passport-setup.js';
 
 
-
 const app = express();
 //for ES Module (removed CJS)
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+
+//GOOGLE AUTH ROUTES:
 app.use(session({
     secret: 'your-session-secret',
     resave: false,
     saveUninitialized: true
 }));
-
 // Add authRouter
 app.use('/auth', authRouter);
-
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors());
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
 // Add session and passport middleware
 app.use(
     session({
@@ -43,10 +41,6 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
-
-app.use('/api', commentRouter);
-app.use('/project', projectRouter);
-
 // Google OAuth 2.0 authentication route
 app.get(
     '/auth/google',
@@ -54,7 +48,6 @@ app.get(
         scope: ['profile', 'email']
     })
 );
-
 // Google OAuth 2.0 callback route
 app.get(
     '/auth/google/callback',
@@ -64,7 +57,11 @@ app.get(
     }
 );
 
-app.get('/test', (req, res) => {
+
+
+app.use('/api', commentRouter);
+app.use('/project', projectRouter);
+app.get('/test', (req, res) => {   
     //http://localhost:3000/test
     res.send(`Hello. This route works!`);
 })
