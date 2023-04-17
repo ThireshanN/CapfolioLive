@@ -19,7 +19,8 @@ const __dirname = path.dirname(__filename);
 
 
 //app.use(express.static(path.join(__dirname, '../frontend/public')));
-app.use(express.static(path.join(__dirname, '../clientdemo/build')));
+//app.use(express.static(path.join(__dirname, '../clientdemo/build')));
+app.use(express.static(path.join(__dirname, '../capfolio/build')));
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -68,7 +69,9 @@ app.get('/test', (req, res) => {
     res.json({"users": ['userUno', 'userDos', 'userTres']});
 })
 app.get('/', (req, res) => {   
-    res.sendFile(path.join(__dirname, '../clientdemo/build', index.html));
+    //http:localhost:3000/
+    //res.sendFile(path.join(__dirname, '../clientdemo/build', index.html));
+    res.sendFile(path.join(__dirname, '../capfolio/build', index.html));
 })
 
 
