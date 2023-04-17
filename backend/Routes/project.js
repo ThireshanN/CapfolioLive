@@ -1,7 +1,7 @@
 import express from 'express';
 export const projectRouter = express.Router();
 import mysql from 'mysql2/promise';
-import { config } from '../backend/sqlconfig.js';
+import { config } from '../sqlconfig.js';
 
 
 async function executeSQLstatement(sql) {

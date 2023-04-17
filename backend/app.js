@@ -1,14 +1,15 @@
-import { authRouter } from '../Routes/auth.js';
+
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
-import { commentRouter } from '../Routes/comments.js';
-import { projectRouter } from '../Routes/project.js';
-import { dnsAWS } from '../frontend/public/address.js';
-import { fileURLToPath } from 'url';
 import passport from 'passport';
 import session from 'express-session';
 import './passport-setup.js';
+import { authRouter } from './Routes/auth.js';
+import { commentRouter } from './Routes/comments.js';
+import { projectRouter } from './Routes/project.js';
+import { dnsAWS } from '../frontend/public/address.mjs';
+import { fileURLToPath } from 'url';
 
 
 const app = express();
