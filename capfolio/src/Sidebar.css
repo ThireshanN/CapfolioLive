@@ -1,0 +1,86 @@
+@import url('https://fonts.googleapis.com/css2?family=Sen:wght@700&display=swap');
+
+.filter-bg{
+    width:100%;
+    height:auto;
+    color: #00467F;
+    background-color: #f2f2f2;
+    align-items:center;
+    justify-content: center;
+    margin: 0 auto;
+    border: 10px solid #f2f2f2;
+    border-radius: 5px;
+    margin-top: 2%;
+    padding-bottom: 3%;
+    padding-top: 1%;
+}
+
+
+h2{
+    font-family: 'Sen', sans-serif;
+    margin-left: 5%;
+    margin-top: 6%;
+    font-size: 3em;
+    max-width: 60%;
+}
+
+.main {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    align-items: left;
+    flex-direction: column;
+    row-gap: 20px;
+}
+
+h1 {
+    margin: 10px;
+    font-size: 40px;
+    color: rgb(1, 1, 59);
+}
+
+
+ul li {
+    font-size: 20px;
+} 
+
+h3 {
+    padding:1% 10%;
+}
+
+.collapse .row,
+.collapsing .row{
+    width: 80%;
+    margin: 0 auto;
+}
+
+.filters {
+    margin-left: 0%;
+}
+
+.collapse .card,
+.collapsing .card {
+    --bs-card-border-width: 0px !important;
+    width: 80%;
+    margin: 0px;
+    margin-left: 10%;
+    margin-top: 0%;
+    padding-top: 0%;
+}
+
+.btn{
+    --bs-btn-border-radius: 0.0rem !important;
+    margin-left: 10%;
+    margin-bottom: 0%;
+    --bs-btn-bg: #00467F !important;
+    --bs-btn-border-color: #00467F !important;
+    transform: translateY(-3px);
+}
+
+
+
+@media screen and (max-width: 992px) {
+    .row .w-25{
+        width: 100% !important;
+    }
+  }
