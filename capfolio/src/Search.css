@@ -1,0 +1,118 @@
+@import url('https://fonts.googleapis.com/css2?family=Sen:wght@700&display=swap');
+
+.search-bg{
+    width:80%;
+    height:500px;
+    color: #FFFFFF;
+    background-color: #00467F;
+    align-items:center;
+    justify-content: center;
+    margin: 0 auto;
+    border: 10px solid #00467F;
+    border-radius: 5px;
+    margin-top: 3%;
+}
+
+.headline{
+    font-family: 'Sen', sans-serif;
+    margin-left: 10%;
+    margin-top: 6%;
+    font-size: 3em;
+    max-width: 50%;
+}
+
+.main {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    align-items: left;
+    flex-direction: column;
+    row-gap: 20px;
+}
+
+h1 {
+    margin: 10px;
+    font-size: 40px;
+    color: rgb(1, 1, 59);
+}
+
+.search {
+    width: 65%;
+    padding: 3% 10%;
+    
+}
+
+
+ul li {
+    font-size: 20px;
+} 
+
+.webzen-logo {
+    width: 25%;
+    display: flex;
+    position: relative;
+    margin-left: 10%;
+    height: auto;
+    overflow: auto;
+
+}
+
+.webzen-logo p{
+    align-items: center;
+    vertical-align: middle;
+}
+
+.webzen-logo img{
+    position: relative;
+    margin-left: 10px;
+    max-width: 100px !important;
+    height: 100%;
+    float: left;
+    flex: 1;
+
+}
+
+.illu{
+    position: absolute;
+    left:58%;
+    top: 18%;
+}
+
+.illu img{
+    width: 90%;
+}
+
+
+@media screen and (max-width: 992px) {
+    .illu img{
+        max-width: 70% !important;
+        align-items: center;
+        margin-left: 15%;
+
+    }
+
+    .illu{
+        position: relative;
+        left:0%;
+        top: 0%;
+        align-items:center;
+    }
+
+    .webzen-logo {
+        width: 100%;
+        display: flex;
+        position: relative;
+        margin-left: 10%;
+        height: auto;
+        overflow: auto;
+    }
+
+    
+    .headline{
+        font-family: 'Sen', sans-serif;
+        margin-left: 10%;
+        margin-top: 6%;
+        font-size: 2em;
+        max-width: 100%;
+    }
+  }
