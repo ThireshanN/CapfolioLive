@@ -18,7 +18,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 
-app.use(express.static(path.join(__dirname, '../frontend/public')));
+//app.use(express.static(path.join(__dirname, '../frontend/public')));
+app.use(express.static(path.join(__dirname, '../clientdemo/build')));
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -59,13 +60,15 @@ app.get(
 );
 
 
-
 app.use('/api', commentRouter);
 app.use('/project', projectRouter);
 app.get('/test', (req, res) => {   
     //http://localhost:3000/test
     //res.send(`Hello. This route works!`);
     res.json({"users": ['userUno', 'userDos', 'userTres']});
+})
+app.get('/', (req, res) => {   
+    res.sendFile(path.join(__dirname, '../clientdemo/build', index.html));
 })
 
 
