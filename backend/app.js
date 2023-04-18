@@ -65,8 +65,8 @@ app.use('/api', commentRouter);
 app.use('/project', projectRouter);
 app.get('/test', (req, res) => {   
     //http://localhost:3000/test
-    //res.send(`Hello. This route works!`);
-    res.json({"users": ['userUno', 'userDos', 'userTres']});
+    res.send(`Hello World!`);
+    //res.json({"users": ['userUno', 'userDos', 'userTres']});
 })
 app.get('/', (req, res) => {   
     //http:localhost:3000/

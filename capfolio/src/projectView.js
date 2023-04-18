@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import './projectView.css';
 import heart from './red-heart.png';
 import mainImage from './homepage-mockup.png'
@@ -6,7 +6,8 @@ import secondimage from './secondimage.png';
 import thirdimage from './thirdimage.png';
 import submitcomment from './send-button.png'
 import { Slide } from 'react-slideshow-image';
-import 'react-slideshow-image/dist/styles.css'
+import 'react-slideshow-image/dist/styles.css';
+
 
 
 const projects = [
@@ -51,47 +52,48 @@ const comments = [
     }
 ]
 
+
 const ProjectView = () => {
 
 
-    
+
 
     const buttonStyle = {
         width: "30px",
         background: 'none',
         border: '0px',
         class: 'arrows'
-        
+
     };
 
     const properties = {
         prevArrow: <button style={{ ...buttonStyle }}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="#fff"><path d="M242 180.6v-138L0 256l242 213.4V331.2h270V180.6z" /></svg></button>,
         nextArrow: <button style={{ ...buttonStyle }}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="#fff"><path d="M512 256L270 42.6v138.2H0v150.6h270v138z" /></svg></button>
     }
-   
-   
+
+
 
     const Example = () => {
-       
 
-   
+
+
 
         return (
             <Slide indicators={true} duration={2000} className='slideshow' {...properties}>
-            
+
                 <div className="each-slide-effect">
                     <div style={{ 'backgroundImage': `url(${mainImage})` }}>
-                       
+
                     </div>
                 </div>
                 <div className="each-slide-effect">
                     <div style={{ 'backgroundImage': `url(${secondimage})` }}>
-                        
+
                     </div>
                 </div>
                 <div className="each-slide-effect">
                     <div style={{ 'backgroundImage': `url(${thirdimage})` }}>
-                      
+
                     </div>
                 </div>
             </Slide>
@@ -100,11 +102,11 @@ const ProjectView = () => {
     const Comment = ({ comment }) => {
         return (
             <div>
-            <div className='comment'>
-                <p className='commenttext'>{ comment.comment}</p>
-                 <p className='commentname'>{comment.name}</p>
-            </div>
-         
+                <div className='comment'>
+                    <p className='commenttext'>{comment.comment}</p>
+                    <p className='commentname'>{comment.name}</p>
+                </div>
+
             </div>
         );
     };
@@ -139,6 +141,38 @@ const ProjectView = () => {
         );
     };
 
+    const Fetchfakedatakristen = () => {
+        const [data, setData] = useState(null);
+        const [loading, setLoading] = useState(true);
+        const [error, setError] = useState(null);
+    
+        useEffect(() => {
+            fetch(`/test`)
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error(
+                            `This is an HTTP error: The status is ${response.status}`
+                        );
+                    }
+                    return response.text();
+                })
+                .then((actualData) => {
+                    setData(actualData);
+                    setError(null);
+                })
+                .catch((err) => {
+                    setError(err.message);
+                    setData(null);
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
+        }, []);
+    
+        return (
+            <p>{data}</p>
+        );
+    }
 
 
     return (
@@ -148,7 +182,7 @@ const ProjectView = () => {
                 <div className='p-row'>
                     <div className='column headerleft'>
                         <div className='image'>
-                            <Example/>
+                            <Example />
                         </div>
                     </div>
                     <div className='column headerright'>
@@ -170,6 +204,8 @@ const ProjectView = () => {
                         <p className='about'>{projects.map((project) => project.about)} </p>
                         <h2>Project Approach</h2>
                         <p className='projectApproach'>{projects.map((project) => project.projectApproach)}</p>
+                        <h2>Api Request From Our Backend:</h2>
+                        <Fetchfakedatakristen/>
                         <iframe width="100%" height="350vh" src={projects.map((project) => project.videolink)}>
                         </iframe>
                     </div>
@@ -180,39 +216,39 @@ const ProjectView = () => {
 
 
                 <div className="column right">
-                    
-                        <div className='commentbox'>
 
-                            <div className='likesection'>
-                                <p className='liketext'>Give your support to {projects.map((project) => project.title)} with a like</p>
-                                <div className='likepost'>
-                                    <img className='likebutton' src={heart}></img>
-                                    <p className='likecount'>60 Likes</p>
-                                </div>
+                    <div className='commentbox'>
+
+                        <div className='likesection'>
+                            <p className='liketext'>Give your support to {projects.map((project) => project.title)} with a like</p>
+                            <div className='likepost'>
+                                <img className='likebutton' src={heart}></img>
+                                <p className='likecount'>60 Likes</p>
+                            </div>
+                        </div>
+
+                        <div className='comments'>
+                            <div className='commentheading'>
+                                <h2>Comments</h2>
+                            </div>
+                            <div className='writecomment'>
+                                <form>
+                                    <textarea placeholder="Write your comment here..."></textarea>
+
+                                </form>
+                                <img className='submitcomment' src={submitcomment}></img>
                             </div>
 
-                            <div className='comments'>
-                                <div className='commentheading'>
-                                    <h2>Comments</h2>
-                                </div>
-                                <div className='writecomment'>
-                                    <form>
-                                        <textarea placeholder="Write your comment here..."></textarea>
-                                        
-                                    </form>
-                                    <img className='submitcomment' src={submitcomment}></img>
-                                </div>
+                            <div className='showcomments'>
+                                {comments.map((comment) => (
+                                    <Comment key={comment.id} comment={comment} />
+                                ))}
 
-                                <div className='showcomments'>
-                                    {comments.map((comment) => (
-                                        <Comment key={comment.id} comment={comment} />
-                                    ))}
-                                    
-                                </div>
                             </div>
+                        </div>
 
-                        </div>  
-                    
+                    </div>
+
                 </div>
             </div>
         </div>
