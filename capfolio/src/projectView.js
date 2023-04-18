@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 import './projectView.css';
-import heart from './images/red-heart.png';
-import mainImage from './images/homepage-mockup.png'
+import redheart from './images/red-heart.png';
+import avatar from './images/avatar.png';
+import mainImage from './images/homepage-mockup.png';
 import secondimage from './images/secondimage.png';
 import thirdimage from './images/thirdimage.png';
 import submitcomment from './images/send-button.png'
@@ -33,22 +34,34 @@ const comments = [
     {
         id: 1,
         name: 'John',
-        comment: 'This is a cool project'
+        avatar: './images/avatar.png',
+        comment: 'This is a cool project',
+        date: '18/04/2023',
+        userType: 'Student',
     },
     {
         id: 2,
         name: 'Alice',
+        avatar: './images/avatar.png',
         comment: 'Well Done!',
+        date: '18/04/2023',
+        userType: 'Teaching Staff',
     },
     {
         id: 3,
         name: 'Bob',
-        comment: 'Would love to see some social features'
+        avatar: './images/avatar.png',
+        comment: 'Would love to see some social features',
+        date: '18/04/2023',
+        userType: 'Teaching Staff',
     },
     {
         id: 4,
         name: 'Bob',
-        comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent in felis interdum, volutpat dolor id, egestas dolor. Vestibulum nec felis a enim suscipit condimentum a vel nisl. Praesent aliquam sit amet augue ac volutpat. Nullam imperdiet id dolor at tincidunt. Quisque ultricies tempor nibh, a imperdiet purus sagittis aliquet. Donec nisl odio, venenatis sit amet lobortis sit amet, placerat ut massa. Morbi bibendum imperdiet ante ut eleifend. Etiam vehicula, magna et volutpat tempor, enim ex fringilla lectus, in dignissim massa odio quis neque. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Etiam sed metus et mauris.'
+        avatar: './images/avatar.png',
+        comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent in felis interdum, volutpat dolor id, egestas dolor. Vestibulum nec felis a enim suscipit condimentum a vel nisl. Praesent aliquam sit amet augue ac volutpat. Nullam imperdiet id dolor at tincidunt. Quisque ultricies tempor nibh, a imperdiet purus sagittis aliquet. Donec nisl odio, venenatis sit amet lobortis sit amet, placerat ut massa. Morbi bibendum imperdiet ante ut eleifend. Etiam vehicula, magna et volutpat tempor, enim ex fringilla lectus, in dignissim massa odio quis neque. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Etiam sed metus et mauris.',
+        date: '18/04/2023',
+        userType: 'Visitor',
     }
 ]
 
@@ -97,14 +110,21 @@ const ProjectView = () => {
                     </div>
                 </div>
             </Slide>
+
         );
     };
     const Comment = ({ comment }) => {
         return (
             <div>
                 <div className='comment'>
+                    <div className='commentDetails'>
+                        <img className='comment-avatar' src={avatar} alt="avatar"></img>
+                        <p className='commentname'>{comment.name}</p>
+                        <p className='commentUsertype'>{comment.userType}</p>
+                        <p className='commentdate'>{comment.date}</p>
+                    </div>
                     <p className='commenttext'>{comment.comment}</p>
-                    <p className='commentname'>{comment.name}</p>
+                    
                 </div>
 
             </div>
@@ -200,8 +220,8 @@ const ProjectView = () => {
                 </div>
             </div>
 
-            <div className="rowcontent">
-                <div className='column left'>
+            {/* <div className="rowcontent"> */}
+                <div className='projectInformation-wrapper'>
                     <div className='projectInformation'>
                         <h2>About {projects.map((project) => project.title)}</h2>
                         <p className='about'>{projects.map((project) => project.about)} </p>
@@ -218,17 +238,9 @@ const ProjectView = () => {
                 </div>
 
 
-                <div className="column right">
+                {/* <div className="column right"> */}
 
                     <div className='commentbox'>
-
-                        <div className='likesection'>
-                            <p className='liketext'>Give your support to {projects.map((project) => project.title)} with a like</p>
-                            <div className='likepost'>
-                                <img className='likebutton' src={heart}></img>
-                                <p className='likecount'>60 Likes</p>
-                            </div>
-                        </div>
 
                         <div className='comments'>
                             <div className='commentheading'>
@@ -253,8 +265,8 @@ const ProjectView = () => {
                     </div>
 
                 </div>
-            </div>
-        </div>
+            // </div>
+        // </div>
 
 
     );
