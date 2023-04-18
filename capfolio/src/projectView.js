@@ -7,7 +7,7 @@ import thirdimage from './images/thirdimage.png';
 import submitcomment from './images/send-button.png'
 import { Slide } from 'react-slideshow-image';
 import 'react-slideshow-image/dist/styles.css';
-
+import LikeButton from "./components/likeButton";
 
 
 const projects = [
@@ -136,6 +136,9 @@ const ProjectView = () => {
                         </div>
                     )}
 
+                </div>
+                <div className='pv-likeButton'>
+                    <LikeButton />
                 </div>
             </div>
         );
