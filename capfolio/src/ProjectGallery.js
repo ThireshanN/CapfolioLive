@@ -139,7 +139,9 @@ const ProjectGallery = () => {
                 </CCardText>
               </CCardFooter>
               <CCardFooter>
-              <CButton href="/project-view"><span>View Project</span></CButton>
+                          <Link to='/project-view'>
+                              <CButton><span>View Project</span></CButton>
+                          </Link>
                 <LikeButton />
                 {/* <small className="text-medium-emphasis">Last updated 3 mins ago</small> */}
               </CCardFooter>
