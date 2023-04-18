@@ -136,16 +136,16 @@ const ProjectGallery = () => {
                 <CCardFooter>
                   <CCardText>
                     {project.technologies}
-                  </CCardText>
-                </CCardFooter>
-                <CCardFooter>
-                  <Link to='/project-view'>
-                    <CButton><span>View Project</span></CButton>
-                  </Link>
-                  <LikeButton />
-                  {/* <small className="text-medium-emphasis">Last updated 3 mins ago</small> */}
-                </CCardFooter>
-              </CCard>
+                </CCardText>
+              </CCardFooter>
+              <CCardFooter>
+                          <Link to='/project-view'>
+                              <CButton><span>View Project</span></CButton>
+                          </Link>
+                <LikeButton />
+                {/* <small className="text-medium-emphasis">Last updated 3 mins ago</small> */}
+              </CCardFooter>
+            </CCard>
             </CCol>
           ))}
 
