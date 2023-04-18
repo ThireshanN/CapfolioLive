@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import cn from "classnames";
-import { ReactComponent as Hand } from "./hand.svg";
+import { ReactComponent as Hand } from "../images/hand.svg";
 
 import "./likeStyles.css";
 

@@ -2,8 +2,8 @@ import React from 'react';
 import './ProjectGallery.css';
 import { Link, useMatch, useResolvedPat, useContext } from "react-router-dom";
 import { Collapse, CButton, CCollapse, CListGroup, CListGroupItem, CCard, CCardBody, CRow, CCol, CCardImage, CCardTitle, CCardText, CCardFooter } from '@coreui/react';
-import LikeButton from "./likeButton";
-import AwardBanner from "./awardBanner.js";
+import LikeButton from "./components/likeButton";
+import AwardBanner from "./components/awardBanner.js";
 
 const projects = [
   {
