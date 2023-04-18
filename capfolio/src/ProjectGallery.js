@@ -1,7 +1,7 @@
 import React from 'react';
 import './ProjectGallery.css';
 import { Link, useMatch, useResolvedPat, useContext } from "react-router-dom";
-import { Collapse, CButton, CCollapse,CListGroup, CListGroupItem, CCard, CCardBody, CRow, CCol, CCardImage, CCardTitle, CCardText, CCardFooter } from '@coreui/react';
+import { Collapse, CButton, CCollapse, CListGroup, CListGroupItem, CCard, CCardBody, CRow, CCol, CCardImage, CCardTitle, CCardText, CCardFooter } from '@coreui/react';
 import LikeButton from "./likeButton";
 import AwardBanner from "./awardBanner.js";
 
@@ -12,10 +12,10 @@ const projects = [
     team: 'Team WebZen',
     description: 'In todays world, there are numerous real-world problems that still require solutions.One way for students to gain hands - on experience in tackling these challenges is through the capstone course.By taking part in this course, students can develop the computer science skills that are highly sought after by prospective employers',
     image: 'https://via.placeholder.com/350x200',
-    technologies:'React | Next.js | Javascript | HTML',
+    technologies: 'React | Next.js | Javascript | HTML',
     link: 'https://www.example.com',
     hasAward: false,
-    awardText:'',
+    awardText: '',
   },
   {
     id: 2,
@@ -23,10 +23,10 @@ const projects = [
     team: 'Team WebZen',
     description: 'In todays world, there are numerous real-world problems that still require solutions.One way for students to gain hands - on experience in tackling these challenges is through the capstone course.By taking part in this course, students can develop the computer science skills that are highly sought after by prospective employers',
     image: 'https://via.placeholder.com/350x200',
-    technologies:'React | Next.js | Javascript | HTML',
+    technologies: 'React | Next.js | Javascript | HTML',
     link: 'https://www.example.com',
     hasAward: true,
-    awardText:'Excellence Award',
+    awardText: 'Excellence Award',
   },
   {
     id: 3,
@@ -34,10 +34,10 @@ const projects = [
     team: 'Team WebZen',
     description: 'In todays world, there are numerous real-world problems that still require solutions.One way for students to gain hands - on experience in tackling these challenges is through the capstone course.By taking part in this course, students can develop the computer science skills that are highly sought after by prospective employers',
     image: 'https://via.placeholder.com/350x200',
-    technologies:'React | Next.js | Javascript | HTML',
+    technologies: 'React | Next.js | Javascript | HTML',
     link: 'https://www.example.com',
     hasAward: false,
-    awardText:'',
+    awardText: '',
   },
   {
     id: 4,
@@ -45,50 +45,50 @@ const projects = [
     team: 'Team WebZen',
     description: 'In todays world, there are numerous real-world problems that still require solutions.One way for students to gain hands - on experience in tackling these challenges is through the capstone course.By taking part in this course, students can develop the computer science skills that are highly sought after by prospective employers',
     image: 'https://via.placeholder.com/350x200',
-    technologies:'React | Next.js | Javascript | HTML',
+    technologies: 'React | Next.js | Javascript | HTML',
     link: 'https://www.example.com',
     hasAward: false,
-    awardText:'',
-  },{
+    awardText: '',
+  }, {
     id: 5,
     title: 'Project 5',
     team: 'Team WebZen',
     description: 'In todays world, there are numerous real-world problems that still require solutions.One way for students to gain hands - on experience in tackling these challenges is through the capstone course.By taking part in this course, students can develop the computer science skills that are highly sought after by prospective employers',
     image: 'https://via.placeholder.com/350x200',
-    technologies:'React | Next.js | Javascript | HTML',
+    technologies: 'React | Next.js | Javascript | HTML',
     link: 'https://www.example.com',
     hasAward: false,
-    awardText:'',
-  },{
+    awardText: '',
+  }, {
     id: 6,
     title: 'Project 6',
     team: 'Team WebZen',
     description: 'In todays world, there are numerous real-world problems that still require solutions.One way for students to gain hands - on experience in tackling these challenges is through the capstone course.By taking part in this course, students can develop the computer science skills that are highly sought after by prospective employers',
     image: 'https://via.placeholder.com/350x200',
-    technologies:'React | Next.js | Javascript | HTML',
+    technologies: 'React | Next.js | Javascript | HTML',
     link: 'https://www.example.com',
     hasAward: false,
-    awardText:'',
-  },{
+    awardText: '',
+  }, {
     id: 7,
     title: 'Project 7',
     team: 'Team WebZen',
     description: 'In todays world, there are numerous real-world problems that still require solutions.One way for students to gain hands - on experience in tackling these challenges is through the capstone course.By taking part in this course, students can develop the computer science skills that are highly sought after by prospective employers',
     image: 'https://via.placeholder.com/350x200',
-    technologies:'React | Next.js | Javascript | HTML',
+    technologies: 'React | Next.js | Javascript | HTML',
     link: 'https://www.example.com',
     hasAward: false,
-    awardText:'',
-  },{
+    awardText: '',
+  }, {
     id: 8,
     title: 'Project 8',
     team: 'Team WebZen',
     description: 'In todays world, there are numerous real-world problems that still require solutions.',
     image: 'https://via.placeholder.com/350x200',
-    technologies:'React | Next.js | Javascript | HTML',
+    technologies: 'React | Next.js | Javascript | HTML',
     link: 'https://www.example.com',
     hasAward: false,
-    awardText:'',
+    awardText: '',
   },
 ];
 
@@ -108,46 +108,48 @@ const ProjectGallery = () => {
 
   return (
     <div className="project-gallery">
-       <div className="project-list">
+      <div className="project-list">
         {/* {projects.map((project) => (
           <ProjectCard key={project.id} project={project} />
         ))} */}
-      
 
-        <CRow xs={{ cols: 1, gutter: 4 }} sm={{ cols: 2}} md={{ cols: 3 }} lg={{ cols: 4 }}>
-          
+
+        <CRow xs={{ cols: 1, gutter: 4 }} sm={{ cols: 2 }} md={{ cols: 3 }} lg={{ cols: 4 }}>
+
           {projects.map((project) => (
             <CCol xs>
-            <CCard className="project-card h-100">
-              {project.hasAward && <AwardBanner text={project.awardText} />}
-              <CCardImage orientation="top" src={project.image} />
-              <CCardBody>
-                <CCardTitle>{project.title}</CCardTitle>
-                <CCardText>
-                  {project.team}
-                </CCardText>
-                <CListGroup flush>
-                  <div className='text-container'>
-                  <CListGroupItem className='fade-text'>{project.description}</CListGroupItem>
-                  <div className="fade-effect"></div>
-                  </div>
-                </CListGroup>
-              </CCardBody>
-              <CCardFooter>
-                <CCardText>
+              <CCard className="project-card h-100">
+                {project.hasAward && <AwardBanner text={project.awardText} />}
+                <CCardImage orientation="top" src={project.image} />
+                <CCardBody>
+                  <CCardTitle>{project.title}</CCardTitle>
+                  <CCardText>
+                    {project.team}
+                  </CCardText>
+                  <CListGroup flush>
+                    <div className='text-container'>
+                      <CListGroupItem className='fade-text'>{project.description}</CListGroupItem>
+                      <div className="fade-effect"></div>
+                    </div>
+                  </CListGroup>
+                </CCardBody>
+                <CCardFooter>
+                  <CCardText>
                     {project.technologies}
-                </CCardText>
-              </CCardFooter>
-              <CCardFooter>
-              <CButton href="/project-view"><span>View Project</span></CButton>
-                <LikeButton />
-                {/* <small className="text-medium-emphasis">Last updated 3 mins ago</small> */}
-              </CCardFooter>
-            </CCard>
+                  </CCardText>
+                </CCardFooter>
+                <CCardFooter>
+                  <Link to='/project-view'>
+                    <CButton><span>View Project</span></CButton>
+                  </Link>
+                  <LikeButton />
+                  {/* <small className="text-medium-emphasis">Last updated 3 mins ago</small> */}
+                </CCardFooter>
+              </CCard>
             </CCol>
-            ))}
-            
-          </CRow>
+          ))}
+
+        </CRow>
       </div>
     </div>
   );
