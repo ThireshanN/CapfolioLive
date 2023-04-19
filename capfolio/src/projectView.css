@@ -581,4 +581,19 @@ textarea {
         margin-left: 25%;
         margin-right: 25%
     }
+
+    .comment{
+        width: 90%;
+        margin: 5% 5%;
+        padding: 20px 20px;
+    }
+
+    .commentdate{
+        font-size: 12px;
+        
+    }
+}
+
+@media only screen and (max-width: 600px) {
+
 }
