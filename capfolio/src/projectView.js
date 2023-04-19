@@ -9,7 +9,7 @@ import submitcomment from './images/send-button.png'
 import { Slide } from 'react-slideshow-image';
 import 'react-slideshow-image/dist/styles.css';
 import LikeButton from "./components/likeButton";
-
+import { Collapse, CButton, CCollapse, CListGroup, CListGroupItem, CCard, CCardBody, CRow, CCol, CCardImage, CCardTitle, CCardText, CCardFooter } from '@coreui/react';
 
 const projects = [
 
@@ -21,11 +21,12 @@ const projects = [
         link: 'https://www.example.com',
         mainImage: 'public/homepage-mockup.png',
         authors: ["Josh Hanna", " Josephine Chen", 'Kristen Coupe', 'Medhavi Desai', 'Imashi Kinigama', 'Thireshan Naidoo'],
-        tech: ["React", 'node.JS', 'AWS', 'C#'],
+        tech: ["React", 'node.JS', 'AWS'],
         companyName: 'WebZen',
         about: "In today's world, there are numerous real- world problems that still require solutions.One way for students to gain hands - on experience in tackling these challenges is through the capstone course.By taking part in this course, students can develop the computer science skills that are highly sought after by prospective employers.However, the in-person showcase at the end of the capstone course may have limitations in terms of reaching potential employers and clients.",
         projectApproach: "The project management methodology that will be used in this project is Scrum, which is an iterative and incremental framework that is based on the principles of Agile development. Our team will hold sprint planning meetings weekly, where the tasks for the upcoming week are planned.The tasks from the product backlog that our team created at the start will be completed in the current sprint. We have chosen Scrum as the project management methodology since it provides a framework for continuous improvement and encourages collaboration and communication among team members.In order to implement Scrum, we will be using Notion, as it provides a visual representation of the whole Scrum workflow.Each task that is created on Notion will be in the backlog until it is assigned to a team member.The task will then move along the board and finally reach the 'Done' state. The diagram on the following page shows our team's current workflow on Notion.",
-        videolink: "https://www.youtube.com/embed/tgbNymZ7vqY"
+        videolink: "https://www.youtube.com/embed/tgbNymZ7vqY",
+        githubLink: 'https://github.com/uoa-compsci399-s1-2023/project-team-11'
 
     }
 ]
@@ -135,8 +136,9 @@ const ProjectView = () => {
     const Header = ({ project }) => {
         return (
             <div>
+            <div className='centerTitle'>
                 <p className='projecttitle'>{project.title}</p>
-
+                </div>
                 <div className="names">
                     <p className='companyname'>By  {project.companyName} -&nbsp;</p>
 
@@ -148,7 +150,7 @@ const ProjectView = () => {
 
                 </div>
 
-
+                <div className='techusedcontainer'>
                 <div className='techUsed'>
                     {project.tech.map((tech, i) =>
                         <div className='tech'>
@@ -156,46 +158,50 @@ const ProjectView = () => {
                         </div>
                     )}
 
+                    </div>
                 </div>
                 <div className='pv-likeButton'>
                     <LikeButton />
+                </div>
+                <div className='github'>
+                    <CButton id='projectviewGithubLink'><a id='linktogithub'href={project.githubLink}><span>Github Link</span></a></CButton>
                 </div>
             </div>
         );
     };
 
-    const Fetchfakedatakristen = () => {
-        const [data, setData] = useState(null);
-        const [loading, setLoading] = useState(true);
-        const [error, setError] = useState(null);
+    //const Fetchfakedatakristen = () => {
+    //    const [data, setData] = useState(null);
+    //    const [loading, setLoading] = useState(true);
+    //    const [error, setError] = useState(null);
     
-        useEffect(() => {
-            fetch(`/test`)
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error(
-                            `This is an HTTP error: The status is ${response.status}`
-                        );
-                    }
-                    return response.text();
-                })
-                .then((actualData) => {
-                    setData(actualData);
-                    setError(null);
-                })
-                .catch((err) => {
-                    setError(err.message);
-                    setData(null);
-                })
-                .finally(() => {
-                    setLoading(false);
-                });
-        }, []);
+    //    useEffect(() => {
+    //        fetch(`/test`)
+    //            .then((response) => {
+    //                if (!response.ok) {
+    //                    throw new Error(
+    //                        `This is an HTTP error: The status is ${response.status}`
+    //                    );
+    //                }
+    //                return response.text();
+    //            })
+    //            .then((actualData) => {
+    //                setData(actualData);
+    //                setError(null);
+    //            })
+    //            .catch((err) => {
+    //                setError(err.message);
+    //                setData(null);
+    //            })
+    //            .finally(() => {
+    //                setLoading(false);
+    //            });
+    //    }, []);
     
-        return (
-            <p>{data}</p>
-        );
-    }
+    //    return (
+    //        <p>{data}</p>
+    //    );
+    //}
 
 
     return (
@@ -228,7 +234,7 @@ const ProjectView = () => {
                         <h2>Project Approach</h2>
                         <p className='projectApproach'>{projects.map((project) => project.projectApproach)}</p>
                         <h2>Api Request From Our Backend:</h2>
-                        <Fetchfakedatakristen/>
+                        {/*<Fetchfakedatakristen/>*/}
                         <iframe width="100%" height="350vh" src={projects.map((project) => project.videolink)}>
                         </iframe>
                     </div>
