@@ -57,7 +57,7 @@
 .rowcontent{
     margin-top:140px;
 }
-@media screen and (max-width: 850px) 
+/* @media screen and (max-width: 850px) 
 {
     .column {
         width: 100%;
@@ -95,7 +95,7 @@
     }
 
   
-}
+} */
 
 .bluebox {
     padding-top: 3%;
@@ -428,3 +428,139 @@ textarea {
     margin-left: 50px;
     margin-top: 30px;
   }
+
+  @media screen and (max-width: 1070px) {
+
+    .bluebox {
+        height: 83vw;
+        min-height: 450px;
+        position: absolute;
+        
+    }
+
+    .pv-likeButton {
+        position: absolute;
+        margin: 0 0;
+        
+    }
+    .projectInformation-wrapper {
+        margin: 0% 0%;
+        padding-top: 95%;
+        width: 100%;
+    }
+
+    .projectInformation {
+        margin: 10% 0%;
+        margin-left: 40px;
+        margin-right: 40px;
+    }
+
+    .github {
+        margin-left: 0px;
+        padding-left: 0px;
+        margin-top: 10px;
+        bottom: 10px;
+        right: 0;
+        position: absolute;
+        width: 200px;
+       
+    }
+    
+
+
+    .centerTitle {
+        text-align: center;
+        width: 100%;
+        margin: 0px;
+        padding: 0px;
+        display: flex;
+        flex-direction: column;
+        align-content: center;
+        justify-content: center;
+        align-items: center;
+        background-color: #00467F;
+    }
+
+    .pv-buttons{
+        display: flex;
+        margin: 0 0;
+        padding-bottom: 15%;
+
+    }
+
+    .pv-buttons .btn{
+        position: absolute;
+        margin: 0 0;
+        transform: translateX(-130px) translateY(-2px);
+    }
+
+    .projecttitle
+    {
+        margin-left:0px;
+        margin-top: 0px;
+        font-size: 6vw;
+        padding-left: 0px;
+        align-self: center;
+    }
+    .column {
+        width: 100%;
+    }
+
+    .right {
+        float: left;
+        padding-right: 18%;
+    }
+
+    .left {
+        padding-top: 0px;
+    }
+    .techusedcontainer{
+        width:100%;
+        padding-top: 0px;
+    }
+
+    .techUsed {
+        margin: auto;
+        width: 100%;
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        align-content: center;
+        flex-wrap: wrap;
+        flex-direction: row;
+    }
+
+    .tech p{
+        font-size: 2vw
+    }
+
+    .names{
+        width: 50%;    
+    }
+
+    .headerright {
+        float: left;
+        width: 100%;
+        margin-left: 0px;
+        margin-right: 0px;
+        padding-right: 0px;
+    }
+    .names p{
+        font-size: 1em;
+        
+    }
+    
+
+    .headerleft {
+        width: 100%;
+        margin-left: 0px;
+        align-content: center;
+    }
+
+    .image {
+        width: 50%;
+        margin-left: 25%;
+        margin-right: 25%
+    }
+}

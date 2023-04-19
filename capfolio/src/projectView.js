@@ -140,7 +140,7 @@ const ProjectView = () => {
 
     const Header = ({ project }) => {
         return (
-            <div>
+            <div className='centerTitle'>
                 <p className='projecttitle'>{project.title}</p>
 
                 <div className="names">
@@ -212,7 +212,6 @@ const ProjectView = () => {
 
     return (
         <div>
-
             <div className='bluebox'>
                 <div className='p-row'>
                     <div className='column headerleft'>
@@ -244,13 +243,10 @@ const ProjectView = () => {
                         <iframe width="100%" height="350vh" src={projects.map((project) => project.videolink)}>
                         </iframe>
                     </div>
-
-
-
                 </div>
 
 
-                {/* <div className="column right"> */}
+               {/* <div className="column right">  */}
 
                     <div className='commentbox'>
 
@@ -277,7 +273,7 @@ const ProjectView = () => {
                     </div>
 
                 </div>
-            // </div>
+        //     </div>
         // </div>
 
 
