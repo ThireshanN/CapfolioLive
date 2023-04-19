@@ -9,6 +9,10 @@ import submitcomment from './images/send-button.png'
 import { Slide } from 'react-slideshow-image';
 import 'react-slideshow-image/dist/styles.css';
 import LikeButton from "./components/likeButton";
+import {  CButton, } from '@coreui/react';
+import { withTheme } from '@emotion/react';
+import  gitHubLogo from './images/github-mark-white.png';
+
 
 
 const projects = [
@@ -25,8 +29,8 @@ const projects = [
         companyName: 'WebZen',
         about: "In today's world, there are numerous real- world problems that still require solutions.One way for students to gain hands - on experience in tackling these challenges is through the capstone course.By taking part in this course, students can develop the computer science skills that are highly sought after by prospective employers.However, the in-person showcase at the end of the capstone course may have limitations in terms of reaching potential employers and clients.",
         projectApproach: "The project management methodology that will be used in this project is Scrum, which is an iterative and incremental framework that is based on the principles of Agile development. Our team will hold sprint planning meetings weekly, where the tasks for the upcoming week are planned.The tasks from the product backlog that our team created at the start will be completed in the current sprint. We have chosen Scrum as the project management methodology since it provides a framework for continuous improvement and encourages collaboration and communication among team members.In order to implement Scrum, we will be using Notion, as it provides a visual representation of the whole Scrum workflow.Each task that is created on Notion will be in the backlog until it is assigned to a team member.The task will then move along the board and finally reach the 'Done' state. The diagram on the following page shows our team's current workflow on Notion.",
-        videolink: "https://www.youtube.com/embed/tgbNymZ7vqY"
-
+        videolink: "https://www.youtube.com/embed/tgbNymZ7vqY",
+        gitHubLink: 'https://github.com/uoa-compsci399-s1-2023/project-team-11',
     }
 ]
 
@@ -38,6 +42,7 @@ const comments = [
         comment: 'This is a cool project',
         date: '18/04/2023',
         userType: 'Student',
+        
     },
     {
         id: 2,
@@ -46,6 +51,7 @@ const comments = [
         comment: 'Well Done!',
         date: '18/04/2023',
         userType: 'Teaching Staff',
+        
     },
     {
         id: 3,
@@ -157,8 +163,14 @@ const ProjectView = () => {
                     )}
 
                 </div>
-                <div className='pv-likeButton'>
-                    <LikeButton />
+
+                <div className='pv-buttons'>
+                    <CButton> <img src={gitHubLogo}></img> <a href={project.gitHubLink} target="_blank"> GitHub</a></CButton>
+                    <div>
+                        <div className='pv-likeButton'>
+                            <LikeButton />
+                        </div>
+                    </div>
                 </div>
             </div>
         );
