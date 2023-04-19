@@ -28,7 +28,6 @@
 }
 
 .headerright{
-    height: 30vw;
     width: 30%;
     margin-right: 5%;
     margin-left: 50px;
@@ -135,7 +134,7 @@
 }
 
     .tech p {
-        font-size: 1vw;
+        font-size: 1em;
         padding: 5px;
         color: #00467F;
         margin: 0;
@@ -427,26 +426,24 @@ textarea {
   .pv-buttons{
     margin-left: 50px;
     margin-top: 30px;
+    min-height: 50px;
+    width: 100%;
   }
 
-  @media screen and (max-width: 1070px) {
+  @media screen and (max-width: 992px) {
 
     .bluebox {
-        height: 83vw;
-        min-height: 450px;
-        position: absolute;
-        
+        height: auto;
+       
     }
 
     .pv-likeButton {
-        position: absolute;
         margin: 0 0;
         
     }
     .projectInformation-wrapper {
-        margin: 0% 0%;
-        padding-top: 95%;
-        width: 100%;
+        margin: 10% 10%;
+        width: 80%;
     }
 
     .projectInformation {
@@ -455,23 +452,10 @@ textarea {
         margin-right: 40px;
     }
 
-    .github {
-        margin-left: 0px;
-        padding-left: 0px;
-        margin-top: 10px;
-        bottom: 10px;
-        right: 0;
-        position: absolute;
-        width: 200px;
-       
-    }
-    
-
-
     .centerTitle {
         text-align: center;
         width: 100%;
-        margin: 0px;
+        margin: 0 0;
         padding: 0px;
         display: flex;
         flex-direction: column;
@@ -479,19 +463,24 @@ textarea {
         justify-content: center;
         align-items: center;
         background-color: #00467F;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
     }
 
     .pv-buttons{
         display: flex;
-        margin: 0 0;
-        padding-bottom: 15%;
+        margin: 5px 5px;
+        padding: 5px 5px;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
 
     }
 
     .pv-buttons .btn{
-        position: absolute;
         margin: 0 0;
-        transform: translateX(-130px) translateY(-2px);
+        margin-right: 3%;
+        transform: translateY(-1px);
     }
 
     .projecttitle
@@ -532,11 +521,12 @@ textarea {
     }
 
     .tech p{
-        font-size: 2vw
+        font-size: 1em;
     }
 
     .names{
         width: 50%;    
+        margin-left: 0;
     }
 
     .headerright {

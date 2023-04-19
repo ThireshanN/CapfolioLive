@@ -151,7 +151,6 @@ const ProjectView = () => {
                             <p key={`Key${i}`}>{name},&nbsp;</p>
                         </div>
                     )}
-
                 </div>
 
 
@@ -161,7 +160,6 @@ const ProjectView = () => {
                             <p key={`Key${i}`}>{tech}</p>
                         </div>
                     )}
-
                 </div>
 
                 <div className='pv-buttons'>
@@ -172,6 +170,7 @@ const ProjectView = () => {
                         </div>
                     </div>
                 </div>
+
             </div>
         );
     };
