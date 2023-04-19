@@ -2,10 +2,7 @@
 
 * {
     box-sizing: border-box;
-    
 }
-
-
 
 /* Create two unequal columns that floats next to each other */
 .column {
@@ -60,11 +57,49 @@
 .rowcontent{
     margin-top:140px;
 }
+@media screen and (max-width: 850px) 
+{
+    .column {
+        width: 100%;
+    }
 
+    .right {
+        float:left; 
+        padding-right: 18%;
+
+        
+    }
+    .left {
+        padding-top: 0px;
+    }
+
+
+    .headerright{
+        display: none;  
+    }
+
+    .commentbox {
+        background-color: blue;
+        margin-left: 4  0%;
+    }
+
+    .headerleft {
+        width: 100%;
+        margin-left: 0px;
+        align-content: center;
+    }
+    .image{
+        width: 50%;
+        margin-left: 25%;
+        margin-right: 25%
+    }
+
+  
+}
 
 .bluebox {
     padding-top: 3%;
-    height: 35vw;
+    height: 32vw;
     width: 100%;
     background-color: #00467F;
 }
@@ -354,3 +389,42 @@ textarea {
 .commentDetails{
     margin-bottom: 20px;
 }
+
+.pv-buttons .btn a{
+    color: #fff !important;
+    font-family: 'Fira Sans', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    padding-left: 6px;
+  }
+
+  .pv-buttons .btn {
+    margin-left: 0%;
+    --bs-btn-bg: #3e80b6 !important;
+    color: #fff !important;
+    border-radius: 5px;
+    float: left;
+    margin-right: 5%;
+    margin-top: 1px;
+    padding: 8px 16px;
+    font-family: 'Fira Sans', sans-serif;
+    font-weight: 500;
+    background-image: linear-gradient(to right, #54a0ff 50%, transparent 50%);
+    background-size: 200% 100%;
+    background-position: right;
+    transition: all 0.25s ease;
+    cursor: pointer;
+    text-decoration: none;
+  
+  }
+
+  .btn img{
+    width: 25px !important;
+    height: 25px !important;
+  }
+
+  .pv-buttons{
+    margin-left: 50px;
+    margin-top: 30px;
+  }
