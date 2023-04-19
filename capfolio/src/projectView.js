@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './projectView.css';
 import redheart from './images/red-heart.png';
 import avatar from './images/avatar.png';
@@ -138,6 +138,7 @@ const ProjectView = () => {
     };
 
 
+
     const Header = ({ project }) => {
         return (
             <div className='centerTitle'>
@@ -163,7 +164,7 @@ const ProjectView = () => {
                 </div>
 
                 <div className='pv-buttons'>
-                    <CButton> <img src={gitHubLogo}></img> <a href={project.gitHubLink} target="_blank"> GitHub</a></CButton>
+                    <CButton>  <a href={project.gitHubLink} target="_blank"> <img src={gitHubLogo}></img>  GitHub</a></CButton>
                     <div>
                         <div className='pv-likeButton'>
                             <LikeButton />
@@ -209,16 +210,28 @@ const ProjectView = () => {
     }
 
 
+
+        const rightColumnRef = useRef();
+        const blueBoxRef = useRef();
+    
+        useEffect(() => {
+            const marginTop = parseFloat(window.getComputedStyle(rightColumnRef.current).marginTop);
+            const rightColumnHeight = rightColumnRef.current.offsetHeight + marginTop + 20;
+            blueBoxRef.current.style.setProperty('--right-column-height', `${rightColumnHeight}px`);
+        }, []);
+
+
     return (
         <div>
-            <div className='bluebox'>
+            <div className='bluebox-top'></div>
+            <div className='bluebox' ref={blueBoxRef} style={{ '--right-column-height': 'auto' }}>
                 <div className='p-row'>
                     <div className='column headerleft'>
                         <div className='image'>
                             <Example />
                         </div>
                     </div>
-                    <div className='column headerright'>
+                    <div className='column headerright' ref={rightColumnRef}>
                         <div className='teammembers'>
                             {projects.map((project) => (
                                 <Header key={project.id} project={project} />
