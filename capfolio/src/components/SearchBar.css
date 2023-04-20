@@ -38,3 +38,23 @@
   .form {
     margin-left: 0%;
   }
+
+  @media screen and (max-width: 360px) {
+
+    .search {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 70%;
+        margin-left: 0;
+     }
+
+     .search-bar{
+        max-width: 300px;
+     }
+
+     .search-bar input{
+        max-width: 130px;
+     }
+
+  }
