@@ -17,23 +17,11 @@ const Sidebar = () => {
       { value: "2023", label: "2023" },
     ];
 
-
-    const endYears = [
-        { value: "2020", label: "2020" },
-        { value: "2021", label: "2021" },
-        { value: "2022", label: "2022" },
-        { value: "2023", label: "2023" },
-      ];
-
     const startSemester = [
         { value: "SemesterOne", label: "Semester One" },
         { value: "SemesterTwo", label: "Semester Two" },
       ];
 
-      const endSemester = [
-        { value: "SemesterOne", label: "Semester One" },
-        { value: "SemesterTwo", label: "Semester Two" },
-      ];
 
     const technologies = [
         { value: "blues", label: "React" },
@@ -47,6 +35,13 @@ const Sidebar = () => {
         { value: "blues", label: "Excellence Award" },
         { value: "rock", label: "Community Award" },
         { value: "jazz", label: "People's Choice Award" },
+      ];
+
+      const sortBy = [
+        { value: "none", label: "🡱  Date added" },
+        { value: "blues", label: "🡳  Date added" },
+        { value: "rock", label: "🡱  Likes" },
+        { value: "jazz", label: "🡳  Likes" },
       ];
 
     const [selectedOption, setSelectedOption] = useState("");
@@ -95,6 +90,17 @@ const Sidebar = () => {
                                 <p>Awards</p>
                                 <Select placeholder={<div>Awarded with...</div>} components={animatedComponents} isMulti onChange={handleChange} options={awarded} />
                             </div>
+                        </div>
+                        <div className="row">
+                            <div className="mt-3 me-0 w-50 col-xs-6">
+                                <p>Sort by</p>
+                                <Select
+                                  className="basic-single"
+                                  classNamePrefix="select"
+                                  name="color"
+                                  options={sortBy}
+                                />
+                          </div>
                         </div>
                       </div>
                     <div className='apply-filter-btn-wrapper'>

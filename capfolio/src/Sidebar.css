@@ -116,12 +116,18 @@ h3 {
     .row .w-25{
         width: 50% !important;
     }
+
+
   }
 
 
 
 @media screen and (max-width: 768px) {
     .row .w-25{
+        width: 100% !important;
+    }
+
+    .row .w-50{
         width: 100% !important;
     }
   }
