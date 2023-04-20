@@ -8,7 +8,8 @@ export default function Navbar() {
       </Link>
       <ul>
         <CustomLink to="/login" className="button2">Log in</CustomLink>
-        <CustomLink to="/sign-up" className="button2">Sign Up</CustomLink>
+              <CustomLink to="/sign-up" className="button2">Sign Up</CustomLink>
+              <CustomLink to="/project-submit" className="button2">Project Submit </CustomLink>
       </ul>
     </nav>
   )

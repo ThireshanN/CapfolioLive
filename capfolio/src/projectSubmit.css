@@ -1,0 +1,21 @@
+﻿.projectsubmitform{
+    padding-top: 100px;
+    margin-left: 30%;
+    margin-right: 30%;
+}
+
+textarea#textAreaExample {
+    margin-bottom: 25px;
+}
+
+.css-b62m3t-container {
+    margin-bottom: 25px;
+}
+
+input#typeURL {
+    margin-bottom: 25px;
+}
+
+.mb-4{
+    margin-left: 0px;
+}
