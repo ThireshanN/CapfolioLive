@@ -1,20 +1,8 @@
 import './Search.css';
 import { React, useState, classes } from "react";
-import TextField from "@mui/material/TextField";
-// import List from "./components/List"
 import "./App.css";
-// import { createTheme } from '@mui/material/styles';
-// import { indigo } from '@mui/material/colors';
 import SearchBar from './components/SearchBar';
 
-// const theme = createTheme({
-//     palette: {
-//       primary: {
-//         main: '#42a5f5',
-//       },
-//       secondary: indigo,
-//     },
-//   })
 
 const Search = () => {
 
@@ -31,16 +19,6 @@ const Search = () => {
             <div className="main">
               <div className="search"> 
                 <SearchBar onSearch={handleSearch} />
-                  {/* <TextField
-                  id="outlined-basic"
-                  variant="filled"
-                  color="primary"
-                  sx={{
-                      backgroundColor : 'white',
-                  }}
-                  fullWidth
-                  label="Search"
-                  /> */}
               </div> 
           </div>
         

@@ -26,7 +26,7 @@ const projects = [
     technologies: 'React | Next.js | Javascript | HTML',
     link: 'https://www.example.com',
     hasAward: true,
-    awardText: 'Excellence Award',
+    awardText: '🥇 Excellence Award 🥇',
   },
   {
     id: 3,

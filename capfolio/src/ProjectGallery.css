@@ -81,7 +81,7 @@
   object-position: center;
 }
 
-.card .btn {
+.project-gallery .card .btn {
   --bs-btn-border-radius: 0.0rem !important;
   margin-left: 0%;
   --bs-btn-bg: #00467F !important;
@@ -104,14 +104,14 @@
 
 }
 
-.card .btn:hover {
+.project-gallery .card .btn:hover {
   background-position: left;
   border-color: #54a0ff;
 }
 
 
 
-.col .card {
+.project-gallery .col .card {
   --cui-card-spacer-y: 1rem;
   --cui-card-spacer-x: 1rem;
   --cui-card-title-spacer-y: 0.5rem;
