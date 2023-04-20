@@ -49,7 +49,9 @@ export default function ProjectSubmit() {
 
             <MDBInput label='Github Link' id='typeURL' type='url' />
             <MDBInput label='Youtube demo link' id='typeURL' type='url' />
-            
+
+                <label for="formFileMultiple" class="form-label">Upload screenshots of your project</label>
+                <input class="form-control" type="file" id="formFileMultiple" multiple />
 
             <MDBBtn className='mb-4' type='submit' block>
                 Submit Project!
