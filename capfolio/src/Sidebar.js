@@ -38,10 +38,15 @@ const Sidebar = () => {
       ];
 
       const sortBy = [
-        { value: "none", label: "🡱  Date added" },
-        { value: "blues", label: "🡳  Date added" },
-        { value: "rock", label: "🡱  Likes" },
-        { value: "jazz", label: "🡳  Likes" },
+        { value: "blues", label: "Latest to oldest" },
+        { value: "none", label: "Oldest to latest" },
+        { value: "jazz", label: "Highest to lowest likes" },
+        { value: "rock", label: "Lowest to highest Likes" },
+        { value: "alphabetD", label: "Alphabetical (A - Z)" },
+        { value: "alphabetA", label: "Alphabetical (Z - A)" },
+
+
+
       ];
 
     const [selectedOption, setSelectedOption] = useState("");
@@ -95,6 +100,7 @@ const Sidebar = () => {
                             <div className="mt-3 me-0 w-50 col-xs-6">
                                 <p>Sort by</p>
                                 <Select
+                                  defaultValue={{ label: "Latest to oldest", value: "blues" }}
                                   className="basic-single"
                                   classNamePrefix="select"
                                   name="color"
