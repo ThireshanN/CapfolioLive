@@ -4,7 +4,7 @@ export default function Navbar() {
   return (
       <nav className="navtop">
       <Link to="/" className="site-title">
-      <div className="logo"><img src={require('./capfolio-logo-white.png')}  alt="Logo" /></div>
+      <div className="logo"><img src={require('./images/capfolio-logo-white.png')}  alt="Logo" /></div>
       </Link>
       <ul>
         <CustomLink to="/login" className="button2">Log in</CustomLink>

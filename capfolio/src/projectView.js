@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import './projectView.css';
-import heart from './red-heart.png';
-import mainImage from './homepage-mockup.png'
-import secondimage from './secondimage.png';
-import thirdimage from './thirdimage.png';
-import submitcomment from './send-button.png'
+import heart from './images/red-heart.png';
+import mainImage from './images/homepage-mockup.png'
+import secondimage from './images/secondimage.png';
+import thirdimage from './images/thirdimage.png';
+import submitcomment from './images/send-button.png'
 import { Slide } from 'react-slideshow-image';
 import 'react-slideshow-image/dist/styles.css';
-
+import LikeButton from "./components/likeButton";
 
 
 const projects = [
@@ -136,6 +136,9 @@ const ProjectView = () => {
                         </div>
                     )}
 
+                </div>
+                <div className='pv-likeButton'>
+                    <LikeButton />
                 </div>
             </div>
         );

@@ -26,3 +26,4 @@ yarn-error.log*
 /.vs
 /.vscode
 /backend/node_modules
+/capfolio/node_modules
