@@ -23,7 +23,7 @@ async function getProjectSchema() {
         const sql = "SHOW FIELDS FROM Capfolio.Project";
         let allProjects = await executeSQLstatement(sql);
         allProjects = JSON.parse(allProjects);
-        //console.log(allProjects.length);
+        console.log(allProjects.length);
         /*
         for (let i=0; i < allProjects.length; i++) {
             let name = allProjects[i].Field;
