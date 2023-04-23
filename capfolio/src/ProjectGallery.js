@@ -14,8 +14,7 @@ const projects = [
     image: 'https://via.placeholder.com/350x200',
     technologies: 'React | Next.js | Javascript | HTML',
     link: 'https://www.example.com',
-    hasAward: false,
-    awardText: '',
+    awardText: 'None',
   },
   {
     id: 2,
@@ -25,7 +24,6 @@ const projects = [
     image: 'https://via.placeholder.com/350x200',
     technologies: 'React | Next.js | Javascript | HTML',
     link: 'https://www.example.com',
-    hasAward: true,
     awardText: 'Excellence Award',
   },
   {
@@ -36,8 +34,7 @@ const projects = [
     image: 'https://via.placeholder.com/350x200',
     technologies: 'React | Next.js | Javascript | HTML',
     link: 'https://www.example.com',
-    hasAward: false,
-    awardText: '',
+    awardText: 'None',
   },
   {
     id: 4,
@@ -47,8 +44,7 @@ const projects = [
     image: 'https://via.placeholder.com/350x200',
     technologies: 'React | Next.js | Javascript | HTML',
     link: 'https://www.example.com',
-    hasAward: false,
-    awardText: '',
+    awardText: 'None',
   }, {
     id: 5,
     title: 'Project 5',
@@ -57,8 +53,7 @@ const projects = [
     image: 'https://via.placeholder.com/350x200',
     technologies: 'React | Next.js | Javascript | HTML',
     link: 'https://www.example.com',
-    hasAward: false,
-    awardText: '',
+    awardText: 'None',
   }, {
     id: 6,
     title: 'Project 6',
@@ -67,8 +62,7 @@ const projects = [
     image: 'https://via.placeholder.com/350x200',
     technologies: 'React | Next.js | Javascript | HTML',
     link: 'https://www.example.com',
-    hasAward: false,
-    awardText: '',
+    awardText: 'None',
   }, {
     id: 7,
     title: 'Project 7',
@@ -77,8 +71,7 @@ const projects = [
     image: 'https://via.placeholder.com/350x200',
     technologies: 'React | Next.js | Javascript | HTML',
     link: 'https://www.example.com',
-    hasAward: false,
-    awardText: '',
+    awardText: 'None',
   }, {
     id: 8,
     title: 'Project 8',
@@ -87,8 +80,7 @@ const projects = [
     image: 'https://via.placeholder.com/350x200',
     technologies: 'React | Next.js | Javascript | HTML',
     link: 'https://www.example.com',
-    hasAward: false,
-    awardText: '',
+    awardText: 'None',
   },
 ];
 
@@ -119,7 +111,7 @@ const ProjectGallery = () => {
           {projects.map((project) => (
             <CCol xs>
               <CCard className="project-card h-100">
-                {project.hasAward && <AwardBanner text={project.awardText} />}
+                {project.awardText != "None" && <AwardBanner text={project.awardText} />}
                 <CCardImage orientation="top" src={project.image} />
                 <CCardBody>
                   <CCardTitle>{project.title}</CCardTitle>
