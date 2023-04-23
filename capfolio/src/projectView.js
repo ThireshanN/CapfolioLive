@@ -34,43 +34,6 @@ const projects = [
     }
 ]
 
-const comments = [
-    {
-        id: 1,
-        name: 'John',
-        avatar: './images/avatar.png',
-        comment: 'This is a cool project',
-        date: '18/04/2023',
-        userType: 'Student',
-        
-    },
-    {
-        id: 2,
-        name: 'Alice',
-        avatar: './images/avatar.png',
-        comment: 'Well Done!',
-        date: '18/04/2023',
-        userType: 'Teaching Staff',
-        
-    },
-    {
-        id: 3,
-        name: 'Bob',
-        avatar: './images/avatar.png',
-        comment: 'Would love to see some social features',
-        date: '18/04/2023',
-        userType: 'Teaching Staff',
-    },
-    {
-        id: 4,
-        name: 'Bob',
-        avatar: './images/avatar.png',
-        comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent in felis interdum, volutpat dolor id, egestas dolor. Vestibulum nec felis a enim suscipit condimentum a vel nisl. Praesent aliquam sit amet augue ac volutpat. Nullam imperdiet id dolor at tincidunt. Quisque ultricies tempor nibh, a imperdiet purus sagittis aliquet. Donec nisl odio, venenatis sit amet lobortis sit amet, placerat ut massa. Morbi bibendum imperdiet ante ut eleifend. Etiam vehicula, magna et volutpat tempor, enim ex fringilla lectus, in dignissim massa odio quis neque. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Etiam sed metus et mauris.',
-        date: '18/04/2023',
-        userType: 'Visitor',
-    }
-]
-
 
 const ProjectView = () => {
 
@@ -119,23 +82,6 @@ const ProjectView = () => {
 
         );
     };
-    const Comment = ({ comment }) => {
-        return (
-            <div>
-                <div className='comment'>
-                    <div className='commentDetails'>
-                        <img className='comment-avatar' src={avatar} alt="avatar"></img>
-                        <p className='commentname'>{comment.name}</p>
-                        <p className='commentUsertype'>{comment.userType}</p>
-                        <p className='commentdate'>{comment.date}</p>
-                    </div>
-                    <p className='commenttext'>{comment.comment}</p>
-                    
-                </div>
-
-            </div>
-        );
-    };
 
 
 
@@ -180,7 +126,7 @@ const ProjectView = () => {
         const [data, setData] = useState(null);
         const [loading, setLoading] = useState(true);
         const [error, setError] = useState(null);
-    
+
         useEffect(() => {
             fetch(`/test`)
                 .then((response) => {
@@ -203,7 +149,7 @@ const ProjectView = () => {
                     setLoading(false);
                 });
         }, []);
-    
+
         return (
             <p>{data}</p>
         );
@@ -211,17 +157,8 @@ const ProjectView = () => {
 
 
 
-        const rightColumnRef = useRef();
-        const blueBoxRef = useRef();
-    
-        useEffect(() => {
-            const marginTop = parseFloat(window.getComputedStyle(rightColumnRef.current).marginTop);
-            const rightColumnHeight = rightColumnRef.current.offsetHeight + marginTop + 20;
-            blueBoxRef.current.style.setProperty('--right-column-height', `${rightColumnHeight}px`);
-        }, []);
-
-
     return (
+
         <div>
             <div className='bluebox-top'></div>
             <div className='bluebox' ref={blueBoxRef} style={{ '--right-column-height': 'auto' }}>
@@ -251,7 +188,7 @@ const ProjectView = () => {
                         <h2>Project Approach</h2>
                         <p className='projectApproach'>{projects.map((project) => project.projectApproach)}</p>
                         <h2>Api Request From Our Backend:</h2>
-                        <Fetchfakedatakristen/>
+                        <Fetchfakedatakristen />
                         <iframe width="100%" height="350vh" src={projects.map((project) => project.videolink)}>
                         </iframe>
                     </div>
@@ -267,17 +204,33 @@ const ProjectView = () => {
                                 <h2>Comments</h2>
                             </div>
                             <div className='writecomment'>
-                                <form>
-                                    <textarea placeholder="Write your comment here..."></textarea>
 
+
+                                <form onSubmit={handleSubmit}>
+                                    <textarea
+                                        placeholder="Write your comment here..."
+                                        id='comment'
+                                        type='text'
+                                        required
+                                        
+                                    ></textarea>
+                                    
+                                    <button>
+                                    <img className='submitcomment' src={submitcomment} ></img>
+                                    </button>
                                 </form>
-                                <img className='submitcomment' src={submitcomment}></img>
+
+                                
                             </div>
 
                             <div className='showcomments'>
-                                {comments.map((comment) => (
-                                    <Comment key={comment.id} comment={comment} />
-                                ))}
+                                {comments &&
+                                    comments.map((comment) => (
+                                        <div className='comment'>
+                                            <p className='commenttext'>{comment.CommentDesc}</p>
+                                            <p className='commentname'>{comment.UserID_FK}</p>
+                                        </div>
+                                    ))}
 
                             </div>
                         </div>
