@@ -6,7 +6,8 @@ import passport from 'passport';
 import session from 'express-session';
 import './passport-setup.js';
 import { authRouter } from './Routes/auth.js';
-import { commentRouter } from './Routes/comments.js';
+//import { commentRouter } from './Routes/comments.js';
+import { commentRouter } from './Routes/comment.js';
 import { projectRouter } from './Routes/project.js';
 import { dnsAWS } from '../frontend/public/address.mjs';
 import { fileURLToPath } from 'url';
@@ -61,7 +62,8 @@ app.get(
 );
 
 
-app.use('/api', commentRouter);
+//app.use('/api', commentRouter);
+app.use('/comment', commentRouter);
 app.use('/project', projectRouter);
 app.get('/test', (req, res) => {   
     //http://localhost:3000/test
@@ -74,7 +76,7 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../capfolio/build', index.html));
 })
 
-
+/*
 app.use('/api', commentRouter);
 app.use('/project', projectRouter);
 app.get('/getcomments', (req, res) => {
@@ -116,7 +118,7 @@ app.post('/postcomments', express.text() , (req) => {
 
 
    
-})
+})*/
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => { console.log(`App listening on port ${port}\nGo to http://localhost:3000 if testing locally\nGo to http://${dnsAWS}:3000 if using on aws`); });
