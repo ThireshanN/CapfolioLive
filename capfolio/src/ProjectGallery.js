@@ -24,7 +24,8 @@ const projects = [
     image: 'https://via.placeholder.com/350x200',
     technologies: 'React | Next.js | Javascript | HTML',
     link: 'https://www.example.com',
-    awardText: 'Excellence Award',
+    awardText: '🥇 Excellence Award 🥇',
+
   },
   {
     id: 3,
