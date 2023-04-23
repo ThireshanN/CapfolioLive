@@ -43,7 +43,7 @@ passport.use(new GoogleStrategy({
     clientSecret: GOOGLE_CLIENT_SECRET,
     callbackURL: 'http://localhost:3000/auth/google/callback'
 }, (accessToken, refreshToken, profile, cb) => {
-    // You can store user data in the database here
+
     return cb(null, profile);
 }));
 

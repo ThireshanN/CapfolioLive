@@ -6,10 +6,12 @@ import { Route, Routes } from "react-router-dom";
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import ProjectView from "./projectView";
 import ScrollToTop from "./ScrollToTop";
+import { AuthProvider } from "./AuthContext";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
-    <>
+    <AuthProvider>
       <Navbar />
       {/* <div className="container">
       <div className="auth-wrapper">
@@ -19,13 +21,14 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/sign-up" element={<Signup />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/project-view" element={<ProjectView />} />
         </Routes>
         </ScrollToTop>
         {/* </div>
         </div>
       // </div> */}
-    </>
+    </AuthProvider>
   )
 }
 
