@@ -36,7 +36,6 @@ class ProjectSchema2 {
     constructor() { }
 }
 
-
 async function executeSQLstatement(sql) { //working 23/04/2023
     const connection = await mysql.createConnection(config.db);
     const [rows, result] = await connection.execute(sql);
@@ -45,7 +44,17 @@ async function executeSQLstatement(sql) { //working 23/04/2023
     return [rows, result];
 }
 
-
+async function executeMultipleSQLstatement(sqlArray) { //working 23/04/2023
+    const connection = await mysql.createConnection(config.db);
+    let rowArray = [];
+    sqlArray.forEach(async(element) => { await myFunction(element) });
+    async function myFunction(element) { 
+        const [rows] = await connection.execute(element); 
+        rowArray.push([rows]);
+    };
+    await connection.end();
+    return rowArray;
+}
 
 async function ProjectSchemaAndFieldNames() { //working 23/04/2023
     try {
@@ -66,7 +75,28 @@ async function ProjectSchemaAndFieldNames() { //working 23/04/2023
 
 
 
+//################################################################################################################
+//ROUTES
+//################################################################################################################
 
+//http://localhost:3000/project/executeSQLcommand
+//http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/executeSQLcommand
+
+projectRouter.get('/executeSQLcommand', async (req, res) => {
+    try {
+        const sql = req.body.sql;
+        if (!sql) {
+            throw new Error('no sql command provided in request body');
+        }
+        const projects = (await executeSQLstatement(sql))[0];
+        console.log("Our Data: \n", projects);
+        return res.status(200).setHeader("Content-Type", "application/json").send(projects);
+    }
+    catch (err) {
+        console.log(err.message);
+        return res.status(400).setHeader("Content-Type", "text/plain").send("failed because of " + err);
+    }
+})
 
 
 //http://localhost:3000/project/AllProjectData
@@ -84,7 +114,6 @@ projectRouter.get('/AllProjectData', async (req, res) => { //working 23/04/2023
         return res.status(400).setHeader("Content-Type", "text/plain").send("failed to fetch project data because of " + err);
     }
 });
-
 
 
 //http://localhost:3000/project/FilteredProjectData
@@ -108,18 +137,17 @@ projectRouter.get('/FilteredProjectData', async (req, res) => { //working 23/04/
         finalFilter = finalFilter.join(' AND ');
 
         const sql = `SELECT * FROM Capfolio.Project WHERE ${finalFilter}`;
-        const allProjects = (await executeSQLstatement(sql))[0]//.catch(err => console.log("The following error generated:\n" + err));
-        if (allProjects.length === 0) {
+        const projects = (await executeSQLstatement(sql))[0]//.catch(err => console.log("The following error generated:\n" + err));
+        if (projects.length === 0) {
             throw new Error("There were no projects found");
         }
-        return res.status(200).setHeader("Content-Type", "application/json").send(allProjects);
+        return res.status(200).setHeader("Content-Type", "application/json").send(projects);
     }
     catch (err) {
         console.log(err.message);
         return res.status(400).setHeader("Content-Type", "text/plain").send("Sorry! " + err);
     }
 });
-
 
 
 //http://localhost:3000/project/AddProject
@@ -158,6 +186,41 @@ projectRouter.post('/AddProject', express.json(), async (req, res) => { //workin
         const addedProjects = (await executeSQLstatement(sql))[0];
         console.log("The Data: \n", addedProjects);
         return res.status(200).setHeader("Content-Type", "application/json").send(addedProjects);
+    }
+    catch (err) {
+        console.log(err.message);
+        return res.status(400).setHeader("Content-Type", "text/plain").send("Sorry! " + err);
+    }
+});
+
+
+//http://localhost:3000/project/AddProject
+//http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/AddProject
+//NEEDS AUTHORIZATION
+projectRouter.put('/UpdateProject', express.json(), async (req, res) => { //working 23/04/2023
+    try {
+        //CLIENT DATA FROM FRONTEND
+        const existingProjectDetails = new ProjectSchema2();
+        existingProjectDetails.capstoneYear = '\'2022\'';
+        existingProjectDetails.ProjectID = 8;
+        existingProjectDetails.capstoneSemester = 2;
+        const updateProjectDetails = new ProjectSchema2();
+        updateProjectDetails.capstoneYear = '\'2023\'';
+        updateProjectDetails.capstoneSemester = 1;
+        
+        const sqlArray = [];
+        const projectFields = (await ProjectSchemaAndFieldNames())[0];
+        projectFields.forEach(field => myFunction(field));
+        function myFunction(field) {
+            if (updateProjectDetails[`${field}`]) {
+                const sql = `UPDATE Capfolio.Project SET ${field} = ${updateProjectDetails[`${field}`]} WHERE ProjectID = ${existingProjectDetails.ProjectID}`;
+                sqlArray.push(sql);
+            }
+        }
+        
+        const updatedProjects = await executeMultipleSQLstatement(sqlArray);
+        console.log("The Data: \n", updatedProjects);
+        return res.status(200).setHeader("Content-Type", "application/json").send(updatedProjects);
     }
     catch (err) {
         console.log(err.message);

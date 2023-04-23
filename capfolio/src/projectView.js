@@ -228,7 +228,7 @@ const ProjectView = () => {
                                     comments.map((comment) => (
                                         <div className='comment'>
                                             <p className='commenttext'>{comment.CommentDesc}</p>
-                                            <p className='commentname'>{comment.UserID_FK}</p>
+                                            <p className='commentname'>{comment.FirstName}</p>
                                         </div>
                                     ))}
 
