@@ -4,6 +4,9 @@ import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 
 import { Router } from 'express';
+import mysql from 'mysql2/promise';
+import { config } from '../sqlconfig.js';
+
 
 
 const router = Router();
@@ -57,6 +60,19 @@ authRouter.use(passport.session());
 
 authRouter.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
+router.get('/user', async (req, res) => {
+    try {
+        if (!req.user) {
+            return res.status(401).send({ error: 'User not authenticated' });
+        }
+
+        const user = req.user;
+        res.send(user);
+    } catch (error) {
+        res.status(400).send({ error: 'Failed to fetch user data' });
+    }
+});
+
 authRouter.get('/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
     // Store user data in the session
     req.session.user = {
@@ -73,7 +89,7 @@ router.get('/logout', (req, res) => {
     req.logout(() => {
         req.session.destroy(() => {
             res.clearCookie('connect.sid');
-            res.redirect('/');
+            res.json({ message: 'Logged out successfully' });
         });
     });
 });
