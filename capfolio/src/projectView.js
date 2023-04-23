@@ -152,7 +152,7 @@ const ProjectView = () => {
     const [name, setName] = useState('TestUser');
 
     // Function to collect data
-    const getApiData = async () => {
+    const getComments = async () => {
         const response = await fetch(
             "/comment/getComments"
         ).then((response) => response.json());
@@ -178,12 +178,14 @@ const ProjectView = () => {
             })
         }).then(() => {
             console.log('comment Added')
+            getComments();
+            
         })
     };
 
     
      useEffect(() => {
-        getApiData();
+        getComments();
     }, []);
 
   
