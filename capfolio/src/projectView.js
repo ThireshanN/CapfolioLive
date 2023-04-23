@@ -152,11 +152,11 @@ const ProjectView = () => {
     const [name, setName] = useState('TestUser');
 
     // Function to collect data
-    const getApiData = async () => {
+    const getComments = async () => {
         const response = await fetch(
-            "/getcomments"
+            "/comment/getComments"
         ).then((response) => response.json());
-
+        console.log(response)
         setComments(response);
     };
 
@@ -164,22 +164,28 @@ const ProjectView = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        var comment = document.getElementById('comment').value
-        const com = { name, comment }
-        var datatosend = JSON.stringify(com)
+        var CommentDesc = document.getElementById('comment').value
+        var userID = 1
+        var projectID = 1
   
-        fetch('/postcomments', {
+        fetch('/comment/PostComment', {
             method: 'POST',
-            header: { "Content-Type": "application/json" },
-            body: datatosend
+            headers: { "Accept": "application/json", "Content-Type": "application/json" },
+            body: JSON.stringify({
+                "CommentDesc": CommentDesc,
+                "UserID_FK": userID,
+                "ProjectID_FK": projectID
+            })
         }).then(() => {
             console.log('comment Added')
+            getComments();
+            
         })
     };
 
     
      useEffect(() => {
-        getApiData();
+        getComments();
     }, []);
 
   
@@ -264,8 +270,8 @@ const ProjectView = () => {
                                 {comments &&
                                     comments.map((comment) => (
                                         <div className='comment'>
-                                            <p className='commenttext'>{comment.comment}</p>
-                                            <p className='commentname'>{comment.name}</p>
+                                            <p className='commenttext'>{comment.CommentDesc}</p>
+                                            <p className='commentname'>{comment.UserID_FK}</p>
                                         </div>
                                     ))}
 
