@@ -43,8 +43,9 @@ async function newComment(comment){
 
 
 commentRouter.post('/PostComment', express.json(), async (req, res) => {
+
     try {
-        //console.log(req.body.CommentDesc);
+        console.log(req.body.CommentDesc);
         res.json(await newComment(req.body));
     } catch (err) {
       console.error(`Error while creating a new comment`, err.message);
