@@ -155,6 +155,56 @@ const ProjectView = () => {
         );
     }
 
+    //Used to set bluebox height to size according to right column
+    const rightColumnRef = useRef();
+    const blueBoxRef = useRef();
+
+    useEffect(() => {
+        const marginTop = parseFloat(window.getComputedStyle(rightColumnRef.current).marginTop);
+        const rightColumnHeight = rightColumnRef.current.offsetHeight + marginTop + 20;
+        blueBoxRef.current.style.setProperty('--right-column-height', `${rightColumnHeight}px`);
+    }, []);
+
+    const [comments, setComments] = useState('');
+
+    const [name, setName] = useState('TestUser');
+
+    // Function to collect data
+    const getComments = async () => {
+        const response = await fetch(
+            "/comment/getComments"
+        ).then((response) => response.json());
+        console.log(response)
+        setComments(response);
+    };
+
+
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        var CommentDesc = document.getElementById('comment').value
+        var userID = 1
+        var projectID = 1
+  
+        fetch('/comment/PostComment', {
+            method: 'POST',
+            headers: { "Accept": "application/json", "Content-Type": "application/json" },
+            body: JSON.stringify({
+                "CommentDesc": CommentDesc,
+                "UserID_FK": userID,
+                "ProjectID_FK": projectID
+            })
+        }).then(() => {
+            console.log('comment Added')
+            getComments();
+            
+        })
+    };
+
+    
+     useEffect(() => {
+        getComments();
+    }, []);
 
 
     return (
