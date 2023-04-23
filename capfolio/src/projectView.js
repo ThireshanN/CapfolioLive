@@ -277,9 +277,15 @@ const ProjectView = () => {
                                 {comments &&
                                     comments.map((comment) => (
                                         <div className='comment'>
+                                            <div className='commentDetails'>
+                                                <img className='comment-avatar' src={avatar} alt="avatar"></img>
+                                                <p className='commentUsertype'>"Test Type"</p>
+                                                <p className='commentdate'>{comment.createdTime}</p>
+                                                <p className='commentname'>{comment.FirstName}</p>
+
+                                            </div>
                                             <p className='commenttext'>{comment.CommentDesc}</p>
-                                            <p className='commentname'>{comment.FirstName}</p>
-                                        </div>
+                                            </div>
                                     ))}
 
                             </div>
