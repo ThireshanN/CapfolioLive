@@ -2,7 +2,9 @@ import express from 'express';
 export const projectRouter = express.Router();
 import mysql from 'mysql2/promise';
 import { config } from '../sqlconfig.js';
-
+import { PutObjectCommand, S3Client, S3 } from "@aws-sdk/client-s3";
+import fs from 'fs';
+import path from 'path';
 
 
 class ProjectSchema {
@@ -47,9 +49,9 @@ async function executeSQLstatement(sql) { //working 23/04/2023
 async function executeMultipleSQLstatement(sqlArray) { //working 23/04/2023
     const connection = await mysql.createConnection(config.db);
     let rowArray = [];
-    sqlArray.forEach(async(element) => { await myFunction(element) });
-    async function myFunction(element) { 
-        const [rows] = await connection.execute(element); 
+    sqlArray.forEach(async (element) => { await myFunction(element) });
+    async function myFunction(element) {
+        const [rows] = await connection.execute(element);
         rowArray.push([rows]);
     };
     await connection.end();
@@ -207,7 +209,7 @@ projectRouter.put('/UpdateProject', express.json(), async (req, res) => { //work
         const updateProjectDetails = new ProjectSchema2();
         updateProjectDetails.capstoneYear = '\'2023\'';
         updateProjectDetails.capstoneSemester = 1;
-        
+
         const sqlArray = [];
         const projectFields = (await ProjectSchemaAndFieldNames())[0];
         projectFields.forEach(field => myFunction(field));
@@ -217,7 +219,7 @@ projectRouter.put('/UpdateProject', express.json(), async (req, res) => { //work
                 sqlArray.push(sql);
             }
         }
-        
+
         const updatedProjects = await executeMultipleSQLstatement(sqlArray);
         console.log("The Data: \n", updatedProjects);
         return res.status(200).setHeader("Content-Type", "application/json").send(updatedProjects);
@@ -225,6 +227,40 @@ projectRouter.put('/UpdateProject', express.json(), async (req, res) => { //work
     catch (err) {
         console.log(err.message);
         return res.status(400).setHeader("Content-Type", "text/plain").send("Sorry! " + err);
+    }
+});
+
+
+//http://localhost:3000/project/uploadFile
+//http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/uploadFile
+
+projectRouter.post('/uploadFile', async (req, res) => { //working 23/04/2023
+    try {
+        const filename = req.body.filename;
+        const TeamName = req.body.TeamName;
+        const REGION = "ap-southeast-2";
+        const s3ServiceObject = new S3({ 
+            region: REGION, 
+            credentials: { 
+                accessKeyId: 'AKIAUDUQU75VEF3VDCEL', 
+                secretAccessKey: '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' 
+            } 
+        });
+        const fileContent = fs.readFileSync(filename);
+        const filenameShort = path.basename(filename);
+        const params = { 
+            Bucket: "capfoliostorage", 
+            Key: ''+TeamName+"/"+filenameShort, 
+            Body: fileContent, 
+            ContentType: "image/*" 
+        };
+        const results = await s3ServiceObject.send(new PutObjectCommand(params));
+        console.log("Successfully created " + params.Key + " and uploaded it to " + params.Bucket + "/" + params.Key);
+        return res.status(200).setHeader("Content-Type", "application/json").send("results");
+    }
+    catch (err) {
+        console.log(err.message);
+        return res.status(400).setHeader("Content-Type", "text/plain").send("failed because of " + err);
     }
 });
 

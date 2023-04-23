@@ -9,10 +9,17 @@ import submitcomment from './images/send-button.png'
 import { Slide } from 'react-slideshow-image';
 import 'react-slideshow-image/dist/styles.css';
 import LikeButton from "./components/likeButton";
-import {  CButton, } from '@coreui/react';
+import { CButton, } from '@coreui/react';
 import { withTheme } from '@emotion/react';
-import  gitHubLogo from './images/github-mark-white.png';
-
+import gitHubLogo from './images/github-mark-white.png';
+import {
+    MDBRow,
+    MDBCol,
+    MDBInput,
+    MDBCheckbox,
+    MDBBtn,
+    MDBTextArea
+} from 'mdb-react-ui-kit';
 
 
 const projects = [
@@ -185,7 +192,7 @@ const ProjectView = () => {
         var CommentDesc = document.getElementById('comment').value
         var userID = 1
         var projectID = 1
-  
+
         fetch('/comment/PostComment', {
             method: 'POST',
             headers: { "Accept": "application/json", "Content-Type": "application/json" },
@@ -197,12 +204,12 @@ const ProjectView = () => {
         }).then(() => {
             console.log('comment Added')
             getComments();
-            
+
         })
     };
 
-    
-     useEffect(() => {
+
+    useEffect(() => {
         getComments();
     }, []);
 
@@ -229,63 +236,65 @@ const ProjectView = () => {
             </div>
 
             {/* <div className="rowcontent"> */}
-                <div className='projectInformation-wrapper'>
-                    <div className='projectInformation'>
-                        <h2>About {projects.map((project) => project.title)}</h2>
-                        <p className='about'>{projects.map((project) => project.about)} </p>
-                        <h2>Project Approach</h2>
-                        <p className='projectApproach'>{projects.map((project) => project.projectApproach)}</p>
-                        <h2>Api Request From Our Backend:</h2>
-                        <Fetchfakedatakristen />
-                        <iframe width="100%" height="350vh" src={projects.map((project) => project.videolink)}>
-                        </iframe>
-                    </div>
+            <div className='projectInformation-wrapper'>
+                <div className='projectInformation'>
+                    <h2>About {projects.map((project) => project.title)}</h2>
+                    <p className='about'>{projects.map((project) => project.about)} </p>
+                    <h2>Project Approach</h2>
+                    <p className='projectApproach'>{projects.map((project) => project.projectApproach)}</p>
+                    <h2>Api Request From Our Backend:</h2>
+                    <Fetchfakedatakristen />
+                    <iframe width="100%" height="350vh" src={projects.map((project) => project.videolink)}>
+                    </iframe>
                 </div>
+            </div>
 
 
-               {/* <div className="column right">  */}
+            {/* <div className="column right">  */}
 
-                    <div className='commentbox'>
+            <div className='commentbox'>
 
-                        <div className='comments'>
-                            <div className='commentheading'>
-                                <h2>Comments</h2>
-                            </div>
-                            <div className='writecomment'>
+                <div className='comments'>
+                    <div className='commentheading'>
+                        <h2>Comments</h2>
+                    </div>
+                    <div className='writecomment'>
 
 
-                                <form onSubmit={handleSubmit}>
-                                    <textarea
-                                        placeholder="Write your comment here..."
-                                        id='comment'
-                                        type='text'
-                                        required
-                                        
-                                    ></textarea>
-                                    
-                                    <button>
-                                    <img className='submitcomment' src={submitcomment} ></img>
-                                    </button>
-                                </form>
+                        <form onSubmit={handleSubmit}>
 
-                                
-                            </div>
 
-                            <div className='showcomments'>
-                                {comments &&
-                                    comments.map((comment) => (
-                                        <div className='comment'>
-                                            <p className='commenttext'>{comment.CommentDesc}</p>
-                                            <p className='commentname'>{comment.FirstName}</p>
-                                        </div>
-                                    ))}
+                            <MDBTextArea label='Write your comment here' id='comment' className='textAreaExample' rows={4} required onSubmit={handleSubmit} />
 
-                            </div>
-                        </div>
+                            <button className='sendcomment'>
+                                <CButton>Post Comment</CButton>
+                            </button>
+                        </form>
+
 
                     </div>
 
+                    <div className='showcomments'>
+                        {comments &&
+                            comments.map((comment) => (
+                                <div className='comment'>
+                                    <div className='commentDetails'>
+                                        <img className='comment-avatar' src={avatar} alt="avatar"></img>
+                                        <p className='commentUsertype'>"Test Type"</p>
+                                        <p className='commentdate'>{comment.createdTime}</p>
+                                        <p className='commentname'>{comment.FirstName}</p>
+
+                                    </div>
+                                    <p className='commenttext'>{comment.CommentDesc}</p>
+                                </div>
+                            ))}
+
+                    </div>
                 </div>
+
+            </div>
+
+        </div>
         //     </div>
         // </div>
 
