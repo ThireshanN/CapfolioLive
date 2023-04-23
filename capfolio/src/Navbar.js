@@ -17,7 +17,8 @@ export default function Navbar() {
       </Link>
       <ul className="nav-desktop">
         <CustomLink to="/login" className="button2">Log in</CustomLink>
-        <CustomLink to="/sign-up" className="button2">Sign Up</CustomLink>
+              <CustomLink to="/sign-up" className="button2">Sign Up</CustomLink>
+              <CustomLink to="/project-submit" className="button2">Project Submit </CustomLink>
       </ul>
       <div className="menu-icon" onClick={toggleMenu}>
         <span className="menu-line"></span>
