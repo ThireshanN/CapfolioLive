@@ -17,8 +17,7 @@ async function executeSQLstatement(sql) {
 commentRouter.get('/getComments', async (req, res) => { 
     try {
         const sql = "SELECT * FROM Capfolio.Comment";
-        const all_comments = (await executeSQLstatement(sql))[0]//.catch(err => console.log("The following error generated:\n" + err));
-        //console.log("Our Data: \n", all_comments);
+        const all_comments = (await executeSQLstatement(sql))[0]
         return res.status(200).setHeader("Content-Type", "application/json").send(all_comments);
     }
     catch (err) {
