@@ -10,8 +10,13 @@ export const AuthProvider = ({ children }) => {
         fetch("http://localhost:3000/auth/user")
             .then((res) => res.json())
             .then((data) => {
-                if (data.name) {
-                    setUser(data);
+                if (data.Email) {
+                    setUser({
+                        name: `${data.FirstName} ${data.LastName}`,
+                        email: data.Email,
+                        userType: data.UserType,
+                        photo: data.Photo
+                    });
                 }
                 setLoading(false);
             });

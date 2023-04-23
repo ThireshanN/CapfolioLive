@@ -23,12 +23,10 @@ function Profile() {
                 }
 
                 const userData = await response.json();
-                setName(userData.displayName);
-                setPicture(userData.photos[0].value);
-                //alert(userData.displayName);
+                setName(`${userData.FirstName} ${userData.LastName}`);
+                setPicture(userData.Photo);
             } catch (error) {
                 console.error('Error fetching user data:', error.message);
-                //alert("Error bitch");
             }
         };
 
