@@ -123,3 +123,10 @@
 p.card-text {
   color: #00467F !important;
 }
+
+
+.project-gallery .card .btn {
+    font-size: 16px;
+    padding: 9px 16px;
+
+}

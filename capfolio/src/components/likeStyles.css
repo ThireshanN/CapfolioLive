@@ -11,20 +11,20 @@
     background-color: transparent;
     float: left;
 }
-.like-button-wrapper::before {
-    content: "";
-    z-index: 1;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    will-change: background-color;
-    transition: background-color 0.3s, transform 0.3s;
-    background-color: #222f3e;
-    box-shadow: 0 0 10px #22303f 8c;
-    border-radius: 5px;
-}
+    .like-button-wrapper::before {
+        content: "";
+        z-index: 1;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        will-change: background-color;
+        transition: background-color 0.3s, transform 0.3s;
+        background-color: #222f3e;
+        box-shadow: 0 4px 9px -4px #22303f;
+        border-radius: 5px;
+    }
 .like-button-wrapper:hover:not(.liked) svg {
     transform: translateY(-2px) rotate(8deg);
 }

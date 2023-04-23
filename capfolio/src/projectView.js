@@ -174,7 +174,7 @@ const ProjectView = () => {
 
     const [comments, setComments] = useState('');
 
-    const [name, setName] = useState('TestUser');
+  
 
     // Function to collect data
     const getComments = async () => {
@@ -206,6 +206,7 @@ const ProjectView = () => {
             getComments();
 
         })
+        document.getElementById('comment').value = ''
     };
 
 
