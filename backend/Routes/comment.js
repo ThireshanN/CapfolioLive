@@ -16,7 +16,7 @@ async function executeSQLstatement(sql) {
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/comment/getComments
 commentRouter.get('/getComments', async (req, res) => { 
     try {
-        const sql = "SELECT * FROM Capfolio.Comment";
+        const sql = "SELECT CommentDesc, FirstName, lastName, createdTime, ProjectName FROM Comment INNER JOIN Users ON Comment.UserID_FK = Users.UserID  INNER JOIN Project ON Comment.ProjectID_FK = Project.ProjectID ORDER BY CommentID DESC;";
         const all_comments = (await executeSQLstatement(sql))[0]
         return res.status(200).setHeader("Content-Type", "application/json").send(all_comments);
     }
