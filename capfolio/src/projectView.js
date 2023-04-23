@@ -224,8 +224,6 @@ const ProjectView = () => {
                                 <Header key={project.id} project={project} />
                             ))}
                         </div>
-
-
                     </div>
                 </div>
             </div>
