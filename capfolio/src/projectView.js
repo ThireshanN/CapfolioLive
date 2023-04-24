@@ -284,9 +284,9 @@ const ProjectView = () => {
                                     <div className='commentDetails'>
                                         <img className='comment-avatar' src={avatar} alt="avatar"></img>
                                         <p className='commentname'>{comment.FirstName}</p>
-                                        <p className='commentdate'>{comment.createdTime}</p>
+                                        
                                         <p className='commentUsertype'>{ comment.UserType}</p>
-
+                                        <p className='commentdate'>{comment.createdTime}</p>
                                     </div>
                                     <p className='commenttext'>{comment.CommentDesc}</p>
                                 </div>
