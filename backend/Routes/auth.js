@@ -6,6 +6,8 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Router } from 'express';
 import mysql from 'mysql2/promise';
 import { config } from '../sqlconfig.js';
+import bcrypt from 'bcrypt';
+import { v4 as uuidv4 } from 'uuid'
 
 
 async function executeSQLstatement(sql, values) {
@@ -28,6 +30,12 @@ async function next_id() {
     //console.log(var1[0][0].UserID);
     //console.log(Number(var1[0][0].UserID) + 1);
     return Number(var1[0][0].UserID) + 1;
+}
+
+async function generatePasswordHash(password) {
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(password, salt);
+    return hash;
 }
 
 async function fetchUserData(email) {
@@ -185,3 +193,26 @@ authRouter.get('/status', (req, res) => {
     }
 });
 
+
+router.post('/signup', async (req, res) => {
+    const { firstName, lastName, email, password } = req.body;
+
+    if (!firstName || !lastName || !email || !password) {
+        return res.status(400).send({ error: 'All fields are required' });
+    }
+
+    const exists = await emailExists(email);
+
+    if (exists) {
+        return res.status(400).send({ error: 'Email already exists' });
+    }
+
+    const passwordHash = await generatePasswordHash(password);
+    const userTypeID = 4;
+    const userID = await next_id();
+
+    const sql = `INSERT INTO Users (UserID, UserTypeID, FirstName, lastName, Email, password) VALUES (?, ?, ?, ?, ?, ?);`;
+    await executeSQLstatement(sql, [userID, userTypeID, firstName, lastName, email, passwordHash]);
+
+    res.status(200).send({ message: 'User successfully registered' });
+});
