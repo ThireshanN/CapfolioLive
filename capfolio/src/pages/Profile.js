@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../AuthContext";
 import './Profile.css';
+import redHeartImage from '../images/red-heart.png';
 
 function Profile() {
     const [isEditing, setIsEditing] = useState(false);
@@ -24,7 +25,7 @@ function Profile() {
 
                 const userData = await response.json();
                 setName(`${userData.FirstName} ${userData.LastName}`);
-                setPicture(userData.Photo);
+                setPicture(userData.Photo === 'red-heart' ? redHeartImage : userData.Photo);
             } catch (error) {
                 console.error('Error fetching user data:', error.message);
             }

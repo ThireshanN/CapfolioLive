@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import {Link} from "react-router-dom";
+import { useContext } from 'react';
+import { AuthContext } from '../AuthContext';
+import './pages.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { setUser } = useContext(AuthContext);
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -19,9 +23,30 @@ const Login = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(email, password);
+
+    const response = await fetch('http://localhost:3000/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email, password })
+    });
+
+    if (response.status === 200) {
+      // Fetch the user data from the server
+      const userResponse = await fetch('http://localhost:3000/auth/user');
+      const userData = await userResponse.json();
+
+      // Update the context with the user data
+      setUser(userData);
+
+      // Redirect to the home page
+      window.location.href = '/';
+    } else {
+      alert('Failed to log in');
+    }
   };
 
   return (
