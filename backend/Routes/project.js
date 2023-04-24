@@ -2,7 +2,7 @@ import express from 'express';
 export const projectRouter = express.Router();
 import mysql from 'mysql2/promise';
 import { config } from '../sqlconfig.js';
-import { PutObjectCommand, S3Client, S3 } from "@aws-sdk/client-s3";
+import { PutObjectCommand, S3Client, S3, GetObjectCommand } from "@aws-sdk/client-s3";
 import fs from 'fs';
 import path from 'path';
 
@@ -239,24 +239,24 @@ projectRouter.post('/uploadFile', async (req, res) => { //working 23/04/2023
         const filename = req.body.filename;
         const TeamName = req.body.TeamName;
         const REGION = "ap-southeast-2";
-        const s3ServiceObject = new S3({ 
-            region: REGION, 
-            credentials: { 
-                accessKeyId: 'AKIAUDUQU75VEF3VDCEL', 
-                secretAccessKey: '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' 
-            } 
+        const s3ServiceObject = new S3({
+            region: REGION,
+            credentials: {
+                accessKeyId: 'AKIAUDUQU75VEF3VDCEL',
+                secretAccessKey: '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'
+            }
         });
         const fileContent = fs.readFileSync(filename);
         const filenameShort = path.basename(filename);
-        const params = { 
-            Bucket: "capfoliostorage", 
-            Key: ''+TeamName+"/"+filenameShort, 
-            Body: fileContent, 
-            ContentType: "image/*" 
+        const params = {
+            Bucket: "capfoliostorage",
+            Key: '' + TeamName + "/" + filenameShort,
+            Body: fileContent,
+            ContentType: "image/*"
         };
         const results = await s3ServiceObject.send(new PutObjectCommand(params));
         console.log("Successfully created " + params.Key + " and uploaded it to " + params.Bucket + "/" + params.Key);
-        return res.status(200).setHeader("Content-Type", "application/json").send("results");
+        return res.status(200).setHeader("Content-Type", "application/json").send(results);
     }
     catch (err) {
         console.log(err.message);
@@ -264,5 +264,38 @@ projectRouter.post('/uploadFile', async (req, res) => { //working 23/04/2023
     }
 });
 
+
+//http://localhost:3000/project/retrieveFile
+//http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/retrieveFile
+
+projectRouter.get('/retrieveFile', async (req, res) => { //
+    try {
+        const filename = req.body.filename;
+        console.log("Retrieving file " + filename);
+        //const TeamName = req.body.TeamName;
+        const REGION = "ap-southeast-2";
+        const s3ServiceObject = new S3({
+            region: REGION,
+            credentials: {
+                accessKeyId: 'AKIAUDUQU75VEF3VDCEL',
+                secretAccessKey: '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'
+            }
+        });
+        const params = {
+            Bucket: "capfoliostorage",
+            Key: filename
+        };
+        const results = await s3ServiceObject.send(new GetObjectCommand(params));
+        //NOW, figure out a way to read the file, and store it locally, rather than printing the encoding/whatever
+        const str = await results.Body.transformToString();
+        console.log(results);
+        //console.log("Successfully retrieved " + params.Key + " from " + params.Bucket + "/" + params.Key);
+        return res.status(200).setHeader("Content-Type", "application/text").send(str);
+    }
+    catch (err) {
+        console.log(err.message);
+        return res.status(400).setHeader("Content-Type", "text/plain").send("failed because of " + err);
+    }
+});
 
 //module.exports = projectRouter;
