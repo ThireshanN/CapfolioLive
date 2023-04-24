@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from "react-router-dom";
 
 const SignUp = () => {
   const [firstName, setFirstName] = useState('');
@@ -30,10 +31,28 @@ const SignUp = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(firstName, lastName, email, password, confirmPassword);
-  };
+
+    if (password !== confirmPassword) {
+      alert('Passwords do not match');
+      return;
+    }
+
+    const response = await fetch('http://localhost:3000/auth/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ firstName, lastName, email, password })
+    });
+
+    if (response.status === 200) {
+      window.location.href = '/login';
+    } else {
+      alert('Failed to sign up');
+    }
+  }
 
   return (
       <div className="container">
@@ -102,7 +121,7 @@ const SignUp = () => {
                 </button>
               </div>
               <p className="forgot-password text-right">
-                Already registered <a href="/sign-in">Sign In?</a>
+                Already registered <Link to="/login">Sign In?</Link>
               </p>
               <div>
                 <a id="loginButton" href="http://localhost:3000/auth/google">

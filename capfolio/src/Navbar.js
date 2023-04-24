@@ -52,9 +52,9 @@ export default function Navbar() {
                         <CustomLink to="/profile" className="button2">
                             Profile
                         </CustomLink>
-                        <button className="button2" onClick={handleLogout}>
+                        <CustomLink to="/"className="button2" onClick={handleLogout}>
                             Logout
-                        </button>
+                        </CustomLink>
                     </>
                 )}
             </ul>
