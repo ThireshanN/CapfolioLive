@@ -594,6 +594,22 @@ textarea {
     }
 }
 
-@media only screen and (max-width: 600px) {
+.sendcomment {
+    background-color: transparent;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+    float: right;
+    padding-top: 10px;
+}
 
+.textAreaExample{
+    color: white;
+}
+
+#comment{
+    color: black;
+    background-color: white;
 }

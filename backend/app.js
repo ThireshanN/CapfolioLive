@@ -70,10 +70,16 @@ app.get('/test', (req, res) => {
     res.send(`Hello World!`);
     //res.json({"users": ['userUno', 'userDos', 'userTres']});
 })
-app.get('/', (req, res) => {   
+
+
+app.get('/*', (req, res) => {
     //http:localhost:3000/
     //res.sendFile(path.join(__dirname, '../clientdemo/build', index.html));
-    res.sendFile(path.join(__dirname, '../capfolio/build', index.html));
+    res.sendFile(path.join(__dirname, '../capfolio/build/index.html'), function (err) {
+        if (err) {
+            res.status(500).send(err)
+        }
+    })
 })
 
 
