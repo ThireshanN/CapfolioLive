@@ -40,7 +40,7 @@ async function generatePasswordHash(password) {
 
 async function fetchUserData(email) {
     const sql = `
-        SELECT Users.FirstName, Users.LastName, Users.Email, Users.UserTypeID as Type
+        SELECT Users.UserID, Users.FirstName, Users.LastName, Users.Email, Users.Password, Users.UserTypeID as Type
         FROM Users
         WHERE Users.Email = ?;
     `;
@@ -142,12 +142,24 @@ authRouter.get('/google', passport.authenticate('google', { scope: ['profile', '
 
 router.get('/user', async (req, res) => {
     try {
-        if (!req.user) {
+        if (!req.user && !req.session.user) {
             return res.status(401).send({ error: 'User not authenticated' });
         }
 
-        const user = req.user;
-        const email = user.emails[0].value;
+        let user;
+        let email;
+        let isGoogleOAuth;
+
+        if (req.session.user) {
+            user = req.session.user;
+            email = user.email;
+            isGoogleOAuth = false;
+        } else {
+            user = req.user;
+            email = user.emails[0].value;
+            isGoogleOAuth = true;
+        }
+
         const sql = `SELECT u.FirstName, u.LastName, u.UserTypeID FROM Users u WHERE u.Email = ?;`;
         const [rows] = await executeSQLstatement(sql, [email]);
         const userData = rows[0];
@@ -157,7 +169,7 @@ router.get('/user', async (req, res) => {
             LastName: userData.LastName,
             Email: email,
             UserType: userData.UserTypeID,
-            Photo: user.photos[0].value
+            Photo: isGoogleOAuth ? user.photos[0].value : 'red-heart',
         });
     } catch (error) {
         res.status(400).send({ error: 'Failed to fetch user data' });
@@ -215,4 +227,36 @@ router.post('/signup', async (req, res) => {
     await executeSQLstatement(sql, [userID, userTypeID, firstName, lastName, email, passwordHash]);
 
     res.status(200).send({ message: 'User successfully registered' });
+});
+
+router.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        return res.status(400).send({ error: 'Email and password are required' });
+    }
+
+    const userData = await fetchUserData(email);
+
+    if (!userData) {
+        return res.status(400).send({ error: 'Invalid email or password' });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, userData.Password);
+
+    if (!isPasswordValid) {
+        return res.status(400).send({ error: 'Invalid email or password' });
+    }
+
+    // Create a session and redirect the user to the home page with a different navbar
+    req.session.user = {
+        id: userData.UserID,
+        firstName: userData.FirstName,
+        lastName: userData.LastName,
+        email: userData.Email,
+        userType: userData.Type,
+    };
+
+    res.status(200).send({ message: 'Logged in successfully' });
+    console.log('Logged in successfully');
 });
