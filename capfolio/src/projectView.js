@@ -174,14 +174,15 @@ const ProjectView = () => {
 
     const [comments, setComments] = useState('');
 
-  
+ 
+
 
     // Function to collect data
     const getComments = async () => {
         const response = await fetch(
             "/comment/getComments"
         ).then((response) => response.json());
-        console.log(response)
+        
         setComments(response);
     };
 
@@ -278,12 +279,13 @@ const ProjectView = () => {
                     <div className='showcomments'>
                         {comments &&
                             comments.map((comment) => (
+                               
                                 <div className='comment'>
                                     <div className='commentDetails'>
                                         <img className='comment-avatar' src={avatar} alt="avatar"></img>
-                                        <p className='commentUsertype'>"Test Type"</p>
-                                        <p className='commentdate'>{comment.createdTime}</p>
                                         <p className='commentname'>{comment.FirstName}</p>
+                                        <p className='commentdate'>{comment.createdTime}</p>
+                                        <p className='commentUsertype'>{ comment.UserType}</p>
 
                                     </div>
                                     <p className='commenttext'>{comment.CommentDesc}</p>
