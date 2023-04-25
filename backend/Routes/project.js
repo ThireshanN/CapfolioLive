@@ -267,9 +267,10 @@ projectRouter.post('/uploadFile', async (req, res) => { //working 23/04/2023
 
 //http://localhost:3000/project/retrieveFile
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/retrieveFile
-
+//NOT COMPLETE YET
 projectRouter.get('/retrieveFile', async (req, res) => { //
     try {
+        //"filename": "Meowland3/tree.jpg"
         const filename = req.body.filename;
         console.log("Retrieving file " + filename);
         //const TeamName = req.body.TeamName;
