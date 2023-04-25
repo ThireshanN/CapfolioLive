@@ -27,8 +27,12 @@ const LikeButton2 = (props) => {
 
     const newlike = async () => {
         await fetch(
-            "/projects/postLike?id=" + props.likenumber, {
-            method: 'POST'
+            "/projects/postLike",{
+            method: 'POST',
+            headers: { "Accept": "application/json", "Content-Type": "application/json" },
+            body: JSON.stringify({
+                'projectId': props.likenumber
+            })
         })
         console.log('projectLiked')
         getLikes()
@@ -38,7 +42,11 @@ const LikeButton2 = (props) => {
     const removeLike = async () => {
         await fetch(
             "/projects/postDisLike?id=" + props.likenumber, {
-            method: 'POST'
+                method: 'DELETE',
+                headers: { "Accept": "application/json", "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    'projectId': props.likenumber
+                })
         })
         console.log('projectdisliked')
         getLikes()
