@@ -23,28 +23,75 @@ import {
 } from 'mdb-react-ui-kit';
 
 
-const projects = [
-
-    {
-        id: 1,
-        title: 'Capfolio',
-        description: 'Project1 is C++',
-        image: 'https://via.placeholder.com/350x200',
-        link: 'https://www.example.com',
-        mainImage: 'public/homepage-mockup.png',
-        authors: ["Josh Hanna", " Josephine Chen", 'Kristen Coupe', 'Medhavi Desai', 'Imashi Kinigama', 'Thireshan Naidoo'],
-        tech: ["React", 'node.JS', 'AWS', 'C#'],
-        companyName: 'WebZen',
-        about: "In today's world, there are numerous real- world problems that still require solutions.One way for students to gain hands - on experience in tackling these challenges is through the capstone course.By taking part in this course, students can develop the computer science skills that are highly sought after by prospective employers.However, the in-person showcase at the end of the capstone course may have limitations in terms of reaching potential employers and clients.",
-        projectApproach: "The project management methodology that will be used in this project is Scrum, which is an iterative and incremental framework that is based on the principles of Agile development. Our team will hold sprint planning meetings weekly, where the tasks for the upcoming week are planned.The tasks from the product backlog that our team created at the start will be completed in the current sprint. We have chosen Scrum as the project management methodology since it provides a framework for continuous improvement and encourages collaboration and communication among team members.In order to implement Scrum, we will be using Notion, as it provides a visual representation of the whole Scrum workflow.Each task that is created on Notion will be in the backlog until it is assigned to a team member.The task will then move along the board and finally reach the 'Done' state. The diagram on the following page shows our team's current workflow on Notion.",
-        videolink: "https://www.youtube.com/embed/tgbNymZ7vqY",
-        gitHubLink: 'https://github.com/uoa-compsci399-s1-2023/project-team-11',
-    }
-]
-
 
 const ProjectView = () => {
+    const params = useParams();
+    const [comments, setComments] = useState('');
+    const [projects, setProject] = useState('');
+    const [likes, setLikes] = useState('');
 
+    // const blueBoxRef = useRef();
+
+
+    const getProject = async () => {
+     
+
+        const response = await fetch(
+            "/projects/project?id=" + params.id
+        ).then((response) => response.json());
+
+
+        console.log(response)
+        setProject(response)
+        
+    };
+
+
+    // Function to collect data
+    const getComments = async () => {
+        const response = await fetch(
+            "/projects/comment?id=" + params.id
+        ).then((response) => response.json());
+
+        setComments(response);
+    };
+
+
+
+    
+
+    
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        var CommentDesc = document.getElementById('comment').value
+        var userID = 1
+        var projectID = params.id
+        
+        fetch('/comment/PostComment', {
+            method: 'POST',
+            headers: { "Accept": "application/json", "Content-Type": "application/json" },
+            body: JSON.stringify({
+                "CommentDesc": CommentDesc,
+                "UserID_FK": userID,
+                "ProjectID_FK": projectID
+            })
+        }).then(() => {
+            console.log('comment Added')
+            getComments();
+
+        })
+        document.getElementById('comment').value = ''
+    };
+
+
+    useEffect(() => {
+        getComments();
+    }, []);
+    
+    useEffect(() => {
+        getProject();
+    }, []);
+    
 
 
 
@@ -133,7 +180,8 @@ const ProjectView = () => {
                     <CButton>  <a href={project.githubLink} target="_blank"> <img src={gitHubLogo}></img>  GitHub</a></CButton>
                     <div>
                         <div className='pv-likeButton'>
-                            <LikeButton />
+                            <LikeButton likenumber={params.id}/>
+                            
                         </div>
                     </div>
                 </div>
@@ -145,69 +193,9 @@ const ProjectView = () => {
     
 
 
-
-    const [comments, setComments] = useState('');
-
-    const params = useParams();
-    const [projects, setProject] = useState('');
-
-    // const blueBoxRef = useRef();
-
-    const getProject = async () => {
-     
-
-        const response = await fetch(
-            "/projects/project?id=" + params.id
-        ).then((response) => response.json());
-
-
-        console.log(response)
-        setProject(response)
-        
-    };
-
-
-    // Function to collect data
-    const getComments = async () => {
-        const response = await fetch(
-            "/comment/getComments"
-        ).then((response) => response.json());
-
-        setComments(response);
-    };
-
-
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        var CommentDesc = document.getElementById('comment').value
-        var userID = 1
-        var projectID = 1
-
-        fetch('/comment/PostComment', {
-            method: 'POST',
-            headers: { "Accept": "application/json", "Content-Type": "application/json" },
-            body: JSON.stringify({
-                "CommentDesc": CommentDesc,
-                "UserID_FK": userID,
-                "ProjectID_FK": projectID
-            })
-        }).then(() => {
-            console.log('comment Added')
-            getComments();
-
-        })
-        document.getElementById('comment').value = ''
-    };
-
-
-    useEffect(() => {
-        getComments();
-    }, []);
     
-    useEffect(() => {
-        getProject();
-    }, []);
+
+
 
     //Used to set bluebox height to size according to right column
     // const rightColumnRef = useRef();
@@ -236,8 +224,9 @@ const ProjectView = () => {
     // };
 
     return (
-
         <div>
+        
+        
             <div className='bluebox-top'></div>
             <div className='bluebox' style={{ '--right-column-height': 'auto' }}>
                 <div className='p-row'>

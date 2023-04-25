@@ -7,7 +7,9 @@ import { Router } from 'express';
 import mysql from 'mysql2/promise';
 import { config } from '../sqlconfig.js';
 import bcrypt from 'bcrypt';
-import { v4 as uuidv4 } from 'uuid'
+
+
+export let currentUserId = null;
 
 
 async function executeSQLstatement(sql, values) {
@@ -150,21 +152,27 @@ router.get('/user', async (req, res) => {
         let user;
         let email;
         let isGoogleOAuth;
+        let photo;
 
         if (req.session.user) {
             user = req.session.user;
             email = user.email;
             isGoogleOAuth = false;
+            photo = '/images/icon.png';
         } else {
             user = req.user;
             email = user.emails[0].value;
             isGoogleOAuth = true;
+            photo = user.photos[0].value;
         }
 
         //const sql = `SELECT u.FirstName, u.LastName, u.UserTypeID FROM Users u WHERE u.Email = ?;`;
         const sql = `SELECT u.UserID, u.FirstName, u.LastName, u.UserTypeID FROM Users u WHERE u.Email = ?;`;
         const [rows] = await executeSQLstatement(sql, [email]);
         const userData = rows[0];
+        console.log("Picture URL:", photo);
+
+        currentUserId = userData.UserID;
 
         res.send({
             UserID: userData.UserID,
@@ -172,7 +180,8 @@ router.get('/user', async (req, res) => {
             LastName: userData.LastName,
             Email: email,
             UserType: userData.UserTypeID,
-            Photo: isGoogleOAuth ? user.photos[0].value : 'red-heart',
+            Photo: photo,
+            OAuth: isGoogleOAuth,
         });
     } catch (error) {
         res.status(400).send({ error: 'Failed to fetch user data' });
@@ -227,6 +236,8 @@ router.post('/signup', async (req, res) => {
     const userID = await next_id();
 
     const sql = `INSERT INTO Users (UserID, UserTypeID, FirstName, lastName, Email, password) VALUES (?, ?, ?, ?, ?, ?);`;
+    const sql2 = `Insert into Visitor(UserID, UserTypeID) values (userID, userTypeID);`;
+    //await executeSQLstatement(sql2);
     await executeSQLstatement(sql, [userID, userTypeID, firstName, lastName, email, passwordHash]);
 
     res.status(200).send({ message: 'User successfully registered' });
