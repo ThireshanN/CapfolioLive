@@ -259,6 +259,7 @@ const ProjectView = () => {
                 <div className='comments'>
                     <div className='commentheading'>
                         <h2>Comments</h2>
+                        
                     </div>
                     <div className='writecomment'>
 
