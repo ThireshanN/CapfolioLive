@@ -107,7 +107,7 @@ const ProjectGallery = () => {
       const response = await fetch(
           "/project/AllProjectData"
       ).then((response) => response.json());
-      console.log(response)
+      // console.log(response)
       setProjects(response);
   };
 
