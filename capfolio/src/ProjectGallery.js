@@ -6,7 +6,10 @@ import LikeButton from "./components/likeButton";
 import AwardBanner from "./components/awardBanner.js";
 import Sidebar from './Sidebar';
 
+
 const ProjectGallery = () => {
+    
+
     const [projects, setProjects] = useState('');
     // Function to collect data
     const AllProjectData = async () => {
