@@ -167,13 +167,13 @@ projectViewRouter.delete('/postDisLike', express.json(), async (req, res) => {
 });
 
 
-
+/*
 //http://localhost:3000/projects/likedProjects
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/projects/postLike
 
 
 projectViewRouter.get("/likedProjects", async (req, res) => { 
-    if(currentUserId===null){ return res.status(404).send("Only logged in Users can dislike");}
+    if(currentUserId===null){ return res.status(404).send("Only logged in Users can get likes");}
     try {
         const sql = `SELECT * 
         FROM (
@@ -208,9 +208,52 @@ projectViewRouter.get("/likedProjects", async (req, res) => {
         console.log(err.message);
         return res.status(400).setHeader("Content-Type", "text/plain").send("failed to fetch project data because of " + err);
     }
+});*/
+
+
+//http://localhost:3000/projects/ProjectsLiked?id=2
+//http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/projects/postLike
+
+
+projectViewRouter.get("/ProjectsLiked", async (req, res) => { 
+    if(currentUserId===null){ return res.status(404).send("Only logged in Users can get likes");}
+    try {
+        const projectID = req.query.id;
+        const sql = `SELECT * 
+        FROM (
+        SELECT ProjectID, '0' AS hasLiked
+        FROM Project
+        WHERE ProjectID
+        not in (
+        SELECT ProjectID
+        FROM Users
+        INNER JOIN likes ON Users.UserId = likes.UserID_FK
+        INNER JOIN Project ON Project.ProjectID = likes.ProjectID_FK
+        WHERE UserID=43
+        GROUP BY Project.ProjectID)
+        UNION ALL
+        SELECT ProjectID, '1' AS hasLiked
+        FROM Users
+        INNER JOIN likes ON Users.UserId = likes.UserID_FK
+        INNER JOIN Project ON Project.ProjectID = likes.ProjectID_FK
+        WHERE UserID=${currentUserId}
+        GROUP BY Project.ProjectID) result
+        WHERE ProjectId = ${projectID} 
+        ORDER BY ProjectID;`;
+        const selectedProject = (await executeSQLstatement(sql))[0]//.catch(err => console.log("The following error generated:\n" + err));
+        //console.log("Our Data: \n", selectedProject);
+        if(selectedProject.length===0){
+            return res.status(404).send("likes not found"); //return 404 if project not found
+        }
+        else{
+        return res.status(200).setHeader("Content-Type", "application/json").send(selectedProject);
+        }
+    }
+    catch (err) {
+        console.log(err.message);
+        return res.status(400).setHeader("Content-Type", "text/plain").send("failed to fetch project data because of " + err);
+    }
 });
-
-
 
 
 
