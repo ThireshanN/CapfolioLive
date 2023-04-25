@@ -23,7 +23,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/sign-up" element={<Signup />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/project-view" element={<ProjectView />} />
+          <Route path="/project-view/:id" element={<ProjectView />} />
           <Route path="/project-submit" element={<ProjectSubmit />} />
         </Routes>
         </ScrollToTop>
