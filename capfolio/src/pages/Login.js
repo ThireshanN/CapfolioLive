@@ -3,6 +3,7 @@ import {Link} from "react-router-dom";
 import { useContext } from 'react';
 import { AuthContext } from '../AuthContext';
 import './pages.css';
+import GoogleLogin from '../images/btn_google_signin_dark_pressed_web@2x.png';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -85,14 +86,14 @@ const Login = () => {
               <p className="forgot-password text-right">
                 Forgot <a href="#">password?</a>
               </p>
-              <div>
-                <a id="loginButton" href="http://localhost:3000/auth/google">
-                  Login with Google
-                </a>
-              </div>
               <p className="register text-center">
                 Don't have an account? <Link to="/sign-up">Sign Up</Link>
               </p>
+              <div>
+                <a id="loginButton" href="http://localhost:3000/auth/google">
+                <img src={GoogleLogin}/>
+                </a>
+              </div>
             </form>
           </div>
         </div>

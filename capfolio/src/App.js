@@ -10,6 +10,7 @@ import { AuthProvider } from "./AuthContext";
 import Profile from "./pages/Profile";
 import ProjectSubmit from "./projectSubmit";
 
+
 function App() {
   return (
     <AuthProvider>

@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../AuthContext";
 import './Profile.css';
 import redHeartImage from '../images/red-heart.png';
-
+import { Link } from "react-router-dom";
 function Profile() {
     const [isEditing, setIsEditing] = useState(false);
     const [name, setName] = useState('');
@@ -95,7 +95,11 @@ function Profile() {
                                 </a>
                             </div>
                             <p>{description}</p>
-                            <button onClick={() => setIsEditing(true)}>Edit</button>
+                            
+                            <p>
+                                <button onClick={() => setIsEditing(true)}>Edit</button>
+                               <Link to="/project-submit" ><button>Submit Project</button></Link>
+                            </p>
                         </div>
                     )}
                 </div>

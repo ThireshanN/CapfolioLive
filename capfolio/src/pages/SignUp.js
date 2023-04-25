@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from "react-router-dom";
-
+import GoogleLogin from '../images/btn_google_signin_dark_pressed_web@2x.png';
 const SignUp = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -55,6 +55,7 @@ const SignUp = () => {
   }
 
   return (
+    
       <div className="container">
         <div className="auth-wrapper">
           <div className="auth-inner">
@@ -124,14 +125,16 @@ const SignUp = () => {
                 Already registered <Link to="/login">Sign In?</Link>
               </p>
               <div>
-                <a id="loginButton" href="http://localhost:3000/auth/google">
-                  Login with Google
+                <a id="loginButton" href="http://localhost:3000/auth/google"> 
+                <img src={GoogleLogin}/>
                 </a>
               </div>
             </form>
           </div>
         </div>
       </div>
+
+      
   );
 };
 
