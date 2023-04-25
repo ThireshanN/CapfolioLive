@@ -41,7 +41,7 @@ const LikeButton2 = (props) => {
 
     const removeLike = async () => {
         await fetch(
-            "/projects/postDisLike?id=" + props.likenumber, {
+            "projects/postDisLike", {
                 method: 'DELETE',
                 headers: { "Accept": "application/json", "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -61,24 +61,20 @@ const LikeButton2 = (props) => {
 
 
     const handleClick = () => {
+    
         if (clicked) {
-
-
             removeLike()
-            setClicked(!clicked);
-
-
-
+            
         }
         else {
 
             newlike()
-            setClicked(!clicked);
+      
 
-
+            
 
         }
-
+        setClicked(!clicked);
     };
 
 
@@ -90,6 +86,8 @@ const LikeButton2 = (props) => {
                 setLiked(!liked);
                 setClicked(true);
                 handleClick();
+                
+                
             }}
             onAnimationEnd={() => setClicked(false)}
             className={cn("like-button-wrapper", {
