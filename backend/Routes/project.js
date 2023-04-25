@@ -91,7 +91,7 @@ projectRouter.get('/executeSQLcommand', async (req, res) => {
             throw new Error('no sql command provided in request body');
         }
         const projects = (await executeSQLstatement(sql))[0];
-        console.log("Our Data: \n", projects);
+        //console.log("Our Data: \n", projects);
         return res.status(200).setHeader("Content-Type", "application/json").send(projects);
     }
     catch (err) {
@@ -267,9 +267,10 @@ projectRouter.post('/uploadFile', async (req, res) => { //working 23/04/2023
 
 //http://localhost:3000/project/retrieveFile
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/retrieveFile
-
+//NOT COMPLETE YET
 projectRouter.get('/retrieveFile', async (req, res) => { //
     try {
+        //"filename": "Meowland3/tree.jpg"
         const filename = req.body.filename;
         console.log("Retrieving file " + filename);
         //const TeamName = req.body.TeamName;

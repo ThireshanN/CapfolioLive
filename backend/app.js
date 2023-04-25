@@ -6,9 +6,9 @@ import passport from 'passport';
 import session from 'express-session';
 import './passport-setup.js';
 import { authRouter } from './Routes/auth.js';
-//import { commentRouter } from './Routes/comments.js';
 import { commentRouter } from './Routes/comment.js';
 import { projectRouter } from './Routes/project.js';
+import { projectViewRouter } from './Routes/projectView.js';
 import { dnsAWS } from '../frontend/public/address.mjs';
 import { fileURLToPath } from 'url';
 
@@ -62,9 +62,9 @@ app.get(
 );
 
 
-//app.use('/api', commentRouter);
 app.use('/comment', commentRouter);
 app.use('/project', projectRouter);
+app.use('/projects', projectViewRouter);
 app.get('/test', (req, res) => {   
     //http://localhost:3000/test
     res.send(`Hello World!`);
