@@ -141,9 +141,10 @@
     display: inline-block;
     align-items: center;
     margin-left: 50px;
-    font-size: calc(6vw);
+    font-size: 6rem;
     color: white;
-    margin-bottom: 0px;
+    margin-bottom: 20px;
+    line-height: 6rem;
 }
 
 .tech {
@@ -179,7 +180,7 @@
 .companyname {
     display: inline-block;
     vertical-align: top;
-    font-size: 1vw;
+    font-size: 1rem;
     color: white;
     margin: 0;
     padding: 0;
@@ -454,6 +455,7 @@ textarea {
     width: 100%;
   }
 
+
   @media screen and (max-width: 992px) {
 
     .bluebox {
@@ -515,9 +517,11 @@ textarea {
     {
         margin-left:0px;
         margin-top: 0px;
-        font-size: 6vw;
         padding-left: 0px;
         align-self: center;
+        font-size: 4rem;
+        line-height: 5rem;
+        margin-bottom: 10px;
     }
     .column {
         width: 100%;
@@ -591,6 +595,19 @@ textarea {
     .commentdate{
         font-size: 12px;
         
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .projecttitle
+    {
+        margin-left:0px;
+        margin-top: 0px;
+        padding-left: 0px;
+        align-self: center;
+        font-size: 3rem;
+        line-height: 3rem;
+        margin-bottom: 10px;
     }
 }
 

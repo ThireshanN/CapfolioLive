@@ -36,7 +36,6 @@ const ProjectGallery = () => {
       const response = await fetch("/project/FilteredProjectData").then((response) =>
         response.json()
       );
-      console.log(response);
       setFilteredProjects(response);
       setFiltered(true); // Set filtered state to true when fetching filtered projects
     };
