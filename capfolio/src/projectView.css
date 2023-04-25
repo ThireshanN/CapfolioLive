@@ -59,45 +59,6 @@
 .rowcontent{
     margin-top:140px;
 }
-/* @media screen and (max-width: 850px) 
-{
-    .column {
-        width: 100%;
-    }
-
-    .right {
-        float:left; 
-        padding-right: 18%;
-
-        
-    }
-    .left {
-        padding-top: 0px;
-    }
-
-
-    .headerright{
-        display: none;  
-    }
-
-    .commentbox {
-        background-color: blue;
-        margin-left: 4  0%;
-    }
-
-    .headerleft {
-        width: 100%;
-        margin-left: 0px;
-        align-content: center;
-    }
-    .image{
-        width: 50%;
-        margin-left: 25%;
-        margin-right: 25%
-    }
-
-  
-} */
 
 .bluebox {
     width: 100%;
@@ -141,7 +102,7 @@
     display: inline-block;
     align-items: center;
     margin-left: 50px;
-    font-size: 6rem;
+    font-size: 5rem;
     color: white;
     margin-bottom: 20px;
     line-height: 6rem;
