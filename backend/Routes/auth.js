@@ -161,11 +161,13 @@ router.get('/user', async (req, res) => {
             isGoogleOAuth = true;
         }
 
-        const sql = `SELECT u.FirstName, u.LastName, u.UserTypeID FROM Users u WHERE u.Email = ?;`;
+        //const sql = `SELECT u.FirstName, u.LastName, u.UserTypeID FROM Users u WHERE u.Email = ?;`;
+        const sql = `SELECT u.UserID, u.FirstName, u.LastName, u.UserTypeID FROM Users u WHERE u.Email = ?;`;
         const [rows] = await executeSQLstatement(sql, [email]);
         const userData = rows[0];
 
         res.send({
+            UserID: userData.UserID,
             FirstName: userData.FirstName,
             LastName: userData.LastName,
             Email: email,
