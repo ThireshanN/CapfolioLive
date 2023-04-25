@@ -143,7 +143,7 @@ projectViewRouter.post('/postLike', express.json(), async (req, res) => {
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/projects/project?id=2
 
 async function newDisLike(dislikeBody){
-    if(currentUserId===null){return "Only logged in Users can like"}
+    if(currentUserId===null){return "Only logged in Users can dislike"}
     const sql = `DELETE From likes WHERE UserID_FK =${currentUserId} and ProjectID_FK = ${dislikeBody.projectId}`;
     //console.log(sql);
     const dislikes = (await executeSQLstatement(sql));
