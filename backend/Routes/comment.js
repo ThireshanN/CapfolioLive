@@ -55,8 +55,6 @@ commentRouter.post('/PostComment', express.json(), async (req, res) => {
 
 //http://localhost:3000/comment/Projects
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/AllProjectData
-
-
 commentRouter.get('/Projects', async (req, res) => {
     try {
         const sql = "SELECT ProjectID, Project.ProjectName,IsApproved, projectDec, capstoneYear, capstoneSemester, githubLink, VideoLink, TeamName, adminID_FK, ProjectIntro, GROUP_CONCAT(technologiesUsed.technologyName) AS 'techologies' FROM technologiesUsed INNER JOIN ProjectTech  ON technologiesUsed.techID = ProjectTech.techID_FK INNER JOIN Project ON ProjectTech.ProjectID_FK = Project.ProjectID GROUP BY Project.ProjectID;";
@@ -76,8 +74,7 @@ commentRouter.get('/Projects', async (req, res) => {
 
 
 async function newProject(project){
-    const sql = `Insert into Project(ProjectName,IsApproved, projectDec, capstoneYear, capstoneSemester, githubLink, VideoLink, TeamName, ProjectIntro) VALUES 
-    ("${project.ProjectName}", 0, "${project.projectDec}",${project.capstoneYear}, ${project.capstoneSemester},"${project.githubLink}","${project.VideoLink}","${project.TeamName}","${project.ProjectIntro}");`;
+    const sql = `Insert into Project(ProjectName,IsApproved, projectDec, capstoneYear, capstoneSemester, githubLink, VideoLink, TeamName, ProjectIntro) VALUES  ("${project.ProjectName}", 0, "${project.projectDec}",${project.capstoneYear}, ${project.capstoneSemester},"${project.githubLink}","${project.VideoLink}","${project.TeamName}","${project.ProjectIntro}");`;
     //console.log(sql);
     const all_comments = (await executeSQLstatement(sql));
     let message = 'Error in defining a new comment';
