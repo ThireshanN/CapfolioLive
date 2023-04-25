@@ -112,13 +112,13 @@ projectViewRouter.post('/postComment', express.json(), async (req, res) => {
     }
 });
 
-//http://localhost:3000/projects/postLike?id=2
+//http://localhost:3000/projects/postLike
 //the id here is the same ProjectId as http://localhost:3000/projects/project?id=2
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/projects/project?id=2
 
-async function newLike(projectID){
+async function newLike(likeBody){
     if(currentUserId===null){return "Only logged in Users can like"}
-    const sql = `Insert into likes(UserID_FK, ProjectID_FK) VALUES (${currentUserId}, ${projectID});`;
+    const sql = `Insert into likes(UserID_FK, ProjectID_FK) VALUES (${currentUserId}, ${likeBody.projectId});`;
     //console.log(sql);
     const likes = (await executeSQLstatement(sql));
     let message = 'Error in defining a new like';
@@ -129,13 +129,11 @@ async function newLike(projectID){
     return {message};
   }
 
-
 projectViewRouter.post('/postLike', express.json(), async (req, res) => {
 
     try {
         //console.log(req.body.CommentDesc);
-        let projectID = req.query.id;
-        res.json(await newLike(projectID));
+        res.json(await newLike(req.body));
     } catch (err) {
       console.error(`Error while creating a new like`, err.message);
     }
