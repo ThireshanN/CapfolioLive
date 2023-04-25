@@ -144,20 +144,14 @@ const ProjectView = () => {
 
     
 
-    //Used to set bluebox height to size according to right column
-    const rightColumnRef = useRef();
-    const blueBoxRef = useRef();
 
-    useEffect(() => {
-        const marginTop = parseFloat(window.getComputedStyle(rightColumnRef.current).marginTop);
-        const rightColumnHeight = rightColumnRef.current.offsetHeight + marginTop + 20;
-        blueBoxRef.current.style.setProperty('--right-column-height', `${rightColumnHeight}px`);
-    }, []);
 
     const [comments, setComments] = useState('');
 
     const params = useParams();
     const [projects, setProject] = useState('');
+
+    // const blueBoxRef = useRef();
 
     const getProject = async () => {
      
@@ -215,18 +209,44 @@ const ProjectView = () => {
         getProject();
     }, []);
 
+    //Used to set bluebox height to size according to right column
+    // const rightColumnRef = useRef();
+    // const blueBoxRef = useRef();
+
+    // useEffect(() => {
+    //     const marginTop = parseFloat(window.getComputedStyle(rightColumnRef.current).marginTop);
+    //     const rightColumnHeight = rightColumnRef.current.offsetHeight + marginTop + 20;
+    //     blueBoxRef.current.style.setProperty('--right-column-height', `${rightColumnHeight}px`);
+    // }, []);
+    const rightColumnCallbackRef = (node) => {
+        if (node) {
+            const marginTop = parseFloat(window.getComputedStyle(node).marginTop);
+            const rightColumnHeight = node.offsetHeight + marginTop + 20;
+            const blueBoxElement = document.querySelector('.bluebox');
+            if (blueBoxElement) {
+                blueBoxElement.style.setProperty('--right-column-height', `${rightColumnHeight}px`);
+            }
+        }
+    };
+    
+    // const blueBoxCallbackRef = (node) => {
+    //     if (node) {
+    //         blueBoxRef.current = node;
+    //     }
+    // };
+
     return (
 
         <div>
             <div className='bluebox-top'></div>
-            <div className='bluebox' ref={blueBoxRef} style={{ '--right-column-height': 'auto' }}>
+            <div className='bluebox' style={{ '--right-column-height': 'auto' }}>
                 <div className='p-row'>
                     <div className='column headerleft'>
                         <div className='image'>
                             <Example />
                         </div>
                     </div>
-                    <div className='column headerright' ref={rightColumnRef}>
+                    <div className='column headerright' ref={rightColumnCallbackRef}>
                         <div className='teammembers'>
                             {projects && projects.map((project) => (
                                 <Header key={project.id} project={project} />
