@@ -6,24 +6,28 @@ import passport from 'passport';
 import session from 'express-session';
 import './passport-setup.js';
 import { authRouter } from './Routes/auth.js';
-import { commentRouter } from './Routes/comments.js';
+//import { demoCommentRouter } from './Routes/demoComments.js';
+import { commentRouter } from './Routes/comment.js';
 import { projectRouter } from './Routes/project.js';
-import { dnsAWS } from '../frontend/public/address.mjs';
+import { projectViewRouter } from './Routes/projectView.js';
+import { dnsAWS } from './addresses.js';
 import { fileURLToPath } from 'url';
 
 
 const app = express();
-//for ES Module (removed CJS)
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 
-//app.use(express.static(path.join(__dirname, '../frontend/public')));
-//app.use(express.static(path.join(__dirname, '../clientdemo/build')));
-app.use(express.static(path.join(__dirname, '../capfolio/build')));
+
+//app.use(express.static(path.join(__dirname, '../frontend/public'))); //basic comment website with html
+//app.use(express.static(path.join(__dirname, '../clientdemo/build'))); //basic website with react
+app.use(express.static(path.join(__dirname, '../capfolio/build'))); //final website with react
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+
 
 
 //GOOGLE AUTH ROUTES:
@@ -61,13 +65,20 @@ app.get(
 );
 
 
-app.use('/api', commentRouter);
+
+
+//app.use('/demoApi', demoCommentRouter);
+app.use('/comment', commentRouter);
 app.use('/project', projectRouter);
+app.use('/projects', projectViewRouter);
 app.get('/test', (req, res) => {   
     //http://localhost:3000/test
     res.send(`Hello World!`);
     //res.json({"users": ['userUno', 'userDos', 'userTres']});
 })
+
+
+
 app.get('/*', (req, res) => {
     //http:localhost:3000/
     //res.sendFile(path.join(__dirname, '../clientdemo/build', index.html));
@@ -79,51 +90,10 @@ app.get('/*', (req, res) => {
 })
 
 
-app.use('/api', commentRouter);
-app.use('/project', projectRouter);
-app.get('/getcomments', (req, res) => {
-    //http://localhost:3000/getcomments
-
-    const comments = [
-        {
-            id: 1,
-            name: 'John',
-            comment: 'This is a cool project'
-        },
-        {
-            id: 2,
-            name: 'Alice',
-            comment: 'Well Done!',
-        },
-        {
-            id: 3,
-            name: 'Bob',
-            comment: 'Would love to see some social features'
-        },
-        {
-            id: 4,
-            name: 'Bob',
-            comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent in felis interdum, volutpat dolor id, egestas dolor. Vestibulum nec felis a enim suscipit condimentum a vel nisl. Praesent aliquam sit amet augue ac volutpat. Nullam imperdiet id dolor at tincidunt. Quisque ultricies tempor nibh, a imperdiet purus sagittis aliquet. Donec nisl odio, venenatis sit amet lobortis sit amet, placerat ut massa. Morbi bibendum imperdiet ante ut eleifend. Etiam vehicula, magna et volutpat tempor, enim ex fringilla lectus, in dignissim massa odio quis neque. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Etiam sed metus et mauris.'
-        }
-    ]
-    
-    res.send(comments);
-})
-
-
-app.use('/api', commentRouter);
-app.use('/project', projectRouter);
-app.post('/postcomments', express.text() , (req) => {
-    //http://localhost:3000/postcomments
-
-    console.log(req.body);
-
-
-   
-})
-
 const port = process.env.PORT || 3000;
-app.listen(port, () => { console.log(`App listening on port ${port}\nGo to http://localhost:3000 if testing locally\nGo to http://${dnsAWS}:3000 if using on aws`); });
+app.listen(port, () => { 
+    console.log(`App listening on port ${port}\nGo to http://localhost:3000 (testing locally)\nGo to http://${dnsAWS}:3000 (testing on AWS)`); 
+});
 
 
 

@@ -12,6 +12,9 @@
    
 }
 
+.right-column-container {
+    position: relative;
+}
 
 .left {
     padding-top: 50px;
@@ -28,7 +31,6 @@
 }
 
 .headerright{
-    height: 30vw;
     width: 30%;
     margin-right: 5%;
     margin-left: 50px;
@@ -57,7 +59,7 @@
 .rowcontent{
     margin-top:140px;
 }
-@media screen and (max-width: 850px) 
+/* @media screen and (max-width: 850px) 
 {
     .column {
         width: 100%;
@@ -95,13 +97,34 @@
     }
 
   
-}
+} */
 
 .bluebox {
-    padding-top: 3%;
-    height: 32vw;
     width: 100%;
+    /* background-color: #00467f; */
+    
+}
+
+.bluebox-top {
+    width: 100%;
+    background-color: #00467f;
+    height: 60px;
+    
+}
+
+.bluebox::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
     background-color: #00467F;
+    z-index: -1;
+    height: var(--right-column-height) !important;
+
+}
+
+.column.headerright {
+    margin-top: 50px;
 }
 
 .mainprojectImg{
@@ -121,7 +144,6 @@
     font-size: calc(6vw);
     color: white;
     margin-bottom: 0px;
-    margin-top: 50px;
 }
 
 .tech {
@@ -129,13 +151,13 @@
     vertical-align: top;
     margin: 10px;
     overflow: hidden;
-    background-color: #F2F2F2;
-    padding: 3px 5px;
+    background-color: #f2f2f2;
+    padding: 0px 4px;
     border-radius: 4px;
 }
 
     .tech p {
-        font-size: 1vw;
+        font-size: 1em;
         padding: 5px;
         color: #00467F;
         margin: 0;
@@ -196,9 +218,9 @@
 .commentbox {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.1);
-    width: 82%;
     float: right;
-    
+    padding-bottom: 5%;
+    width: 100%;
 }
 
 
@@ -242,9 +264,10 @@
 
 .commentheading h2 {
     color: #00467F;
-    font-size: 240%;
-    text-align: center;
-    margin-top: 80px;
+    font-size: 2em;
+    margin-top: 50px;
+    margin-left: 15%;
+    margin-bottom: 10px;
 }
 
 form {
@@ -258,25 +281,22 @@ textarea {
     height: 150px;
     padding: 12px 20px;
     box-sizing: border-box;
-    border: 2px solid #ccc;
+    border: 2px solid rgba(204, 204, 204, 0);
     border-radius: 4px;
     background-color: #f8f8f8;
     font-size: 16px;
     resize: none;
-    box-shadow: 10px 10px 10px rgb(0 0 0 / 0.2);
 }
 
 .writecomment {
     width: 100%;
-
-    
 }
 
-.submitcomment {
+.submitcomment{
     position: relative;
     float: right;
     margin: 0 15% 2% 0;
-    width:10%;
+    width:30px;
 }
 
 .showcomments{
@@ -284,14 +304,16 @@ textarea {
 }
 
 .comment{
-    margin: 0px 95px 80px 95px; /*Top right bottom left*/
-}
-.commenttext {
-    border-radius: 15px;
+    margin: 0px 50px 40px 95px; /*Top right bottom left*/
+    width: 50%;
+    margin-left: 25%;
     background-color: white;
     padding: 30px 70px 30px 70px;
-    box-shadow: 10px 10px 10px rgb(0 0 0 / 0.2);
-   margin-bottom: 0px;
+    font-family: 'Figtree', sans-serif;
+    border-radius: 5px;
+}
+.commenttext {
+    margin-bottom: 0px;
 }    
 
 .comment p{
@@ -300,7 +322,9 @@ textarea {
 }
 
 .commentname{
-    margin-top: 5px;
+    margin-bottom: 0px;
+    font-weight: 600;
+    transform: translateY(0px);
 }
 
 
@@ -309,7 +333,7 @@ textarea {
     align-items: center;
     justify-content: center;
     background-size: cover;
-    height: 35vw;
+    height: 30vw;
     width: 50vw;
     
 }
@@ -346,4 +370,246 @@ textarea {
 
 .pv-likeButton .like-button-wrapper::before {
     background-color: #008CBA;
+}
+
+.projectInformation-wrapper{
+    margin: 5% 20%;
+    width:60%;
+    font-family: 'Figtree', sans-serif;
+    
+}
+
+.react-slideshow-container{
+    width: 90%;
+    margin-left: 10%;
+
+}
+
+.comment-avatar{
+    width:45px;
+    float: left;
+    margin: 10px;
+    margin-top: 0px;
+    transform: translateY(0px);
+
+}
+.commentdate{
+    text-align: right;
+    margin: 0;
+    transform: translateY(0px);
+}
+
+.commentUsertype{
+    margin-bottom: 0px;
+    font-weight: 200;
+    transform: translateY(0px);
+    width:50%;
+    float: left;
+    margin-left: 0;
+    padding: 0px !important;
+}
+
+.commentDetails{
+    margin-bottom: 20px;
+}
+
+.pv-buttons .btn a{
+    color: #fff !important;
+    font-family: 'Fira Sans', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    padding-left: 6px;
+  }
+
+  .pv-buttons .btn {
+    margin-left: 0%;
+    --bs-btn-bg: #3e80b6 !important;
+    color: #fff !important;
+    border-radius: 5px;
+    float: left;
+    margin-right: 5%;
+    margin-top: 1px;
+    padding: 8px 16px;
+    font-family: 'Fira Sans', sans-serif;
+    font-weight: 500;
+    background-size: 200% 100%;
+    background-position: right;
+    transition: all 0.25s ease;
+    cursor: pointer;
+    text-decoration: none;
+  
+  }
+
+  .btn img{
+    width: 25px !important;
+    height: 25px !important;
+    margin-right: 5px;
+  }
+
+  .pv-buttons{
+    margin-left: 50px;
+    margin-top: 30px;
+    min-height: 50px;
+    width: 100%;
+  }
+
+  @media screen and (max-width: 992px) {
+
+    .bluebox {
+        height: auto;
+       
+    }
+
+    .column.headerright {
+        margin-top: 0px;
+    }
+
+    .pv-likeButton {
+        margin: 0 0;
+        
+    }
+    .projectInformation-wrapper {
+        margin: 10% 10%;
+        width: 80%;
+    }
+
+    .projectInformation {
+        margin: 10% 0%;
+        margin-left: 40px;
+        margin-right: 40px;
+    }
+
+    .centerTitle {
+        text-align: center;
+        width: 100%;
+        margin: 0 0;
+        padding: 0px;
+        display: flex;
+        flex-direction: column;
+        align-content: center;
+        justify-content: center;
+        align-items: center;
+        background-color: #00467F;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+    }
+
+    .pv-buttons{
+        display: flex;
+        margin: 5px 5px;
+        padding: 5px 5px;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+
+    }
+
+    .pv-buttons .btn{
+        margin: 0 0;
+        margin-right: 3%;
+        transform: translateY(-1px);
+    }
+
+    .projecttitle
+    {
+        margin-left:0px;
+        margin-top: 0px;
+        font-size: 6vw;
+        padding-left: 0px;
+        align-self: center;
+    }
+    .column {
+        width: 100%;
+    }
+
+    .right {
+        float: left;
+        padding-right: 18%;
+    }
+
+    .left {
+        padding-top: 0px;
+    }
+    .techusedcontainer{
+        width:100%;
+        padding-top: 0px;
+    }
+
+    .techUsed {
+        margin: auto;
+        width: 100%;
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        align-content: center;
+        flex-wrap: wrap;
+        flex-direction: row;
+    }
+
+    .tech p{
+        font-size: 1em;
+    }
+
+    .names{
+        width: 50%;    
+        margin-left: 0;
+    }
+
+    .headerright {
+        float: left;
+        width: 100%;
+        margin-left: 0px;
+        margin-right: 0px;
+        padding-right: 0px;
+    }
+    .names p{
+        font-size: 1em;
+        
+    }
+    
+
+    .headerleft {
+        width: 100%;
+        margin-left: 0px;
+        align-content: center;
+    }
+
+    .image {
+        width: 50%;
+        margin-left: 25%;
+        margin-right: 25%
+    }
+
+    .comment{
+        width: 90%;
+        margin: 5% 5%;
+        padding: 20px 20px;
+    }
+
+    .commentdate{
+        font-size: 12px;
+        
+    }
+}
+
+.sendcomment {
+    background-color: transparent;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+    float: right;
+    padding-top: 10px;
+}
+
+.textAreaExample{
+    color: white;
+}
+
+#comment{
+    color: black;
+    background-color: white;
 }

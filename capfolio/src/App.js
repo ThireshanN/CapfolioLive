@@ -8,6 +8,7 @@ import ProjectView from "./projectView";
 import ScrollToTop from "./ScrollToTop";
 import { AuthProvider } from "./AuthContext";
 import Profile from "./pages/Profile";
+import ProjectSubmit from "./projectSubmit";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/sign-up" element={<Signup />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/project-view" element={<ProjectView />} />
+          <Route path="/project-submit" element={<ProjectSubmit />} />
         </Routes>
         </ScrollToTop>
         {/* </div>

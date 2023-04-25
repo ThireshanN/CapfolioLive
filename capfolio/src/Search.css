@@ -2,7 +2,7 @@
 
 .search-bg{
     width:80%;
-    height:500px;
+    /* height:500px; */
     color: #FFFFFF;
     background-color: #00467F;
     align-items:center;
@@ -10,6 +10,7 @@
     margin: 0 auto;
     border: 10px solid #00467F;
     border-radius: 5px;
+    border-bottom-left-radius: 0%;
     margin-top: 3%;
 }
 
@@ -23,7 +24,6 @@
 
 .main {
     display: flex;
-    height: 100vh;
     width: 100%;
     align-items: left;
     flex-direction: column;
@@ -75,11 +75,15 @@ ul li {
 .illu{
     position: absolute;
     left:58%;
-    top: 18%;
+    top: 14%;
 }
 
 .illu img{
     width: 90%;
+}
+
+.bright{
+    color:#feb119;
 }
 
 
@@ -102,17 +106,80 @@ ul li {
         width: 100%;
         display: flex;
         position: relative;
-        margin-left: 10%;
         height: auto;
         overflow: auto;
+        align-items: center;
+        justify-content: center;
+        margin-left: 0;
     }
 
+    .webzen-logo p{
+        vertical-align: middle;
+        display: flex;
+        margin-bottom: 0;
+    }
     
     .headline{
         font-family: 'Sen', sans-serif;
-        margin-left: 10%;
         margin-top: 6%;
-        font-size: 2em;
-        max-width: 100%;
+        font-size: 2.5em;
+        max-width: 80%;
+        text-align: center;
+        margin-left: 10%;
+    }
+
+    .search {
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       width: 90%;
+       margin-left: 5%;
     }
   }
+
+  @media screen and (max-width: 600px) {
+
+    .webzen-logo img{
+        max-width: 80px !important;
+    }
+
+    .webzen-logo p{
+        font-size: 12px;
+    }
+
+    .headline{
+        font-family: 'Sen', sans-serif;
+        margin-top: 6%;
+        font-size: 2em;
+        max-width: 90%;
+        text-align: center;
+        margin-left: 5%;
+    }
+
+    .search {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 70%;
+        margin-left: 0;
+     }
+
+  }
+
+
+  @media screen and (max-width: 360px) {
+
+    .search {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 70%;
+        margin-left: 0;
+     }
+
+     .search-bar{
+        max-width: 400px;
+     }
+
+  }
+

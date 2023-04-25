@@ -13,14 +13,14 @@
 
 SQL COMMANDS:
 
-Insert into Users(UserID, UserTypeID, FirstName, lastName)
-values (35, 1, "Ricky", "Katafono");
+Insert into Users(UserTypeID, FirstName, lastName)
+values (1, "Ricky", "Katafono");
 
 Insert into Student(UserID, StudentUPI)
-values (35, "");
+values (35, "rkat345");
 
 INSTRUCTIONS:
--- UserID for Users = last UserID in the database + 1 (also the current last UserID is 35, so the next UserID should start with 36)
+-- UserID for Users = auto increments starting at 70 
 -- UserTypeID for Users = should pick from the 4 UserTypeIDs above (1 = student)
 -- UserID for Student = the same UserID you entered for the Users table
 
@@ -34,14 +34,14 @@ NOTES:
 
 SQL COMMANDS:
 
-Insert into Users(UserID, UserTypeID, FirstName, lastName)
-values (36, 2, "Bob", "Miles");
+Insert into Users(UserTypeID, FirstName, lastName)
+values (2, "Bob", "Miles");
 
 Insert into Employer(UserID, CompanyName, email)
 values (36, "ABC-coop", "bob@abc.com");
 
 INSTRUCTIONS:
--- UserID for Users = last UserID in the database + 1 
+-- UserID for Users = auto increments starting at 70 
 -- UserTypeID for Users = should pick from the 4 UserTypeIDs above (2 = Employer)
 -- UserID for Employer = the same UserID you entered for the Users table
 
@@ -54,8 +54,8 @@ NOTES:
 
 SQL COMMANDS:
 
-Insert into Users(UserID, UserTypeID, FirstName, lastName)
-values (7, 3, "Asma", "Shakil");
+Insert into Users(UserTypeID, FirstName, lastName)
+values (3, "Asma", "Shakil");
 
 Insert into Admins(UserID)
 values (7);
@@ -63,7 +63,7 @@ values (7);
 -- I have already entered the details of Asma to the database
 
 INSTRUCTIONS:
--- UserID for Users = last UserID + 1 
+-- UserID for Users = auto increments starting at 70 
 -- UserTypeID for Users = should pick from the 4 UserTypeIDs above (3 = Admin)
 -- UserID for Admin = the same UserID you entered for the Users table
 
@@ -76,14 +76,14 @@ NOTES:
 
 SQL COMMANDS:
 
-Insert into Visitors(UserID, UserTypeID, FirstName, lastName)
-values (40, 4, "Ryan", "Renolds");
+Insert into Visitors(UserTypeID, FirstName, lastName)
+values (4, "Ryan", "Renolds");
 
 Insert into Admins(UserID)
 values (40);
 
 INSTRUCTIONS:
--- UserID for Users = last UserID + 1 
+-- UserID for Users = auto increments starting at 70 
 -- UserTypeID for Users = should pick from the 4 UserTypeIDs above (4 = Visitor)
 -- UserID for Visitor = the same UserID you entered for the Users table
 
@@ -97,8 +97,8 @@ NOTES:
 
 SQL COMMANDS:
 
-Insert into Project(ProjectID, ProjectName, IsApproved, projectDec, capstoneYear, capstoneSemester, TeamName, VideoLink, githubLink)
-values (1, "ReType Spelling Game", 0, "Our goal was to create a web-based, keyboard-only ReType game and solve problems associated with other similar games",
+Insert into Project(ProjectName, IsApproved, projectDec, capstoneYear, capstoneSemester, TeamName, VideoLink, githubLink)
+values ("ReType Spelling Game", 0, "Our goal was to create a web-based, keyboard-only ReType game and solve problems associated with other similar games",
 2022, 1, "Team 1", "https://www.youtube.com/watch?v=k7vhBLqNpSE", "");
 
 UPDATE Student
@@ -122,14 +122,14 @@ NOTES:
 
 SQL COMMANDS:
 
-Insert into technologiesUsed(techID, technologyName)
-values (30, "C++");
+Insert into technologiesUsed(technologyName)
+values ("C++");
 
-Insert into ProjectTech(projectTechID, ProjectID_FK, techID_FK)
-values (1, 1, 30);
+Insert into ProjectTech(ProjectID_FK, techID_FK)
+values (1, 30);
 
 INSTRUCTIONS:
--- techID = last techID in the technologiesUsed table + 1 (current last ProjectID is 29, so the next one should be 30)
+-- techID = auto increments 
 -- projectTechID = last projectTechID in the ProjectTech table + 1 (current last projectTechID is 36, so the next one should be 37)
 -- ProjectID_FK = the projectID of the project that uses this technology
 -- techID_FK = the techID that the project uses (in this case it is 30, since the project uses C++)

@@ -56,6 +56,7 @@ export const ensureAuthenticated = (req, res, next) => {
     }
     res.status(401).send('logged in users only, besides Madavi');
 };
+
 export const requireAucklandEmail = (req, res, next) => {
     if (req.isAuthenticated()) {
         //console.log('req.user.email:', req.user.id);

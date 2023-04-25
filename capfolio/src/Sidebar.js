@@ -1,15 +1,19 @@
-import './Sidebar.css';
-import React, { useState, useMemo, useRef  } from "react";
-import Select from 'react-select';
-import makeAnimated from 'react-select/animated';
-//import "./App.css";
+import "./Sidebar.css";
+import React, { useState } from "react";
+import Select from "react-select";
+import makeAnimated from "react-select/animated";
 import ReactDOM from "react-dom/client";
 import "bootstrap/dist/css/bootstrap.css";
-import { Collapse, CButton, CCollapse,  CCard, CCardBody } from '@coreui/react';
+import {
+  Collapse,
+  CButton,
+  CCollapse,
+  CCard,
+  CCardBody,
+} from "@coreui/react";
 
 
-
-const Sidebar = () => {
+const Sidebar = ({ onApplyFilter }) => {
     const startYears = [
       { value: "2020", label: "2020" },
       { value: "2021", label: "2021" },
@@ -17,52 +21,78 @@ const Sidebar = () => {
       { value: "2023", label: "2023" },
     ];
 
-
-    const endYears = [
-        { value: "2020", label: "2020" },
-        { value: "2021", label: "2021" },
-        { value: "2022", label: "2022" },
-        { value: "2023", label: "2023" },
-      ];
-
-      const options2021 = [
-        { value: "2021", label: "2021" },
-        { value: "2022", label: "2022" },
-        { value: "2023", label: "2023" },
-      ];
-
-      const options2022 = [
-        { value: "2022", label: "2022" },
-        { value: "2023", label: "2023" },
-      ];
-
-      const options2023 = [
-        { value: "2023", label: "2023" },
-      ];
-
     const startSemester = [
-        { value: "SemesterOne", label: "Semester One" },
-        { value: "SemesterTwo", label: "Semester Two" },
+        { value: "Semester One", label: "Semester One" },
+        { value: "Semester Two", label: "Semester Two" },
       ];
 
-      const endSemester = [
-        { value: "SemesterOne", label: "Semester One" },
-        { value: "SemesterTwo", label: "Semester Two" },
-      ];
 
     const technologies = [
-        { value: "blues", label: "React" },
-        { value: "rock", label: "Javascript" },
-        { value: "jazz", label: "HTML" },
-        { value: "orchestra", label: "C#" },
+        { value: "React", label: "React" },
+        { value: "Javascript", label: "Javascript" },
+        { value: "HTML", label: "HTML" },
+        { value: "C#", label: "C#" },
       ];
 
       const awarded = [
-        { value: "none", label: "None" },
-        { value: "blues", label: "Excellence Award" },
-        { value: "rock", label: "Community Award" },
-        { value: "jazz", label: "People's Choice Award" },
+        { value: "None", label: "None" },
+        { value: "Excellence Award", label: "Excellence Award" },
+        { value: "Community Award", label: "Community Award" },
+        { value: "People's Choice Award", label: "People's Choice Award" },
       ];
+
+      const sortBy = [
+        { value: "Latest to oldest", label: "Latest to oldest" },
+        { value: "Oldest to latest", label: "Oldest to latest" },
+        { value: "Highest to lowest likes", label: "Highest to lowest likes" },
+        { value: "Lowest to highest Likes", label: "Lowest to highest Likes" },
+        { value: "Alphabetical (A - Z)", label: "Alphabetical (A - Z)" },
+        { value: "Alphabetical (Z - A)", label: "Alphabetical (Z - A)" },
+
+
+
+      ];
+
+      const [selectedYears, setSelectedYears] = useState([]);
+      const handleChangeYears = (selectedYears) => {
+        setSelectedYears(selectedYears);
+      };
+    
+      const [selectedSemesters, setSelectedSemesters] = useState([]);
+      const handleChangeSemesters = (selectedSemesters) => {
+        setSelectedSemesters(selectedSemesters);
+      };
+    
+      const [selectedTechnologies, setSelectedTechnologies] = useState([]);
+      const handleChangeTechnologies = (selectedTechnologies) => {
+        setSelectedTechnologies(selectedTechnologies);
+      };
+    
+      const [selectedAwards, setSelectedAwards] = useState([]);
+      const handleChangeAwards = (selectedAwards) => {
+        setSelectedAwards(selectedAwards);
+      };
+
+      const [selectedSortBy, setSelectedSortBy] = useState(null);
+      const handleChangeSortBy = (selectedSortBy) => {
+        setSelectedSortBy(selectedSortBy);
+      };
+    
+      const handleApplyFilter = () => {
+        const allSelectedOptions = [
+          ...selectedYears,
+          ...selectedSemesters,
+          ...selectedTechnologies,
+          ...selectedAwards,
+        ];
+        console.log("Selected Filters: ", allSelectedOptions);
+        console.log("Sort By: ", selectedSortBy);
+
+        // Call the FilteredProjectData function passed as a prop
+        if (typeof onApplyFilter === 'function') {
+          onApplyFilter();
+        }
+      };
 
     const [selectedOption, setSelectedOption] = useState("");
     var handleChange = (selectedOption) => {
@@ -73,64 +103,95 @@ const Sidebar = () => {
       const [isClearable, setIsClearable] = useState(true);
       const [visible, setVisible] = useState(false)
 
+      const animatedComponents = makeAnimated();
+
     return (
       <div>
- 
-      <div>
-        <CButton href="#" onClick={(event) => {
-        event.preventDefault()
-        setVisible(!visible)
-        }}>
-        Filter
-        </CButton>
-
-        <CCollapse visible={visible}>
-      <CCard className="mt-3">
-        <CCardBody>
-          <div class='filter-bg'>
-            <div className="filters">
-            {/* <h3>Filter</h3> */}
-        <div className="row">
-            <div className="mt-1 me-auto w-25 col-xs-6">
-                <p>Date Range</p>
-                <p>From</p>
-                <Select placeholder={<div>Year</div>} isClearable={isClearable} options={startYears} />
-            </div>
-            <div className="mt-1 me-auto w-25 col-xs-6">
-                <p><br></br></p>
-                <p><br></br></p>
-                <Select placeholder={<div>Semester</div>} isClearable={isClearable} options={startSemester} />
-            </div>
-            <div className="mt-1 me-auto w-25 col-xs-6">
-            <p><br></br></p>
-                <p>To</p>
-                <Select placeholder={<div>Year</div>} isClearable={isClearable} options={endYears} />
-            </div>
-            <div className="mt-1 me-auto w-25 col-xs-6">
-            <p><br></br></p>
-                <p><br></br></p>
-                <Select placeholder={<div>Semester</div>} isClearable={isClearable} options={endSemester} />
-            </div>
-        </div>
-        <div className="row">
-            <div className="mt-5 me-auto w-50 col-xs-6">
-                <p>Technologies</p>
-                <Select placeholder={<div>Made with...</div>} isMulti onChange={handleChange} options={technologies} />
-            </div>
-            <div className="mt-5 me-auto w-50 col-xs-6">
-                <p>Awards</p>
-                <Select placeholder={<div>Awarded with...</div>} isMulti onChange={handleChange} options={awarded} />
-            </div>
-        </div>
-        </div>
-      </div>
-        </CCardBody>
-      </CCard>
-    </CCollapse>
-    </div> 
-      </div>
+        <div>
+          <div className='filter-btn'>
+            <CButton href="#" onClick={(event) => {
+            event.preventDefault()
+            setVisible(!visible)
+            }}>
+            Filter
+            </CButton>
+          </div>
+          <CCollapse visible={visible}>
+            <CCard className="mt-3">
+              <CCardBody>
+                <div class='filter-bg'>
+                  <div className='bg-content-wrapper'>
+                    <div className="filters">
+                        <div className="row">
+                          <div className="mt-3 me-0 w-25 col-xs-6">
+                            <p>Years</p>
+                            <Select
+                              placeholder={<div>Years...</div>}
+                              components={animatedComponents}
+                              isMulti
+                              onChange={handleChangeYears}
+                              options={startYears}
+                            />
+                          </div>
+                          <div className="mt-3 me-0 w-25 col-xs-6">
+                            <p>Semesters</p>
+                            <Select
+                              placeholder={<div>Semesters...</div>}
+                              components={animatedComponents}
+                              isMulti
+                              onChange={handleChangeSemesters}
+                              options={startSemester}
+                            />
+                          </div>
+                          <div className="mt-3 me-0 w-25 col-xs-6">
+                            <p>Technologies</p>
+                            <Select
+                              placeholder={<div>Made with...</div>}
+                              components={animatedComponents}
+                              isMulti
+                              onChange={handleChangeTechnologies}
+                              options={technologies}
+                            />
+                          </div>
+                          <div className="mt-3 me-0 w-25 col-xs-6">
+                            <p>Awards</p>
+                            <Select
+                              placeholder={<div>Awarded with...</div>}
+                              components={animatedComponents}
+                              isMulti
+                              onChange={handleChangeAwards}
+                              options={awarded}
+                            />
+                          </div>
+                        </div>
+                        <div className="row">
+                            <div className="mt-3 me-0 w-50 col-xs-6">
+                              <p>Sort by</p>
+                              <Select
+                                defaultValue={{ label: "Latest to oldest", value: "Latest to oldest" }}
+                                className="basic-single"
+                                classNamePrefix="select"
+                                name="color"
+                                onChange={handleChangeSortBy}
+                                options={sortBy}
+                              />
+                            </div>
+                        </div>
+                      </div>
+                      <div className="apply-filter-btn-wrapper">
+                        <CButton className="apply-filter-btn" onClick={handleApplyFilter}>
+                          Apply Filter
+                        </CButton>
+                      </div>
+                  </div>
+                </div>
+              </CCardBody>
+            </CCard>
+        </CCollapse>
+      </div> 
+    </div>
  
     );
   };
   
-  export default Sidebar;
+export default Sidebar;

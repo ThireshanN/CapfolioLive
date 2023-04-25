@@ -2,7 +2,6 @@
 
 .filter-bg{
     width:100%;
-    height:auto;
     color: #00467F;
     background-color: #f2f2f2;
     align-items:center;
@@ -10,9 +9,15 @@
     margin: 0 auto;
     border: 10px solid #f2f2f2;
     border-radius: 5px;
-    margin-top: 2%;
-    padding-bottom: 3%;
     padding-top: 1%;
+    padding-bottom: 2%;
+    
+}
+
+.bg-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 
@@ -26,7 +31,6 @@ h2{
 
 .main {
     display: flex;
-    height: 100vh;
     width: 100%;
     align-items: left;
     flex-direction: column;
@@ -50,12 +54,13 @@ h3 {
 
 .collapse .row,
 .collapsing .row{
-    width: 80%;
+    width: 100%;
     margin: 0 auto;
 }
 
 .filters {
     margin-left: 0%;
+    width: 80%;
 }
 
 .collapse .card,
@@ -68,19 +73,59 @@ h3 {
     padding-top: 0%;
 }
 
-.btn{
+
+.filter-btn .btn{
     --bs-btn-border-radius: 0.0rem !important;
+    border-top-right-radius: 0%;
+    border-top-left-radius: 0%;
     margin-left: 10%;
     margin-bottom: 0%;
     --bs-btn-bg: #00467F !important;
     --bs-btn-border-color: #00467F !important;
-    transform: translateY(-3px);
 }
 
+.apply-filter-btn-wrapper{
+    width: 80%;
+}
 
+.apply-filter-btn-wrapper .btn{
+    --bs-btn-border-radius: 0.0rem !important;
+    --bs-btn-bg: #00467F !important;
+    --bs-btn-border-color: #00467F !important;
+    color: #fff !important;
+    border-radius: 5px;
+    float: left;
+    margin-left: 12px;
+    margin-top: 2%;
+    padding: 7px 16px;
+    font-family: 'Fira Sans', sans-serif;
+    font-weight: 500;
+    background-image: linear-gradient(to right, #54a1ff00 50%, transparent 50%);
+    background-size: 200% 100%;
+    background-position: right;
+    transition: all 0.25s ease;
+    cursor: pointer;
+    text-decoration: none;
+}
 
-@media screen and (max-width: 992px) {
+.filters p {
+    font-weight: 500;
+    margin-bottom: 0;
+}
+
+@media screen and (max-width: 1200px) {
     .row .w-25{
+        width: 50% !important;
+    }
+  }
+
+
+@media screen and (max-width: 768px) {
+    .row .w-25{
+        width: 100% !important;
+    }
+
+    .row .w-50{
         width: 100% !important;
     }
   }
