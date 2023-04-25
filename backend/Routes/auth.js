@@ -9,6 +9,8 @@ import { config } from '../sqlconfig.js';
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid'
 
+export let currentUserId = null;
+
 
 async function executeSQLstatement(sql, values) {
     const connection = await mysql.createConnection(config.db);
@@ -165,6 +167,8 @@ router.get('/user', async (req, res) => {
         const sql = `SELECT u.UserID, u.FirstName, u.LastName, u.UserTypeID FROM Users u WHERE u.Email = ?;`;
         const [rows] = await executeSQLstatement(sql, [email]);
         const userData = rows[0];
+
+        currentUserId = userData.UserID;
 
         res.send({
             UserID: userData.UserID,
