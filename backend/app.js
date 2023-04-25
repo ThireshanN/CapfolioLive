@@ -12,6 +12,8 @@ import { projectRouter } from './Routes/project.js';
 import { projectViewRouter } from './Routes/projectView.js';
 import { dnsAWS } from 'addresses.js';
 import { fileURLToPath } from 'url';
+//backend\addresses.js
+//backend\app.js
 
 
 const app = express();
