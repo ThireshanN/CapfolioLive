@@ -25,6 +25,24 @@ const LikeButton2 = (props) => {
 
     };
 
+
+    const checkLikes = async () => {
+        await fetch('/projects/likedProjects?id=' + props.likenumber).then(response = response.text());
+
+        console.log(response)
+        if (response == '0') { 
+            setLiked(false)
+            setClicked(false)
+
+        }
+
+        if (response == '1') {
+            setLiked(true)
+            setClicked(true)
+        }
+
+    }
+
     const newlike = async () => {
         await fetch(
             "/projects/postLike",{
@@ -82,9 +100,10 @@ const LikeButton2 = (props) => {
 
     return (
         <button
-            onClick={() => {
-                setLiked(!liked);
-                setClicked(true);
+
+            onLoad={checkLikes}
+
+            onClick={() => { 
                 handleClick();
                 
                 
