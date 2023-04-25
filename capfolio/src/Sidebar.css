@@ -73,13 +73,15 @@ h3 {
     padding-top: 0%;
 }
 
+
 .filter-btn .btn{
     --bs-btn-border-radius: 0.0rem !important;
+    border-top-right-radius: 0%;
+    border-top-left-radius: 0%;
     margin-left: 10%;
     margin-bottom: 0%;
     --bs-btn-bg: #00467F !important;
     --bs-btn-border-color: #00467F !important;
-    transform: translateY(-3px);
 }
 
 .apply-filter-btn-wrapper{
