@@ -7,6 +7,7 @@ export default function Navbar() {
     const { user, setUser } = useContext(AuthContext);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const navigate = useNavigate();
+    const [menuOpen, setMenuOpen] = useState(false);
 
     useEffect(() => {
         setIsAuthenticated(user !== null);
@@ -27,6 +28,10 @@ export default function Navbar() {
             console.error("Error logging out:", error.message);
         }
     };
+
+    const toggleMenu = () => {
+        setMenuOpen(!menuOpen);
+      };
     return (
         <nav className="navtop">
             <Link to="/" className="site-title">
@@ -37,7 +42,7 @@ export default function Navbar() {
                     />
                 </div>
             </Link>
-            <ul>
+            <ul className="nav-desktop">
                 {!isAuthenticated ? (
                     <>
                         <CustomLink to="/login" className="button2">
@@ -57,6 +62,34 @@ export default function Navbar() {
                         </CustomLink>
                     </>
                 )}
+            </ul>
+            <div className="menu-icon" onClick={toggleMenu}>
+        <span className="menu-line"></span>
+        <span className="menu-line"></span>
+        <span className="menu-line"></span>
+      </div> 
+      <ul className={`nav-mobile ${menuOpen ? 'open' : ''}`}>
+      <div className='mobile-nav-btns'>
+                {!isAuthenticated ? (
+                    <>
+                        <CustomLink to="/login" className="button2">
+                            Log in
+                        </CustomLink>
+                        <CustomLink to="/sign-up" className="button2">
+                            Sign Up
+                        </CustomLink>
+                    </>
+                ) : (
+                    <>
+                        <CustomLink to="/profile" className="button2">
+                            Profile
+                        </CustomLink>
+                        <CustomLink to="/"className="button2" onClick={handleLogout}>
+                            Logout
+                        </CustomLink>
+                    </>
+                )}
+                </div>
             </ul>
         </nav>
     );
