@@ -9,6 +9,7 @@ import { authRouter } from './Routes/auth.js';
 //import { demoCommentRouter } from './Routes/demoComments.js';
 import { commentRouter } from './Routes/comment.js';
 import { projectRouter } from './Routes/project.js';
+import { projectViewRouter } from './Routes/projectView.js';
 import { dnsAWS } from 'addresses.js';
 import { fileURLToPath } from 'url';
 
@@ -70,6 +71,7 @@ app.get(
 //app.use('/demoApi', demoCommentRouter);
 app.use('/comment', commentRouter);
 app.use('/project', projectRouter);
+app.use('/projects', projectViewRouter);
 app.get('/test', (req, res) => {   
     //http://localhost:3000/test
     res.send(`Hello World!`);

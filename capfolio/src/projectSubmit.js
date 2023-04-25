@@ -16,12 +16,34 @@ import App from './App';
 
 
 export default function ProjectSubmit() {
-    
-    const [selectedOption, setSelectedOption] = useState("");
-    var handleChange = (selectedOption) => {
-        console.log(selectedOption);
-        setSelectedOption(selectedOption.value);
-    };
+
+    const [selectYear, setSelectedYear] = useState("")
+    const [selectSem, setSelectSem] = useState("")
+    const [selectTeam, setSelectTeam] = useState([])
+    const [selectTech, setSelectTech] = useState([])
+
+    var handleYearChange = (selectYear) => {
+        setSelectedYear(selectYear.value)
+    }
+
+    var handleSemChange = (selectSem) => {
+        setSelectSem(selectSem.value)
+    }
+
+    var handleTeamChange = (selectTeam) => {
+        
+        setSelectTeam(selectTeam.value)
+        console.log(selectTeam)
+    }
+
+    var handleTechChange = (selectTech) => {
+        setSelectTech(selectTech.value)
+    }
+
+
+   
+
+
     const technologies = [
         { value: "blues", label: "React" },
         { value: "rock", label: "Javascript" },
@@ -45,52 +67,50 @@ export default function ProjectSubmit() {
 
     ];
 
-    const [project, setProject] = useState('');
+
     const maxnumber = 3;
     const handleSubmit = (e) => {
-        //e.preventDefault();
+        e.preventDefault();
+        let project = []
 
-        //var company = document.getElementById('company').value;
-        //var projectName = document.getElementById('projectName').value;
-        //var year = document.getElementById('year').value
-        //var semester = document.getElementById('semester').value
-        //var intro = document.getElementById('intro').value
-        //var about = document.getElementById('about').value
-        //var approach = document.getElementById('approach').value
-        //var tech = document.getElementById('tech').value
-        //var teamMembers = document.getElementById('teamMembers').value
-        //var yt = document.getElementById('yt').value
-        //var github = document.getElementById('github').value
+        e.preventDefault();
+        let newProject = {
+            company: document.getElementById('company').value,
+            projectName: document.getElementById('projectName').value,
+            year: [],
+            semester: [],
+            intro: document.getElementById('intro').value,
+            about: document.getElementById('about').value,
+            approach: document.getElementById('approach').value,
+            tech: [{}],
+            teamMembers: [{}],
+            yt: document.getElementById('yt').value,
+            github: document.getElementById('github').value,
+        }
 
+        
 
+        newProject['year'].push(selectYear)
+        newProject['tech'].push(selectTech)
+        newProject['teamMembers'].push(selectTeam)
+        newProject['semester'].push(selectSem)
 
-        //const regBodyFromClient = new ProjectSchema2();
-        //regBodyFromClient.ProjectName = projectName
-        //regBodyFromClient.IsApproved = 1;
-        //regBodyFromClient.projectDec = about
-        //regBodyFromClient.githubLink = ;
-        //regBodyFromClient.capstoneYear = ;
-        //regBodyFromClient.capstoneSemester = ;
-        //regBodyFromClient.adminID_FK = ;
-        //regBodyFromClient.TeamName = ;
-        //regBodyFromClient.VideoLink = ;
-        //regBodyFromClient.ProjectIntro = ;
-
-        //setProject(company, projectName, year, semester, intro, about, approach, tech, teamMembers, yt, github)
-        //console.log(project)
+        project.push(newProject)
+        
+        console.log(project)
     }
 
     return (
         <div>
-        
-            <form className='projectsubmitform' onSubmit={handleSubmit }>
-            <MDBRow className='mb-4'>
-                <MDBCol>
-                    <MDBInput id='company' label='Company Name' />
-                </MDBCol>
-                <MDBCol>
+
+            <form className='projectsubmitform' onSubmit={handleSubmit}>
+                <MDBRow className='mb-4'>
+                    <MDBCol>
+                        <MDBInput id='company' label='Company Name' />
+                    </MDBCol>
+                    <MDBCol>
                         <MDBInput id='projectName' label='Project Title' />
-                </MDBCol>
+                    </MDBCol>
                 </MDBRow>
 
 
@@ -105,11 +125,12 @@ export default function ProjectSubmit() {
                             name="year"
                             options={years}
                             placeholder='Select year project was completed'
+                            onChange={handleYearChange }
                         />
                     </MDBCol>
                     <MDBCol>
                         <Select
-                            id = 'semester'
+                            id='semester'
                             className="basic-single"
                             classNamePrefix="select"
                             isClearable
@@ -117,25 +138,27 @@ export default function ProjectSubmit() {
                             name="year"
                             options={semester}
                             placeholder='Select semester project was completed'
+                            onChange={handleSemChange }
+
                         />
                     </MDBCol>
                 </MDBRow>
-             <MDBTextArea label='Project introduction' id='intro' className='textAreaExample' rows={2} />
-            <MDBTextArea label='Tell us about your project' id='about' className='textAreaExample' rows={4} />
-            <MDBTextArea label='Tell us about your project approach' id='approach' className='textAreaExample' rows={4} />
-            
-            <CreatableSelect id='tech' isMulti options={technologies} onChange={handleChange} placeholder='Select from the drop down or type' />
-            <CreatableSelect id='teamMembers' isMulti onChange={handleChange} placeholder='Type names' />
+                <MDBTextArea label='Project introduction' id='intro' className='textAreaExample' rows={2} />
+                <MDBTextArea label='Tell us about your project' id='about' className='textAreaExample' rows={4} />
+                <MDBTextArea label='Tell us about your project approach' id='approach' className='textAreaExample' rows={4} />
 
-            <MDBInput label='Github Link' id='github' type='url' />
-            <MDBInput label='Youtube demo link' id='yt' type='url' />
+                <CreatableSelect id='tech' isMulti options={technologies} onChange={handleTechChange} placeholder='Select from the drop down or type' />
+                <CreatableSelect id='teamMembers' isMulti onChange={handleTeamChange} placeholder='Type names' />
+
+                <MDBInput label='Github Link' id='github' type='url' />
+                <MDBInput label='Youtube demo link' id='yt' type='url' />
 
                 <label for="formFileMultiple" class="form-label">Upload screenshots of your project</label>
-                <input class="form-control" type="file" id="formFileMultiple" multiple maxNumber={ maxnumber} />
+                <input class="form-control" type="file" id="formFileMultiple" multiple maxNumber={maxnumber} />
 
-            <MDBBtn className='mb-4' type='submit' block>
-                Submit Project!
-            </MDBBtn>
+                <MDBBtn className='mb-4' type='submit' block>
+                    Submit Project!
+                </MDBBtn>
             </form>
         </div>
     );

@@ -93,7 +93,7 @@ projectRouter.get('/executeSQLcommand', async (req, res) => {
             throw new Error('no sql command provided in request body');
         }
         const projects = (await executeSQLstatement(sql))[0];
-        console.log("Our Data: \n", projects);
+        //console.log("Our Data: \n", projects);
         return res.status(200).setHeader("Content-Type", "application/json").send(projects);
     }
     catch (err) {
