@@ -25,7 +25,73 @@ import {
 
 
 const ProjectView = () => {
+    const params = useParams();
+    const [comments, setComments] = useState('');
+    const [projects, setProject] = useState('');
+    const [likes, setLikes] = useState('');
 
+    // const blueBoxRef = useRef();
+
+
+    const getProject = async () => {
+     
+
+        const response = await fetch(
+            "/projects/project?id=" + params.id
+        ).then((response) => response.json());
+
+
+        console.log(response)
+        setProject(response)
+        
+    };
+
+
+    // Function to collect data
+    const getComments = async () => {
+        const response = await fetch(
+            "/projects/comment?id=" + params.id
+        ).then((response) => response.json());
+
+        setComments(response);
+    };
+
+
+
+    
+
+    
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        var CommentDesc = document.getElementById('comment').value
+        var userID = 1
+        var projectID = params.id
+        
+        fetch('/comment/PostComment', {
+            method: 'POST',
+            headers: { "Accept": "application/json", "Content-Type": "application/json" },
+            body: JSON.stringify({
+                "CommentDesc": CommentDesc,
+                "UserID_FK": userID,
+                "ProjectID_FK": projectID
+            })
+        }).then(() => {
+            console.log('comment Added')
+            getComments();
+
+        })
+        document.getElementById('comment').value = ''
+    };
+
+
+    useEffect(() => {
+        getComments();
+    }, []);
+    
+    useEffect(() => {
+        getProject();
+    }, []);
+    
 
 
 
@@ -114,7 +180,8 @@ const ProjectView = () => {
                     <CButton>  <a href={project.githubLink} target="_blank"> <img src={gitHubLogo}></img>  GitHub</a></CButton>
                     <div>
                         <div className='pv-likeButton'>
-                            <LikeButton />
+                            <LikeButton likenumber={params.id}/>
+                            
                         </div>
                     </div>
                 </div>
@@ -126,69 +193,9 @@ const ProjectView = () => {
     
 
 
-
-    const [comments, setComments] = useState('');
-
-    const params = useParams();
-    const [projects, setProject] = useState('');
-
-    // const blueBoxRef = useRef();
-
-    const getProject = async () => {
-     
-
-        const response = await fetch(
-            "/projects/project?id=" + params.id
-        ).then((response) => response.json());
-
-
-        console.log(response)
-        setProject(response)
-        
-    };
-
-
-    // Function to collect data
-    const getComments = async () => {
-        const response = await fetch(
-            "/projects/comment?id=" + params.id
-        ).then((response) => response.json());
-
-        setComments(response);
-    };
-
-
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        var CommentDesc = document.getElementById('comment').value
-        var userID = 1
-        var projectID = params.id
-
-        fetch('/comment/PostComment', {
-            method: 'POST',
-            headers: { "Accept": "application/json", "Content-Type": "application/json" },
-            body: JSON.stringify({
-                "CommentDesc": CommentDesc,
-                "UserID_FK": userID,
-                "ProjectID_FK": projectID
-            })
-        }).then(() => {
-            console.log('comment Added')
-            getComments();
-
-        })
-        document.getElementById('comment').value = ''
-    };
-
-
-    useEffect(() => {
-        getComments();
-    }, []);
     
-    useEffect(() => {
-        getProject();
-    }, []);
+
+
 
     //Used to set bluebox height to size according to right column
     // const rightColumnRef = useRef();
@@ -217,8 +224,9 @@ const ProjectView = () => {
     // };
 
     return (
-
         <div>
+        
+        
             <div className='bluebox-top'></div>
             <div className='bluebox' style={{ '--right-column-height': 'auto' }}>
                 <div className='p-row'>

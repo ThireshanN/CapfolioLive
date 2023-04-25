@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import cn from "classnames";
 import { ReactComponent as Hand } from "../images/hand.svg";
 
@@ -6,19 +6,52 @@ import "./likeStyles.css";
 
 const particleList = Array.from(Array(10));
 
-const LikeButton2 = () => {
+const LikeButton2 = (props) => {
+    
+  console.log(props)
   const [liked, setLiked] = useState(null);
   const [clicked, setClicked] = useState(false);
-  const [likes, setLikes] = useState(99);
+  const [likes, setLikes] = useState('');
+
+
+    const getLikes = async () => {
+        const response = await fetch(
+            "/projects/like?id=" + props.likenumber
+        ).then((response) => response.json());
+
+        setLikes(response)
+        console.log(response)
+
+
+    };
+
+    useEffect(() => {
+        getLikes();
+    }, []);
 
   const handleClick = () => {
-    if (clicked) {
-      setLikes(likes - 1);
-    } else {
-      setLikes(likes + 1);
+      if (clicked) {
+
+
+          setLikes(likes - 1);
+
+
+
+
+      }
+      else {
+          getLikes()
+          
+
+
+
+
     }
     setClicked(!clicked);
-  };
+    };
+
+
+    
 
   return (
     <button
@@ -53,7 +86,7 @@ const LikeButton2 = () => {
         <Hand />
         <span>Like</span>
         <span className={cn("suffix", { liked })}>d </span>
-        <span className="likes-counter">{ `  | ${likes}` }</span>
+              <span id='projectlike' className="likes-counter">{likes && likes.map((like) => like.No_of_likes)}</span>
       </div>
     </button>
   );
