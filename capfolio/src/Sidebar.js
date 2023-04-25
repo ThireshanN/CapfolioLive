@@ -13,7 +13,7 @@ import {
 } from "@coreui/react";
 
 
-const Sidebar = () => {
+const Sidebar = ({ onApplyFilter }) => {
     const startYears = [
       { value: "2020", label: "2020" },
       { value: "2021", label: "2021" },
@@ -87,6 +87,11 @@ const Sidebar = () => {
         ];
         console.log("Selected Filters: ", allSelectedOptions);
         console.log("Sort By: ", selectedSortBy);
+
+        // Call the FilteredProjectData function passed as a prop
+        if (typeof onApplyFilter === 'function') {
+          onApplyFilter();
+        }
       };
 
     const [selectedOption, setSelectedOption] = useState("");

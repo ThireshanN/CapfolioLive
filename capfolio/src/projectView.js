@@ -12,6 +12,7 @@ import LikeButton from "./components/likeButton";
 import { CButton, } from '@coreui/react';
 import { withTheme } from '@emotion/react';
 import gitHubLogo from './images/github-mark-white.png';
+import { useParams } from 'react-router-dom';
 import {
     MDBRow,
     MDBCol,
@@ -95,29 +96,41 @@ const ProjectView = () => {
     const Header = ({ project }) => {
         return (
             <div className='centerTitle'>
-                <p className='projecttitle'>{project.title}</p>
+                <p className='projecttitle'>{project.ProjectName}</p>
 
                 <div className="names">
-                    <p className='companyname'>By  {project.companyName} -&nbsp;</p>
+                    <p className='companyname'>By  {project.TeamName} -&nbsp;</p>
 
-                    {project.authors.map((name, i) =>
-                        <div className='name'>
-                            <p key={`Key${i}`}>{name},&nbsp;</p>
-                        </div>
-                    )}
+                    {/*{project.authors.map((name, i) =>*/}
+                    {/*    <div classname='name'>*/}
+                    {/*        <p key={`key${i}`}>{name},&nbsp;</p>*/}
+                    {/*    </div>*/}
+                    {/*)}*/}
                 </div>
 
 
                 <div className='techUsed'>
-                    {project.tech.map((tech, i) =>
-                        <div className='tech'>
-                            <p key={`Key${i}`}>{tech}</p>
-                        </div>
-                    )}
+
+                <div className='tech'>
+                       <p>"React"</p>
+                    </div>
+                    <div className='tech'>
+                        <p>"HTML"</p>
+                    </div>
+                    <div className='tech'>
+                        <p>"JS"</p>
+                    </div>
+
+
+                    {/*{project.tech.map((tech, i) =>*/}
+                    {/*    <div className='tech'>*/}
+                    {/*        <p key={`Key${i}`}>{tech}</p>*/}
+                    {/*    </div>*/}
+                    {/*)}*/}
                 </div>
 
                 <div className='pv-buttons'>
-                    <CButton>  <a href={project.gitHubLink} target="_blank"> <img src={gitHubLogo}></img>  GitHub</a></CButton>
+                    <CButton>  <a href={project.githubLink} target="_blank"> <img src={gitHubLogo}></img>  GitHub</a></CButton>
                     <div>
                         <div className='pv-likeButton'>
                             <LikeButton />
@@ -129,52 +142,29 @@ const ProjectView = () => {
         );
     };
 
-    const Fetchfakedatakristen = () => {
-        const [data, setData] = useState(null);
-        const [loading, setLoading] = useState(true);
-        const [error, setError] = useState(null);
+    
 
-        useEffect(() => {
-            fetch(`/test`)
-                .then((response) => {
-                    if (!response.ok) {
-                        throw new Error(
-                            `This is an HTTP error: The status is ${response.status}`
-                        );
-                    }
-                    return response.text();
-                })
-                .then((actualData) => {
-                    setData(actualData);
-                    setError(null);
-                })
-                .catch((err) => {
-                    setError(err.message);
-                    setData(null);
-                })
-                .finally(() => {
-                    setLoading(false);
-                });
-        }, []);
 
-        return (
-            <p>{data}</p>
-        );
-    }
-
-    //Used to set bluebox height to size according to right column
-    const rightColumnRef = useRef();
-    const blueBoxRef = useRef();
-
-    useEffect(() => {
-        const marginTop = parseFloat(window.getComputedStyle(rightColumnRef.current).marginTop);
-        const rightColumnHeight = rightColumnRef.current.offsetHeight + marginTop + 20;
-        blueBoxRef.current.style.setProperty('--right-column-height', `${rightColumnHeight}px`);
-    }, []);
 
     const [comments, setComments] = useState('');
 
- 
+    const params = useParams();
+    const [projects, setProject] = useState('');
+
+    // const blueBoxRef = useRef();
+
+    const getProject = async () => {
+     
+
+        const response = await fetch(
+            "/projects/project?id=" + params.id
+        ).then((response) => response.json());
+
+
+        console.log(response)
+        setProject(response)
+        
+    };
 
 
     // Function to collect data
@@ -182,7 +172,7 @@ const ProjectView = () => {
         const response = await fetch(
             "/comment/getComments"
         ).then((response) => response.json());
-        
+
         setComments(response);
     };
 
@@ -214,22 +204,51 @@ const ProjectView = () => {
     useEffect(() => {
         getComments();
     }, []);
+    
+    useEffect(() => {
+        getProject();
+    }, []);
 
+    //Used to set bluebox height to size according to right column
+    // const rightColumnRef = useRef();
+    // const blueBoxRef = useRef();
+
+    // useEffect(() => {
+    //     const marginTop = parseFloat(window.getComputedStyle(rightColumnRef.current).marginTop);
+    //     const rightColumnHeight = rightColumnRef.current.offsetHeight + marginTop + 20;
+    //     blueBoxRef.current.style.setProperty('--right-column-height', `${rightColumnHeight}px`);
+    // }, []);
+    const rightColumnCallbackRef = (node) => {
+        if (node) {
+            const marginTop = parseFloat(window.getComputedStyle(node).marginTop);
+            const rightColumnHeight = node.offsetHeight + marginTop + 20;
+            const blueBoxElement = document.querySelector('.bluebox');
+            if (blueBoxElement) {
+                blueBoxElement.style.setProperty('--right-column-height', `${rightColumnHeight}px`);
+            }
+        }
+    };
+    
+    // const blueBoxCallbackRef = (node) => {
+    //     if (node) {
+    //         blueBoxRef.current = node;
+    //     }
+    // };
 
     return (
 
         <div>
             <div className='bluebox-top'></div>
-            <div className='bluebox' ref={blueBoxRef} style={{ '--right-column-height': 'auto' }}>
+            <div className='bluebox' style={{ '--right-column-height': 'auto' }}>
                 <div className='p-row'>
                     <div className='column headerleft'>
                         <div className='image'>
                             <Example />
                         </div>
                     </div>
-                    <div className='column headerright' ref={rightColumnRef}>
+                    <div className='column headerright' ref={rightColumnCallbackRef}>
                         <div className='teammembers'>
-                            {projects.map((project) => (
+                            {projects && projects.map((project) => (
                                 <Header key={project.id} project={project} />
                             ))}
                         </div>
@@ -240,13 +259,12 @@ const ProjectView = () => {
             {/* <div className="rowcontent"> */}
             <div className='projectInformation-wrapper'>
                 <div className='projectInformation'>
-                    <h2>About {projects.map((project) => project.title)}</h2>
-                    <p className='about'>{projects.map((project) => project.about)} </p>
+                    <h2>About {projects && projects.map((project) => project.ProjectName)}</h2>
+                    <p className='about'>{projects && projects.map((project) => project.ProjectIntro)} </p>
                     <h2>Project Approach</h2>
-                    <p className='projectApproach'>{projects.map((project) => project.projectApproach)}</p>
-                    <h2>Api Request From Our Backend:</h2>
-                    <Fetchfakedatakristen />
-                    <iframe width="100%" height="350vh" src={projects.map((project) => project.videolink)}>
+                    <p className='projectApproach'>{projects && projects.map((project) => project.Project_Approach)}</p>
+                    
+                    <iframe width="100%" height="350vh" src={projects && projects.map((project) => project.VideoLink)}>
                     </iframe>
                 </div>
             </div>
@@ -259,7 +277,7 @@ const ProjectView = () => {
                 <div className='comments'>
                     <div className='commentheading'>
                         <h2>Comments</h2>
-                        
+
                     </div>
                     <div className='writecomment'>
 
@@ -280,13 +298,13 @@ const ProjectView = () => {
                     <div className='showcomments'>
                         {comments &&
                             comments.map((comment) => (
-                               
+
                                 <div className='comment'>
                                     <div className='commentDetails'>
                                         <img className='comment-avatar' src={avatar} alt="avatar"></img>
                                         <p className='commentname'>{comment.FirstName}</p>
-                                        
-                                        <p className='commentUsertype'>{ comment.UserType}</p>
+
+                                        <p className='commentUsertype'>{comment.UserType}</p>
                                         <p className='commentdate'>{comment.createdTime}</p>
                                     </div>
                                     <p className='commenttext'>{comment.CommentDesc}</p>
