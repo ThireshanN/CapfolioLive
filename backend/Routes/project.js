@@ -8,7 +8,7 @@ import path from 'path';
 
 
 class ProjectSchema {
-    constructor(ProjectID = null, ProjectName = null, IsApproved = null, projectDec = null, capstoneYear = null, capstoneSemester = null, githubLink = null, adminID_FK = null, TeamName = null, VideoLink = null, ProjectIntro = null) {
+    constructor(ProjectID = null, ProjectName = null, IsApproved = null, projectDec = null, capstoneYear = null, capstoneSemester = null, githubLink = null, adminID_FK = null, TeamName = null, VideoLink = null, ProjectIntro = null, Project_Approach = null) {
         this.ProjectID = ProjectID;
         this.ProjectName = ProjectName;
         this.IsApproved = IsApproved;
@@ -20,6 +20,7 @@ class ProjectSchema {
         this.TeamName = TeamName;
         this.VideoLink = VideoLink;
         this.ProjectIntro = ProjectIntro;
+        this.Project_Approach = Project_Approach;
     }
 }
 
@@ -35,6 +36,7 @@ class ProjectSchema2 {
     TeamName;
     VideoLink;
     ProjectIntro;
+    Project_Approach;
     constructor() { }
 }
 
