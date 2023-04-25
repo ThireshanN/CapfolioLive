@@ -75,7 +75,7 @@ const ProjectGallery = () => {
                   <Link to={`/project-view/${project.ProjectID}`}>
                       <CButton><span>View Project</span></CButton>
                   </Link>
-                  <LikeButton />
+                          <LikeButton likenumber={project.ProjectID} />
                 </CCardFooter>
               </CCard>
             </CCol>
