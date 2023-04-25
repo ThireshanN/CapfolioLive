@@ -198,6 +198,118 @@ projectRouter.post('/AddProject', express.json(), async (req, res) => { //workin
 });
 
 
+class ProjectSchema3 {
+    ProjectID; //int
+    ProjectName; //string
+    IsApproved; //int
+    projectDec; //string
+    capstoneYear; //year/string
+    capstoneSemester; //int
+    githubLink; //string
+    adminID_FK; //int
+    TeamName; //string
+    VideoLink; //string
+    ProjectIntro; //int
+    Project_Approach; //int
+    Files; //array of strings
+    Technologies; //array of strings
+    Users; //array of id/int?
+    constructor() { }
+}
+
+class TechnologiesSchema {
+    techID;
+    technologyName;
+    constructor() { }
+}
+
+class TechnologyNames {
+    HTML;
+    CSS;
+    JavaScript;
+    '.NET';
+    docker;
+    php;
+    nodeJS;
+    'Linux Server';
+    'SQL lite';
+    Bootstrap;
+    Github;
+    Unity;
+    FireStore;
+    'Adobe Premiere/Audition';
+    'Artist\'s choice';
+    Discord;
+    Trello;
+    'C#';
+    Aseprite;
+    NextJS;
+    React;
+    MariaDB;
+    Piston;
+    Firebase;
+    'Visual Studio Code';
+    'Visual Studio';
+    Python;
+    JSON;
+    TypeScript;
+    constructor() { }
+}
+
+
+//http://localhost:3000/project/AddProjectv2
+//http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/AddProjectv2
+
+projectRouter.post('/AddProjectv2', express.json(), async (req, res) => { //working 23/04/2023
+    try {
+        //CLIENT DATA FROM FRONTEND
+        const regBodyFromClient = new ProjectSchema3();
+        regBodyFromClient.ProjectName = '\'meowtastic\'';
+        regBodyFromClient.IsApproved = 0;
+        regBodyFromClient.projectDec = '\'progressive web application\'';
+        regBodyFromClient.githubLink = '\'http://github.com\'';
+        regBodyFromClient.capstoneYear = '\'2022\'';
+        regBodyFromClient.capstoneSemester = 2;
+        regBodyFromClient.adminID_FK = 7;
+        regBodyFromClient.TeamName = '\'MeowLand\'';
+        regBodyFromClient.VideoLink = '\'https://www.youtube.com\'';
+        regBodyFromClient.ProjectIntro = '\'Our goal is to create\'';
+        regBodyFromClient.Project_Approach = '\'Our goal is to create\'';
+        regBodyFromClient.Files = [
+            "C:/Users/Kristen Coupe/OneDrive/Desktop/Compsci 399/Capfolio Git Repo/Images/autumn.jpg",
+            "C:/Users/Kristen Coupe/OneDrive/Desktop/Compsci 399/Capfolio Git Repo/Images/spring.jpg",
+            "C:/Users/Kristen Coupe/OneDrive/Desktop/Compsci 399/Capfolio Git Repo/Images/zeus.png"
+        ];
+        regBodyFromClient.Technologies = ['TypeScript', 'HTML', 'CSS', 'React']; //INSERT INTO Capfolio.ProjectTech...... WHERE NAME = 'TypeScript';
+        regBodyFromClient.Users = ['Daisy', 'Peach', 'Browser', 'Mario'];
+
+        //PROJECT TABLE FIELDS
+        const projectFields = (await ProjectSchemaAndFieldNames())[0];
+        let fieldNames = [];
+        let fieldValues = [];
+        projectFields.forEach(field => myFunction(field));
+        function myFunction(field) {
+            if (regBodyFromClient[`${field}`]) {
+                fieldNames.push(`${field}`);
+                fieldValues.push(regBodyFromClient[`${field}`]);
+            }
+        }
+        fieldNames = fieldNames.join(', ');
+        fieldValues = fieldValues.join(', ');
+
+        const sql = `INSERT INTO Capfolio.Project (${fieldNames}) VALUES (${fieldValues})`;
+        console.log(sql);
+        const addedProject = (await executeSQLstatement(sql))[0];
+        console.log("The Data: \n", addedProject);
+        return res.status(200).setHeader("Content-Type", "application/json").send(addedProject);
+    }
+    catch (err) {
+        console.log(err.message);
+        return res.status(400).setHeader("Content-Type", "text/plain").send("Sorry! " + err);
+    }
+});
+
+
 //http://localhost:3000/project/AddProject
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/AddProject
 //NEEDS AUTHORIZATION
