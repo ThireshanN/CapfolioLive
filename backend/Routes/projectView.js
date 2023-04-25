@@ -117,6 +117,7 @@ projectViewRouter.post('/postComment', express.json(), async (req, res) => {
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/projects/project?id=2
 
 async function newLike(projectID){
+    if(currentUserId===null){return "Only logged in Users can like"}
     const sql = `Insert into likes(UserID_FK, ProjectID_FK) VALUES (${currentUserId}, ${projectID});`;
     //console.log(sql);
     const likes = (await executeSQLstatement(sql));
@@ -159,7 +160,7 @@ async function newDisLike(projectID){
   }
 
 
-projectViewRouter.post('/postDisLike', express.json(), async (req, res) => {
+projectViewRouter.delete('/postDisLike', express.json(), async (req, res) => {
 
     try {
         //console.log(req.body.CommentDesc);
