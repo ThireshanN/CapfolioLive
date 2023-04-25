@@ -10,16 +10,13 @@ import { authRouter } from './Routes/auth.js';
 import { commentRouter } from './Routes/comment.js';
 import { projectRouter } from './Routes/project.js';
 import { projectViewRouter } from './Routes/projectView.js';
-import { dnsAWS } from 'addresses.js';
+import { dnsAWS } from './addresses.js';
 import { fileURLToPath } from 'url';
-//backend\addresses.js
-//backend\app.js
 
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 
 
 
