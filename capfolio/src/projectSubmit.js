@@ -8,6 +8,7 @@ import {
     MDBTextArea
 } from 'mdb-react-ui-kit';
 import CreatableSelect from 'react-select/creatable';
+import makeAnimated from "react-select/animated";
 import Select from 'react-select';
 import './projectSubmit.css';
 import App from './App';
@@ -16,7 +17,7 @@ import App from './App';
 
 
 export default function ProjectSubmit() {
-
+    const animatedComponents = makeAnimated();
 
     const [selectedYears, setSelectedYears] = useState([]);
     const handleChangeYears = (selectedYears) => {
@@ -133,6 +134,7 @@ return (
                         isSearchable
                         name="year"
                         options={years}
+                        components={animatedComponents}
                         placeholder='Select year project was completed'
                         onChange={handleChangeYears}
                     />
@@ -144,6 +146,7 @@ return (
                         classNamePrefix="select"
                         isClearable
                         isSearchable
+                        components={animatedComponents}
                         name="year"
                         options={semester}
                         placeholder='Select semester project was completed'
@@ -156,8 +159,8 @@ return (
             <MDBTextArea label='Tell us about your project' id='about' className='textAreaExample' rows={4} />
             <MDBTextArea label='Tell us about your project approach' id='approach' className='textAreaExample' rows={4} />
 
-            <CreatableSelect id='tech' isMulti options={technologies} onChange={handleChangeTechnologies} placeholder='Select from the drop down or type' />
-            <CreatableSelect id='teamMembers' isMulti onChange={handleChangeTeam} placeholder='Type names' />
+            <CreatableSelect id='tech' isMulti components={animatedComponents} options={technologies} onChange={handleChangeTechnologies} placeholder='Select from the drop down or type' />
+            <CreatableSelect id='teamMembers' components={animatedComponents} isMulti onChange={handleChangeTeam} placeholder='Type names' />
 
             <MDBInput label='Github Link' id='github' type='url' />
             <MDBInput label='Youtube demo link' id='yt' type='url' />
