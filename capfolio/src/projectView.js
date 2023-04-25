@@ -64,16 +64,14 @@ const ProjectView = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         var CommentDesc = document.getElementById('comment').value
-        var userID = 1
-        var projectID = params.id
+     
         
-        fetch('/comment/PostComment', {
+        fetch('/projects/PostComment?id=' + params.id, {
             method: 'POST',
             headers: { "Accept": "application/json", "Content-Type": "application/json" },
             body: JSON.stringify({
                 "CommentDesc": CommentDesc,
-                "UserID_FK": userID,
-                "ProjectID_FK": projectID
+             
             })
         }).then(() => {
             console.log('comment Added')
