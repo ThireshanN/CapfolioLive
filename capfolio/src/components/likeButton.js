@@ -7,11 +7,11 @@ import "./likeStyles.css";
 const particleList = Array.from(Array(10));
 
 const LikeButton2 = (props) => {
-    
-  console.log(props)
-  const [liked, setLiked] = useState(null);
-  const [clicked, setClicked] = useState(false);
-  const [likes, setLikes] = useState('');
+
+    console.log(props)
+    const [liked, setLiked] = useState(null);
+    const [clicked, setClicked] = useState(false);
+    const [likes, setLikes] = useState('');
 
 
     const getLikes = async () => {
@@ -25,71 +25,93 @@ const LikeButton2 = (props) => {
 
     };
 
+    const newlike = async () => {
+        await fetch(
+            "/projects/postLike?id=" + props.likenumber, {
+            method: 'POST'
+        })
+        console.log('projectLiked')
+        getLikes()
+    };
+
+
+    const removeLike = async () => {
+        await fetch(
+            "/projects/postDisLike?id=" + props.likenumber, {
+            method: 'POST'
+        })
+        console.log('projectdisliked')
+        getLikes()
+    };
+
+
     useEffect(() => {
         getLikes();
     }, []);
 
-  const handleClick = () => {
-      if (clicked) {
-
-
-          setLikes(likes - 1);
 
 
 
-
-      }
-      else {
-          getLikes()
-          
+    const handleClick = () => {
+        if (clicked) {
 
 
+            removeLike()
+            setClicked(!clicked);
 
 
-    }
-    setClicked(!clicked);
+
+        }
+        else {
+
+            newlike()
+            setClicked(!clicked);
+
+
+
+        }
+
     };
 
 
-    
 
-  return (
-    <button
-      onClick={() => {
-        setLiked(!liked);
-        setClicked(true);
-        handleClick();
-      }}
-      onAnimationEnd={() => setClicked(false)}
-      className={cn("like-button-wrapper", {
-        liked,
-        clicked,
-      })}
-    >
-      {liked && (
-        <div className="particles">
-          {particleList.map((_, index) => (
-            <div
-              className="particle-rotate"
-              style={{
-                transform: `rotate(${
-                  (360 / particleList.length) * index + 1
-                }deg)`,
-              }}
-            >
-              <div className="particle-tick" />
+
+    return (
+        <button
+            onClick={() => {
+                setLiked(!liked);
+                setClicked(true);
+                handleClick();
+            }}
+            onAnimationEnd={() => setClicked(false)}
+            className={cn("like-button-wrapper", {
+                liked,
+                clicked,
+            })}
+        >
+            {liked && (
+                <div className="particles">
+                    {particleList.map((_, index) => (
+                        <div
+                            className="particle-rotate"
+                            style={{
+                                transform: `rotate(${(360 / particleList.length) * index + 1
+                                    }deg)`,
+                            }}
+                        >
+                            <div className="particle-tick" />
+                        </div>
+                    ))}
+                </div>
+            )}
+            <div className="like-button">
+                <Hand />
+                <span>Like</span>
+                <span className={cn("suffix", { liked })}>d </span>
+                <span id='projectlike' className="likes-counter">{likes && likes.map((like) => like.No_of_likes)}</span>
             </div>
-          ))}
-        </div>
-      )}
-      <div className="like-button">
-        <Hand />
-        <span>Like</span>
-        <span className={cn("suffix", { liked })}>d </span>
-              <span id='projectlike' className="likes-counter">{likes && likes.map((like) => like.No_of_likes)}</span>
-      </div>
-    </button>
-  );
+        </button>
+    );
 };
 
 export default LikeButton2;
