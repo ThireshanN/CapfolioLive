@@ -110,7 +110,7 @@ projectRouter.get('/AllProjectData', async (req, res) => { //working 23/04/2023
     try {
         const sql = "SELECT * FROM Capfolio.Project";
         const allProjects = (await executeSQLstatement(sql))[0]//.catch(err => console.log("The following error generated:\n" + err));
-        console.log("Our Data: \n", allProjects);
+        console.log("Our Data lalala: \n", allProjects);
         return res.status(200).setHeader("Content-Type", "application/json").send(allProjects);
     }
     catch (err) {
