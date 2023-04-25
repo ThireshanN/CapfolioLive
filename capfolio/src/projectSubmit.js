@@ -71,40 +71,33 @@ export default function ProjectSubmit() {
         e.preventDefault();
         let project = []
 
-        //const newYear = [
-        //    ...selectedYears
-        //]
-
-        //const newTech = [
-        //    ...selectedTechnologies
-
-        //]
-
-        //const newSem = [
-        //    ...selectedSemesters
-        //]
-
-        //const newTeam = [
-        //    ...selectedTeam
-        //]
-
-
         let newProject = {
-            company: document.getElementById('company').value,
+            TeamName: document.getElementById('company').value,
             projectName: document.getElementById('projectName').value,
-            year: selectedYears,
-            semester: selectedSemesters,
-            intro: document.getElementById('intro').value,
-            about: document.getElementById('about').value,
-            approach: document.getElementById('approach').value,
+            capstoneYear: selectedYears,
+            capstoneSemester: selectedSemesters,
+            ProjectIntro: document.getElementById('intro').value,
+            Project_About: document.getElementById('about').value,
+            Project_Approach: document.getElementById('approach').value,
             tech: selectedTechnologies,
             teamMembers: selectedTeam,
-            yt: document.getElementById('yt').value,
-            github: document.getElementById('github').value,
+            VideoLink: document.getElementById('yt').value,
+            githubLink: document.getElementById('github').value,
         }
 
 
         project.push(newProject)
+
+
+        fetch('/project/AddProject', {
+            method: 'POST',
+            headers: { "Accept": "application/json", "Content-Type": "application/json" },
+            body: JSON.stringify(project)
+        }).then(() => {
+            console.log('Project Added')
+
+        })
+
         console.log(project)
     
 }

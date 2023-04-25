@@ -1,0 +1,87 @@
+.Profile {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.Profile .PictureContainer {
+    margin-bottom: 20px;
+}
+
+.Profile .Picture {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.Profile .Info {
+    text-align: center;
+}
+
+.Profile .Info h1 {
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+.Profile .Info h3 {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: #888;
+}
+
+.Profile .Info p {
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+.Profile .Info input[type="text"],
+.Profile .Info textarea {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    border: none;
+    border-bottom: 2px solid #ccc;
+}
+
+.Profile .Info button {
+    display: block;
+    margin: 10px auto;
+    padding: 10px 20px;
+    background-color: #0077FF;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.Profile .Info button:hover {
+    background-color: #0055CC;
+}
+
+.Profile .Info .Links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.Profile .Info .Links a {
+    display: block;
+    margin-right: 20px;
+    color: #0077FF;
+    text-decoration: none;
+    font-size: 16px;
+    transition: color 0.3s;
+}
+
+.Profile .Info .Links a:hover {
+    color: #0055CC;
+}
