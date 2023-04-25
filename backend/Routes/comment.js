@@ -57,7 +57,7 @@ commentRouter.post('/PostComment', express.json(), async (req, res) => {
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/AllProjectData
 commentRouter.get('/Projects', async (req, res) => {
     try {
-        const sql = "SELECT ProjectID, Project.ProjectName,IsApproved, projectDec, capstoneYear, capstoneSemester, githubLink, VideoLink, TeamName, adminID_FK, ProjectIntro, GROUP_CONCAT(technologiesUsed.technologyName) AS 'techologies' FROM technologiesUsed INNER JOIN ProjectTech  ON technologiesUsed.techID = ProjectTech.techID_FK INNER JOIN Project ON ProjectTech.ProjectID_FK = Project.ProjectID GROUP BY Project.ProjectID;";
+        const sql = "SELECT ProjectID, Project.ProjectName,IsApproved, projectDec, capstoneYear, capstoneSemester, githubLink, VideoLink, TeamName, adminID_FK, ProjectIntro, GROUP_CONCAT(technologiesUsed.technologyName) AS 'techologies' FROM technologiesUsed INNER JOIN ProjectTech ON technologiesUsed.techID = ProjectTech.techID_FK INNER JOIN Project ON ProjectTech.ProjectID_FK = Project.ProjectID GROUP BY Project.ProjectID;";
         const allProjects = (await executeSQLstatement(sql))[0]//.catch(err => console.log("The following error generated:\n" + err));
         
         return res.status(200).setHeader("Content-Type", "application/json").send(allProjects);

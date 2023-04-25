@@ -45,8 +45,12 @@ async function executeSQLstatement(sql) { //working 23/04/2023
     const [rows, result] = await connection.execute(sql);
     await connection.end();
     //console.log(rows, result);
+    console.log(rows);
     return [rows, result];
 }
+//executeSQLstatement("SELECT techID, technologyName FROM Capfolio.technologiesUsed WHERE (technologyName='JavaScript' OR technologyName='docker' OR technologyName='nodeJS')");
+
+
 
 async function executeMultipleSQLstatement(sqlArray) { //working 23/04/2023
     const connection = await mysql.createConnection(config.db);
@@ -61,6 +65,7 @@ async function executeMultipleSQLstatement(sqlArray) { //working 23/04/2023
 }
 
 async function ProjectSchemaAndFieldNames() { //working 23/04/2023
+    //GET all FIELDS from PROJECT table
     try {
         const sql = "SHOW FIELDS FROM Capfolio.Project";
         let fieldData = (await executeSQLstatement(sql))[0];
@@ -73,7 +78,6 @@ async function ProjectSchemaAndFieldNames() { //working 23/04/2023
         console.error("start up the database on AWS console \nOR the error is: " + err);
     }
 };
-//ProjectSchemaAndFieldNames(); 
 
 
 
@@ -88,6 +92,7 @@ async function ProjectSchemaAndFieldNames() { //working 23/04/2023
 
 projectRouter.get('/executeSQLcommand', async (req, res) => {
     try {
+
         const sql = req.body.sql;
         if (!sql) {
             throw new Error('no sql command provided in request body');
@@ -97,7 +102,7 @@ projectRouter.get('/executeSQLcommand', async (req, res) => {
         return res.status(200).setHeader("Content-Type", "application/json").send(projects);
     }
     catch (err) {
-        console.log(err.message);
+        //console.log(err.message);
         return res.status(400).setHeader("Content-Type", "text/plain").send("failed because of " + err);
     }
 })
@@ -110,11 +115,11 @@ projectRouter.get('/AllProjectData', async (req, res) => { //working 23/04/2023
     try {
         const sql = "SELECT * FROM Capfolio.Project";
         const allProjects = (await executeSQLstatement(sql))[0]//.catch(err => console.log("The following error generated:\n" + err));
-        //console.log("Our Data lalala: \n", allProjects);
+        //console.log("Our Data: \n", allProjects);
         return res.status(200).setHeader("Content-Type", "application/json").send(allProjects);
     }
     catch (err) {
-        console.log(err.message);
+        //console.log(err.message);
         return res.status(400).setHeader("Content-Type", "text/plain").send("failed to fetch project data because of " + err);
     }
 });
@@ -148,7 +153,7 @@ projectRouter.get('/FilteredProjectData', async (req, res) => { //working 23/04/
         return res.status(200).setHeader("Content-Type", "application/json").send(projects);
     }
     catch (err) {
-        console.log(err.message);
+        //console.log(err.message);
         return res.status(400).setHeader("Content-Type", "text/plain").send("Sorry! " + err);
     }
 });
@@ -186,13 +191,13 @@ projectRouter.post('/AddProject', express.json(), async (req, res) => { //workin
         fieldValues = fieldValues.join(', ');
 
         const sql = `INSERT INTO Capfolio.Project (${fieldNames}) VALUES (${fieldValues})`;
-        console.log(sql);
+        //console.log(sql);
         const addedProjects = (await executeSQLstatement(sql))[0];
-        console.log("The Data: \n", addedProjects);
+        //console.log("The Data: \n", addedProjects);
         return res.status(200).setHeader("Content-Type", "application/json").send(addedProjects);
     }
     catch (err) {
-        console.log(err.message);
+        //console.log(err.message);
         return res.status(400).setHeader("Content-Type", "text/plain").send("Sorry! " + err);
     }
 });
@@ -253,9 +258,30 @@ class TechnologyNames {
     Python;
     JSON;
     TypeScript;
+    techs;
     constructor() { }
 }
-
+const tech = new TechnologyNames();
+tech.CSS = true;
+tech.JavaScript = true;
+tech.HTML = true
+tech.React = true;
+tech.techs = [1, 2, 3];
+let arr = tech.techs;
+const newarr = arr.map(t => `technologyName=\'${t}\'`);
+console.log(newarr);
+const techStr = newarr.join(' OR ');
+console.log(techStr);
+const { ...objectDestructured } = tech;
+const jsonTech = JSON.stringify(tech);
+const jsTech = JSON.parse(jsonTech);
+// console.log("\nprinting the class object looks like:\n", tech);
+// console.log("\nprinting the destructured class object looks like:\n", objectDestructured);
+// console.log("\nprinting the json equivalent:\n", jsonTech);
+// console.log("\nprinting the js equivalent:\n", jsTech);
+// console.log("class object:\n", tech.HTML); 
+// console.log("json:\n", jsonTech.HTML); //DOESNT WORK
+// console.log("js object:\n", jsTech.HTML); //WORKS
 
 //http://localhost:3000/project/AddProjectv2
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/AddProjectv2
@@ -269,7 +295,7 @@ projectRouter.post('/AddProjectv2', express.json(), async (req, res) => { //work
         regBodyFromClient.projectDec = '\'progressive web application\'';
         regBodyFromClient.githubLink = '\'http://github.com\'';
         regBodyFromClient.capstoneYear = '\'2022\'';
-        regBodyFromClient.capstoneSemester = 2;
+        regBodyFromClient.capstoneSemester = 1;
         regBodyFromClient.adminID_FK = 7;
         regBodyFromClient.TeamName = '\'MeowLand\'';
         regBodyFromClient.VideoLink = '\'https://www.youtube.com\'';
@@ -283,7 +309,14 @@ projectRouter.post('/AddProjectv2', express.json(), async (req, res) => { //work
         regBodyFromClient.Technologies = ['TypeScript', 'HTML', 'CSS', 'React']; //INSERT INTO Capfolio.ProjectTech...... WHERE NAME = 'TypeScript';
         regBodyFromClient.Users = ['Daisy', 'Peach', 'Browser', 'Mario'];
 
-        //PROJECT TABLE FIELDS
+        //insert the respective fields of the project table, into the project table
+        //get the id of that inserted project from results
+        //get the array of id for those technologies
+        //const array = [{ techID: 3, technologyName: 'JavaScript' }]
+        //add the entries into the ProjectTech. If there are 4 technologies, then there are 4 new entries
+        //then add the files to the S3 bucket
+
+        //PROJECT TABLE
         const projectFields = (await ProjectSchemaAndFieldNames())[0];
         let fieldNames = [];
         let fieldValues = [];
@@ -298,13 +331,55 @@ projectRouter.post('/AddProjectv2', express.json(), async (req, res) => { //work
         fieldValues = fieldValues.join(', ');
 
         const sql = `INSERT INTO Capfolio.Project (${fieldNames}) VALUES (${fieldValues})`;
-        console.log(sql);
         const addedProject = (await executeSQLstatement(sql))[0];
-        console.log("The Data: \n", addedProject);
-        return res.status(200).setHeader("Content-Type", "application/json").send(addedProject);
+        const insertId = addedProject["insertId"];
+        console.log("The Data: \n", insertId);
+
+
+        //TECHNOLOGIES TABLE
+        //we have the ProjectID
+        //we need the TechID
+        //`INSERT INTO Capfolio.ProjectTech (TechID, ProjectID) VALUES (?, ${insertId})`;
+        const techArray = regBodyFromClient.Technologies;
+        const newarr = techArray.map(tech => `technologyName=\'${tech}\'`);
+        const techStr = newarr.join(' OR ');
+        let sqlQueryTech = `SELECT techID, technologyName FROM Capfolio.technologiesUsed WHERE (${techStr})`;
+        const selectedTechs = (await executeSQLstatement(sqlQueryTech))[0];
+        let finalTechQueries = [];
+        selectedTechs.forEach(row => finalTechQueries.push(`INSERT INTO Capfolio.ProjectTech (TechID, ProjectID) VALUES (${row.techID}, ${insertId})`));
+        const addedProjectTech = await executeMultipleSQLstatement(finalTechQueries);
+
+        //USERS TABLE
+        const usersArray = regBodyFromClient.Users;
+
+
+        //ADDING FILES
+        const toAddFiles = regBodyFromClient.Files;
+        toAddFiles.forEach(async (file) => addFilesFunction(file, regBodyFromClient.TeamName));
+        async function addFilesFunction(filename, TeamName) {
+            const REGION = "ap-southeast-2";
+            const s3ServiceObject = new S3({
+                region: REGION,
+                credentials: {
+                    accessKeyId: 'AKIAUDUQU75VEF3VDCEL',
+                    secretAccessKey: '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'
+                }
+            });
+            const fileContent = fs.readFileSync(filename);
+            const filenameShort = path.basename(filename);
+            const params = {
+                Bucket: "capfoliostorage",
+                Key: '' + TeamName + "/" + filenameShort,
+                Body: fileContent,
+                ContentType: "image/*"
+            };
+            const results = await s3ServiceObject.send(new PutObjectCommand(params));
+        }
+
+        return res.status(200).setHeader("Content-Type", "application/json").send(insertId);
     }
     catch (err) {
-        console.log(err.message);
+        //console.log(err.message);
         return res.status(400).setHeader("Content-Type", "text/plain").send("Sorry! " + err);
     }
 });
@@ -335,11 +410,11 @@ projectRouter.put('/UpdateProject', express.json(), async (req, res) => { //work
         }
 
         const updatedProjects = await executeMultipleSQLstatement(sqlArray);
-        console.log("The Data: \n", updatedProjects);
+        //console.log("The Data: \n", updatedProjects);
         return res.status(200).setHeader("Content-Type", "application/json").send(updatedProjects);
     }
     catch (err) {
-        console.log(err.message);
+        //console.log(err.message);
         return res.status(400).setHeader("Content-Type", "text/plain").send("Sorry! " + err);
     }
 });
@@ -369,11 +444,11 @@ projectRouter.post('/uploadFile', async (req, res) => { //working 23/04/2023
             ContentType: "image/*"
         };
         const results = await s3ServiceObject.send(new PutObjectCommand(params));
-        console.log("Successfully created " + params.Key + " and uploaded it to " + params.Bucket + "/" + params.Key);
+        //console.log("Successfully created " + params.Key + " and uploaded it to " + params.Bucket + "/" + params.Key);
         return res.status(200).setHeader("Content-Type", "application/json").send(results);
     }
     catch (err) {
-        console.log(err.message);
+        //console.log(err.message);
         return res.status(400).setHeader("Content-Type", "text/plain").send("failed because of " + err);
     }
 });
@@ -386,7 +461,7 @@ projectRouter.get('/retrieveFile', async (req, res) => { //
     try {
         //"filename": "Meowland3/tree.jpg"
         const filename = req.body.filename;
-        console.log("Retrieving file " + filename);
+        //console.log("Retrieving file " + filename);
         //const TeamName = req.body.TeamName;
         const REGION = "ap-southeast-2";
         const s3ServiceObject = new S3({
@@ -403,12 +478,12 @@ projectRouter.get('/retrieveFile', async (req, res) => { //
         const results = await s3ServiceObject.send(new GetObjectCommand(params));
         //NOW, figure out a way to read the file, and store it locally, rather than printing the encoding/whatever
         const str = await results.Body.transformToString();
-        console.log(results);
+        //console.log(results);
         //console.log("Successfully retrieved " + params.Key + " from " + params.Bucket + "/" + params.Key);
         return res.status(200).setHeader("Content-Type", "application/text").send(str);
     }
     catch (err) {
-        console.log(err.message);
+        //console.log(err.message);
         return res.status(400).setHeader("Content-Type", "text/plain").send("failed because of " + err);
     }
 });
