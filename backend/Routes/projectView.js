@@ -53,7 +53,8 @@ projectViewRouter.get("/comment", async (req, res) => {
     }
     catch (err) {
         console.log(err.message);
-        return res.status(400).setHeader("Content-Type", "text/plain").send("failed to fetch project data because of " + err);
+        res.status(400).setHeader("Content-Type", "text/plain").send("failed to fetch project data because of " + err);
+        return
     }
 });
 
