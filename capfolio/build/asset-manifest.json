@@ -1,11 +1,12 @@
 {
   "files": {
-    "main.css": "/static/css/main.5f807f5e.css",
-    "main.js": "/static/js/main.122dcb2c.js",
+    "main.css": "/static/css/main.e126a9bf.css",
+    "main.js": "/static/js/main.e60be43c.js",
     "static/media/homepage-mockup.png": "/static/media/homepage-mockup.948e13b55052dc5b020e.png",
     "static/media/fa-solid-900.ttf": "/static/media/fa-solid-900.4a2cd718d7031b732e76.ttf",
     "static/media/thirdimage.png": "/static/media/thirdimage.0f0644618221e42c4f3d.png",
     "static/media/secondimage.png": "/static/media/secondimage.c9c0929c2c7e73789fc7.png",
+    "static/media/icon.png": "/static/media/icon.e8d678305b1dd059d1f0.png",
     "static/media/fa-brands-400.ttf": "/static/media/fa-brands-400.150de8eaa454d669c405.ttf",
     "static/media/capfolio-illu.png": "/static/media/capfolio-illu.ac6cbe4c2bb6e3c4bc10.png",
     "static/media/fa-solid-900.woff2": "/static/media/fa-solid-900.bb975c966c37455a1bc3.woff2",
@@ -18,11 +19,11 @@
     "static/media/fa-v4compatibility.woff2": "/static/media/fa-v4compatibility.68577e40f3e70067b5da.woff2",
     "static/media/hand.svg": "/static/media/hand.0de74997a1caab714bc8b968482cdd0d.svg",
     "index.html": "/index.html",
-    "main.5f807f5e.css.map": "/static/css/main.5f807f5e.css.map",
-    "main.122dcb2c.js.map": "/static/js/main.122dcb2c.js.map"
+    "main.e126a9bf.css.map": "/static/css/main.e126a9bf.css.map",
+    "main.e60be43c.js.map": "/static/js/main.e60be43c.js.map"
   },
   "entrypoints": [
-    "static/css/main.5f807f5e.css",
-    "static/js/main.122dcb2c.js"
+    "static/css/main.e126a9bf.css",
+    "static/js/main.e60be43c.js"
   ]
 }

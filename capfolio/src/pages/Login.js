@@ -91,7 +91,7 @@ const Login = () => {
               </p>
               <div>
                 <a id="loginButton" href="http://localhost:3000/auth/google">
-                <img src={GoogleLogin}/>
+                <img className='resize-google-button' src={GoogleLogin}/>
                 </a>
               </div>
             </form>
