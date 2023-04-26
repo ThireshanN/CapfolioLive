@@ -96,10 +96,10 @@ export default function ProjectSubmit() {
         let semesterString = capstoneSemester.label;
 
         if (semesterString == 'Semester One') {
-            semesterString = '1'
+            semesterString = 1
         }
         else {
-            semesterString ='2'
+            semesterString = 2
         }
 
 
@@ -108,17 +108,17 @@ export default function ProjectSubmit() {
 
 
         const data2 = {
-            "ProjectName": projectName,
+            "ProjectName": "'" + projectName + "'",
             "IsApproved": 0,
-            "projectDec": Project_About,
-            "githubLink": githubLink,
-            "capstoneYear": yearString,
+            "projectDec": "'" + Project_About+ "'" ,
+            "githubLink": "'" + githubLink + "'",
+            "capstoneYear": "'" + yearString + "'",
             "capstoneSemester": semesterString,
             "adminID_FK": 7,
             "TeamName": TeamName,
-            "VideoLink": VideoLink,
-            "ProjectIntro": ProjectIntro,
-            "Project_Approach": Project_Approach,
+            "VideoLink": "'" + VideoLink + "'",
+            "ProjectIntro": "'" + ProjectIntro + "'",
+            "Project_Approach": "'" + Project_Approach + "'",
             "Files": [],
             "Technologies": arrayTech,
             "Users": usersArray
