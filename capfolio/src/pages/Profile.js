@@ -3,7 +3,7 @@ import { AuthContext } from "../AuthContext";
 import './Profile.css';
 import redHeartImage from '../images/red-heart.png';
 import { Link } from "react-router-dom";
-import icon from '../images/icon.png';
+import icon from '../images/avatar.png';
 
 function Profile() {
     const [isEditing, setIsEditing] = useState(false);
