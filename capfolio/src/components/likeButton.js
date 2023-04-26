@@ -8,7 +8,7 @@ const particleList = Array.from(Array(10));
 
 const LikeButton2 = (props) => {
 
-    console.log(props)
+    
     const [liked, setLiked] = useState(null);
     const [clicked, setClicked] = useState(null);
     const [likes, setLikes] = useState('');
@@ -20,7 +20,7 @@ const LikeButton2 = (props) => {
         ).then((response) => response.json());
 
         setLikes(response)
-        console.log(response)
+   
 
 
     };
@@ -29,9 +29,8 @@ const LikeButton2 = (props) => {
     const initialLikes = async () => {
         const response = await fetch('/projects/ProjectsLiked?id=' + props.likenumber).then((response) => response.json());
 
-        console.log(response)
+      
         if (response[response.length - 1].hasLiked == '0') {
-            console.log(response[response.length - 1].hasLiked)
             setLiked(false)
             setClicked(false)
            
@@ -39,7 +38,6 @@ const LikeButton2 = (props) => {
         }
 
         if (response[response.length - 1].hasLiked == '1') {
-            console.log(response[response.length - 1].hasLiked)
             setLiked(true)
             setClicked(true)        }
 
@@ -50,9 +48,7 @@ const LikeButton2 = (props) => {
     const checkLikes = async () => {
         const response = await fetch('/projects/ProjectsLiked?id=' + props.likenumber).then((response) => response.json());
 
-        console.log(response)
         if (response[response.length - 1].hasLiked == '0') { 
-            console.log(response[response.length - 1].hasLiked)
           
             newlike()
             setLiked(true)
@@ -61,8 +57,6 @@ const LikeButton2 = (props) => {
         }
 
         if (response[response.length - 1].hasLiked == '1') {
-            console.log(response[response.length - 1].hasLiked)
-         
             removeLike()
             setLiked(false)
             setClicked(false)
@@ -79,7 +73,7 @@ const LikeButton2 = (props) => {
                 'projectId': props.likenumber
             })
         })
-        console.log('projectLiked')
+    
         getLikes();
         
     };
@@ -94,7 +88,6 @@ const LikeButton2 = (props) => {
                     'projectId': props.likenumber
                 })
         })
-        console.log('projectdisliked')
         getLikes();
     };
 
