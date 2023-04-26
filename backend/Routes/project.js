@@ -45,7 +45,7 @@ async function executeSQLstatement(sql) { //working 23/04/2023
     const [rows, result] = await connection.execute(sql);
     await connection.end();
     //console.log(rows, result);
-    console.log(rows);
+    //console.log(rows);
     return [rows, result];
 }
 //executeSQLstatement("SELECT techID, technologyName FROM Capfolio.technologiesUsed WHERE (technologyName='JavaScript' OR technologyName='docker' OR technologyName='nodeJS')");
@@ -228,86 +228,14 @@ class TechnologiesSchema {
     constructor() { }
 }
 
-class TechnologyNames {
-    HTML;
-    CSS;
-    JavaScript;
-    '.NET';
-    docker;
-    php;
-    nodeJS;
-    'Linux Server';
-    'SQL lite';
-    Bootstrap;
-    Github;
-    Unity;
-    FireStore;
-    'Adobe Premiere/Audition';
-    'Artist\'s choice';
-    Discord;
-    Trello;
-    'C#';
-    Aseprite;
-    NextJS;
-    React;
-    MariaDB;
-    Piston;
-    Firebase;
-    'Visual Studio Code';
-    'Visual Studio';
-    Python;
-    JSON;
-    TypeScript;
-    techs;
-    constructor() { }
-}
-const tech = new TechnologyNames();
-tech.CSS = true;
-tech.JavaScript = true;
-tech.HTML = true
-tech.React = true;
-tech.techs = [1, 2, 3];
-let arr = tech.techs;
-const newarr = arr.map(t => `technologyName=\'${t}\'`);
-console.log(newarr);
-const techStr = newarr.join(' OR ');
-console.log(techStr);
-const { ...objectDestructured } = tech;
-const jsonTech = JSON.stringify(tech);
-const jsTech = JSON.parse(jsonTech);
-// console.log("\nprinting the class object looks like:\n", tech);
-// console.log("\nprinting the destructured class object looks like:\n", objectDestructured);
-// console.log("\nprinting the json equivalent:\n", jsonTech);
-// console.log("\nprinting the js equivalent:\n", jsTech);
-// console.log("class object:\n", tech.HTML); 
-// console.log("json:\n", jsonTech.HTML); //DOESNT WORK
-// console.log("js object:\n", jsTech.HTML); //WORKS
 
-//http://localhost:3000/project/AddProjectv2
-//http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/AddProjectv2
+//http://localhost:3000/project/FormAddProject
+//http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/FormAddProject
 
-projectRouter.post('/AddProjectv2', express.json(), async (req, res) => { //working 23/04/2023
+projectRouter.post('/FormAddProject', express.json(), async (req, res) => { //
     try {
         //CLIENT DATA FROM FRONTEND
-        const regBodyFromClient = new ProjectSchema3();
-        regBodyFromClient.ProjectName = '\'meowtastic\'';
-        regBodyFromClient.IsApproved = 0;
-        regBodyFromClient.projectDec = '\'progressive web application\'';
-        regBodyFromClient.githubLink = '\'http://github.com\'';
-        regBodyFromClient.capstoneYear = '\'2022\'';
-        regBodyFromClient.capstoneSemester = 1;
-        regBodyFromClient.adminID_FK = 7;
-        regBodyFromClient.TeamName = '\'MeowLand\'';
-        regBodyFromClient.VideoLink = '\'https://www.youtube.com\'';
-        regBodyFromClient.ProjectIntro = '\'Our goal is to create\'';
-        regBodyFromClient.Project_Approach = '\'Our goal is to create\'';
-        regBodyFromClient.Files = [
-            "C:/Users/Kristen Coupe/OneDrive/Desktop/Compsci 399/Capfolio Git Repo/Images/autumn.jpg",
-            "C:/Users/Kristen Coupe/OneDrive/Desktop/Compsci 399/Capfolio Git Repo/Images/spring.jpg",
-            "C:/Users/Kristen Coupe/OneDrive/Desktop/Compsci 399/Capfolio Git Repo/Images/zeus.png"
-        ];
-        regBodyFromClient.Technologies = ['TypeScript', 'HTML', 'CSS', 'React']; //INSERT INTO Capfolio.ProjectTech...... WHERE NAME = 'TypeScript';
-        regBodyFromClient.Users = ['Daisy', 'Peach', 'Browser', 'Mario'];
+        const reqBodyFromClient = req.body;
 
         //insert the respective fields of the project table, into the project table
         //get the id of that inserted project from results
@@ -316,15 +244,16 @@ projectRouter.post('/AddProjectv2', express.json(), async (req, res) => { //work
         //add the entries into the ProjectTech. If there are 4 technologies, then there are 4 new entries
         //then add the files to the S3 bucket
 
+
         //PROJECT TABLE
         const projectFields = (await ProjectSchemaAndFieldNames())[0];
         let fieldNames = [];
         let fieldValues = [];
         projectFields.forEach(field => myFunction(field));
         function myFunction(field) {
-            if (regBodyFromClient[`${field}`]) {
+            if (reqBodyFromClient[`${field}`]) {
                 fieldNames.push(`${field}`);
-                fieldValues.push(regBodyFromClient[`${field}`]);
+                fieldValues.push(reqBodyFromClient[`${field}`]);
             }
         }
         fieldNames = fieldNames.join(', ');
@@ -333,29 +262,48 @@ projectRouter.post('/AddProjectv2', express.json(), async (req, res) => { //work
         const sql = `INSERT INTO Capfolio.Project (${fieldNames}) VALUES (${fieldValues})`;
         const addedProject = (await executeSQLstatement(sql))[0];
         const insertId = addedProject["insertId"];
-        console.log("The Data: \n", insertId);
 
 
         //TECHNOLOGIES TABLE
         //we have the ProjectID
         //we need the TechID
         //`INSERT INTO Capfolio.ProjectTech (TechID, ProjectID) VALUES (?, ${insertId})`;
-        const techArray = regBodyFromClient.Technologies;
+        // reqBodyFromClient.Technologies = ['TypeScript', 'HTML', 'CSS', 'React']; 
+        const techArray = reqBodyFromClient.Technologies;
         const newarr = techArray.map(tech => `technologyName=\'${tech}\'`);
         const techStr = newarr.join(' OR ');
         let sqlQueryTech = `SELECT techID, technologyName FROM Capfolio.technologiesUsed WHERE (${techStr})`;
         const selectedTechs = (await executeSQLstatement(sqlQueryTech))[0];
         let finalTechQueries = [];
-        selectedTechs.forEach(row => finalTechQueries.push(`INSERT INTO Capfolio.ProjectTech (TechID, ProjectID) VALUES (${row.techID}, ${insertId})`));
+        selectedTechs.forEach(row => {
+            finalTechQueries.push(`INSERT INTO Capfolio.ProjectTech (techID_FK, ProjectID_FK) VALUES (${row.techID}, ${insertId})`)
+        });
         const addedProjectTech = await executeMultipleSQLstatement(finalTechQueries);
 
-        //USERS TABLE
-        const usersArray = regBodyFromClient.Users;
 
+        //USERS TABLE
+        //we have the Student table -> (USERID, USERTYPEID=1, STUDENTUPI, PROJECTID, LINKEDINPROGILE)
+        //we have the Users table -> (USERID, USERTYPEID, FIRSTNAME, LASTNAME, EMAIL, PASSWORD)
+        //get the userid from the Capfolio.Users table, based on the user name and lastname
+        //insert a new record into the Student table, where userid comes from the above, usertypeid=1, studentUPI=blankForNow, projectId=insertedId
+        //next question is getting the upi when inserting a record into the Student table.
+        //SELECT UserID FROM Capfolio.Users WHERE (FirstName='Daisy' AND lastName='SuperMarioFamily') OR (FirstName='Peach' AND lastName='SuperMarioFamily');
+        const users = reqBodyFromClient.Users;
+        const whereConditionArr = users.map(user => {
+            return `(FirstName=\'${user.FirstName}\' AND lastName=\'${user.lastName}\')`;
+        });
+        const whereConditionstr = whereConditionArr.join(' OR ');
+        const userIds = (await executeSQLstatement(`SELECT UserID FROM Capfolio.Users WHERE ${whereConditionstr}`))[0];
+        const finalUserSQLQueries = []
+        userIds.forEach(id => {
+            finalUserSQLQueries.push(`INSERT INTO Capfolio.Student (UserID, UserTypeID, projectID) VALUES (${id.UserID}, 1, ${insertId})`);
+        });
+        const addedStudents = await executeMultipleSQLstatement(finalUserSQLQueries);
+        
 
         //ADDING FILES
-        const toAddFiles = regBodyFromClient.Files;
-        toAddFiles.forEach(async (file) => addFilesFunction(file, regBodyFromClient.TeamName));
+        const toAddFiles = reqBodyFromClient.Files;
+        toAddFiles.forEach(async (file) => await addFilesFunction(file, reqBodyFromClient.TeamName));
         async function addFilesFunction(filename, TeamName) {
             const REGION = "ap-southeast-2";
             const s3ServiceObject = new S3({
@@ -376,7 +324,7 @@ projectRouter.post('/AddProjectv2', express.json(), async (req, res) => { //work
             const results = await s3ServiceObject.send(new PutObjectCommand(params));
         }
 
-        return res.status(200).setHeader("Content-Type", "application/json").send(insertId);
+        return res.status(200).setHeader("Content-Type", "application/json").send({id: insertId});
     }
     catch (err) {
         //console.log(err.message);
@@ -490,3 +438,29 @@ projectRouter.get('/retrieveFile', async (req, res) => { //
 
 
 //module.exports = projectRouter;
+
+
+const data = {
+    "ProjectName": "'Meow'",
+    "IsApproved": 0,
+    "projectDec": "'progressive web application'",
+    "githubLink": "'http: //github.com'",
+    "capstoneYear": "'2022'",
+    "capstoneSemester": 1,
+    "adminID_FK": 7,
+    "TeamName": "'Animal'",
+    "VideoLink": "'https: //www.youtube.com'",
+    "ProjectIntro": "'Our goal is to create'",
+    "Project_Approach": "'Our goal is to create'",
+    "Files": [
+    "C:/Users/Krist/OneDrive/Desktop/Compsci 399/Capfolio Project/Images/winterTree.jpg",
+    "C:/Users/Krist/OneDrive/Desktop/Compsci 399/Capfolio Project/Images/summerTree.jpg",
+    "C:/Users/Krist/OneDrive/Desktop/Compsci 399/Capfolio Project/Images/autumnTree.jpg"],
+    "Technologies": ["TypeScript", "HTML", "CSS", "React"], 
+    "Users": [ 
+    {"FirstName": "Daisy", "lastName": "SuperMarioFamily"},
+    {"FirstName": "Peach", "lastName": "SuperMarioFamily"},
+    {"FirstName": "Browser", "lastName": "SuperMarioFamily"},
+    {"FirstName": "Mario", "lastName": "SuperMarioFamily"}]
+}
+//console.log(JSON.parse(JSON.stringify(data)));
