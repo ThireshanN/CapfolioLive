@@ -10,7 +10,7 @@ const LikeButton2 = (props) => {
 
     console.log(props)
     const [liked, setLiked] = useState(null);
-    const [clicked, setClicked] = useState(false);
+    const [clicked, setClicked] = useState(null);
     const [likes, setLikes] = useState('');
 
 
@@ -26,19 +26,46 @@ const LikeButton2 = (props) => {
     };
 
 
-    const checkLikes = async () => {
-        await fetch('/projects/likedProjects?id=' + props.likenumber).then(response = response.text());
+    const initialLikes = async () => {
+        const response = await fetch('/projects/ProjectsLiked?id=' + props.likenumber).then((response) => response.json());
 
         console.log(response)
-        if (response == '0') { 
+        if (response[response.length - 1].hasLiked == '0') {
+            console.log(response[response.length - 1].hasLiked)
             setLiked(false)
             setClicked(false)
+           
 
         }
 
-        if (response == '1') {
+        if (response[response.length - 1].hasLiked == '1') {
+            console.log(response[response.length - 1].hasLiked)
+            setLiked(true)
+            setClicked(true)        }
+
+    }
+
+
+
+    const checkLikes = async () => {
+        const response = await fetch('/projects/ProjectsLiked?id=' + props.likenumber).then((response) => response.json());
+
+        console.log(response)
+        if (response[response.length - 1].hasLiked == '0') { 
+            console.log(response[response.length - 1].hasLiked)
+          
+            newlike()
             setLiked(true)
             setClicked(true)
+
+        }
+
+        if (response[response.length - 1].hasLiked == '1') {
+            console.log(response[response.length - 1].hasLiked)
+         
+            removeLike()
+            setLiked(false)
+            setClicked(false)
         }
 
     }
@@ -53,7 +80,8 @@ const LikeButton2 = (props) => {
             })
         })
         console.log('projectLiked')
-        getLikes()
+        getLikes();
+        
     };
 
 
@@ -67,7 +95,7 @@ const LikeButton2 = (props) => {
                 })
         })
         console.log('projectdisliked')
-        getLikes()
+        getLikes();
     };
 
 
@@ -75,36 +103,23 @@ const LikeButton2 = (props) => {
         getLikes();
     }, []);
 
+    useEffect(() => {
+        initialLikes();
+    }, []);
 
 
-
-    const handleClick = () => {
-    
-        if (clicked) {
-            removeLike()
-            
-        }
-        else {
-
-            newlike()
-      
-
-            
-
-        }
-        setClicked(!clicked);
-    };
-
+  
 
 
 
     return (
         <button
 
-            onLoad={checkLikes}
+            
 
             onClick={() => { 
-                handleClick();
+                checkLikes()
+           
                 
                 
             }}
