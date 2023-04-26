@@ -58,3 +58,8 @@ body, html, .App, #root, .auth-wrapper {
   color: #7f7d7d;
   margin: 0;
 }
+
+.resize-google-button{
+  width: 279px;
+  height: auto;
+}
