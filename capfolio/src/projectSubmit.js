@@ -70,7 +70,7 @@ export default function ProjectSubmit() {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-       const TeamName = document.getElementById('company').value;
+        const TeamName = document.getElementById('company').value;
         const projectName = document.getElementById('projectName').value;
         const capstoneYear = selectedYears;
         const capstoneSemester = selectedSemesters;
@@ -97,13 +97,13 @@ export default function ProjectSubmit() {
             "Files": [],
             "Technologies": ["TypeScript", "HTML", "CSS", "React"],
             "Users": [
-                { "FirstName": "Daisy", "lastName": "SuperMarioFamily" },
-                { "FirstName": "Peach", "lastName": "SuperMarioFamily" },
-                { "FirstName": "Browser", "lastName": "SuperMarioFamily" },
-                { "FirstName": "Mario", "lastName": "SuperMarioFamily" }]
+                { "FirstName": "Jim", "lastName": "SuperMarioFamily" },
+                { "FirstName": "Pam", "lastName": "SuperMarioFamily" },
+                { "FirstName": "Dwight", "lastName": "SuperMarioFamily" },
+                { "FirstName": "Kevin", "lastName": "SuperMarioFamily" }]
         }
-          const body = JSON.parse(JSON.stringify(data))
-          console.log(JSON.parse(JSON.stringify(data)));
+        const body = JSON.parse(JSON.stringify(data))
+        console.log(JSON.parse(JSON.stringify(data)));
 
 
 
@@ -112,7 +112,7 @@ export default function ProjectSubmit() {
             headers: { "Accept": "application/json", "Content-Type": "application/json" },
             body: {
 
-                        body
+                body
                 //"ProjectName": projectName,
                 //"IsApproved": 0,
                 //"projectDec": Project_About,
@@ -188,7 +188,7 @@ export default function ProjectSubmit() {
                 <MDBTextArea label='Tell us about your project approach' id='approach' className='textAreaExample' rows={4} />
 
                 <CreatableSelect id='tech' isMulti components={animatedComponents} options={technologies} onChange={handleChangeTechnologies} placeholder='Select from the drop down or type' />
-                <CreatableSelect id='teamMembers' components={animatedComponents} isMulti onChange={handleChangeTeam} placeholder='Type names' />
+                <CreatableSelect id='teamMembers' components={animatedComponents} isMulti onChange={handleChangeTeam} placeholder="type UPI's of students involved in this project" />
 
                 <MDBInput label='Github Link' id='github' type='url' />
                 <MDBInput label='Youtube demo link' id='yt' type='url' />
