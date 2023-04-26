@@ -60,8 +60,8 @@ export default function ProjectSubmit() {
     ];
 
     const semester = [
-        { value: "sem1", label: "Semester One" },
-        { value: "sem2", label: "Semester Two" },
+        { value: "1", label: "Semester One" },
+        { value: "2", label: "Semester Two" },
 
     ];
 
@@ -81,6 +81,52 @@ export default function ProjectSubmit() {
         const teamMembers = selectedTeam;
         const VideoLink = document.getElementById('yt').value;
         const githubLink = document.getElementById('github').value;
+
+
+        //Puts the objects into an array
+        const arrayTech = [];
+
+        tech.forEach(e => arrayTech.push(e.label))
+
+        const usersArray = []
+        teamMembers.forEach(e => usersArray.push(e.label))
+     
+        
+        console.log(capstoneSemester)
+        let semesterString = capstoneSemester.label;
+
+        if (semesterString == 'Semester One') {
+            semesterString = '1'
+        }
+        else {
+            semesterString ='2'
+        }
+
+
+
+        let yearString = capstoneYear.value;
+
+
+        const data2 = {
+            "ProjectName": projectName,
+            "IsApproved": 0,
+            "projectDec": Project_About,
+            "githubLink": githubLink,
+            "capstoneYear": yearString,
+            "capstoneSemester": semesterString,
+            "adminID_FK": 7,
+            "TeamName": TeamName,
+            "VideoLink": VideoLink,
+            "ProjectIntro": ProjectIntro,
+            "Project_Approach": Project_Approach,
+            "Files": [],
+            "Technologies": arrayTech,
+            "Users": usersArray
+        }
+
+        console.log(JSON.parse(JSON.stringify(data2)));
+
+
 
         const data = {
             "ProjectName": "'woofs'",
