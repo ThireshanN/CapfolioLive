@@ -8,9 +8,9 @@ const particleList = Array.from(Array(10));
 
 const LikeButton2 = (props) => {
 
-    console.log(props)
+    
     const [liked, setLiked] = useState(null);
-    const [clicked, setClicked] = useState(false);
+    const [clicked, setClicked] = useState(null);
     const [likes, setLikes] = useState('');
 
 
@@ -20,10 +20,49 @@ const LikeButton2 = (props) => {
         ).then((response) => response.json());
 
         setLikes(response)
-        console.log(response)
+   
 
 
     };
+
+
+    const initialLikes = async () => {
+        const response = await fetch('/projects/ProjectsLiked?id=' + props.likenumber).then((response) => response.json());
+
+      
+        if (response[response.length - 1].hasLiked == '0') {
+            setLiked(false)
+            setClicked(false)
+           
+
+        }
+
+        if (response[response.length - 1].hasLiked == '1') {
+            setLiked(true)
+            setClicked(true)        }
+
+    }
+
+
+
+    const checkLikes = async () => {
+        const response = await fetch('/projects/ProjectsLiked?id=' + props.likenumber).then((response) => response.json());
+
+        if (response[response.length - 1].hasLiked == '0') { 
+          
+            newlike()
+            setLiked(true)
+            setClicked(true)
+
+        }
+
+        if (response[response.length - 1].hasLiked == '1') {
+            removeLike()
+            setLiked(false)
+            setClicked(false)
+        }
+
+    }
 
     const newlike = async () => {
         await fetch(
@@ -34,8 +73,9 @@ const LikeButton2 = (props) => {
                 'projectId': props.likenumber
             })
         })
-        console.log('projectLiked')
-        getLikes()
+    
+        getLikes();
+        
     };
 
 
@@ -48,8 +88,7 @@ const LikeButton2 = (props) => {
                     'projectId': props.likenumber
                 })
         })
-        console.log('projectdisliked')
-        getLikes()
+        getLikes();
     };
 
 
@@ -57,35 +96,23 @@ const LikeButton2 = (props) => {
         getLikes();
     }, []);
 
+    useEffect(() => {
+        initialLikes();
+    }, []);
 
 
-
-    const handleClick = () => {
-    
-        if (clicked) {
-            removeLike()
-            
-        }
-        else {
-
-            newlike()
-      
-
-            
-
-        }
-        setClicked(!clicked);
-    };
-
+  
 
 
 
     return (
         <button
-            onClick={() => {
-                setLiked(!liked);
-                setClicked(true);
-                handleClick();
+
+            
+
+            onClick={() => { 
+                checkLikes()
+           
                 
                 
             }}
@@ -114,7 +141,7 @@ const LikeButton2 = (props) => {
                 <Hand />
                 <span>Like</span>
                 <span className={cn("suffix", { liked })}>d </span>
-                <span id='projectlike' className="likes-counter">   |{likes && likes.map((like) => like.No_of_likes)}</span>
+                <span id='projectlike' className="likes-counter">   | {likes && likes.map((like) => like.No_of_likes)}</span>
             </div>
         </button>
     );
