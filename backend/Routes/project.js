@@ -467,6 +467,13 @@ const data = {
 }
 //console.log(JSON.parse(JSON.stringify(data)));
 
-async function readFile(filename) {
 
+let filePath = './my-awesome-file.txt';
+filePath = "C:/Users/Krist/OneDrive/Desktop/Compsci 399/Capfolio Project/Images/winterTree.jpg";
+if (fs.existsSync(filePath)) {
+  console.log('file exists');
+} else {
+  console.log('file not found!');
 }
+
+//SELECT DISTINCT * FROM Capfolio.Users CROSS JOIN Capfolio.Student ON Capfolio.Users.UserID=Capfolio.Student.UserID ORDER BY Capfolio.Users.UserID;
