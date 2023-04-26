@@ -12,6 +12,7 @@ import makeAnimated from "react-select/animated";
 import Select from 'react-select';
 import './projectSubmit.css';
 import App from './App';
+import { compare } from 'bcrypt';
 
 
 
@@ -69,102 +70,112 @@ export default function ProjectSubmit() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        let project = []
-
-        let newProject = {
-            TeamName: document.getElementById('company').value,
-            projectName: document.getElementById('projectName').value,
-            capstoneYear: selectedYears,
-            capstoneSemester: selectedSemesters,
-            ProjectIntro: document.getElementById('intro').value,
-            Project_About: document.getElementById('about').value,
-            Project_Approach: document.getElementById('approach').value,
-            tech: selectedTechnologies,
-            teamMembers: selectedTeam,
-            VideoLink: document.getElementById('yt').value,
-            githubLink: document.getElementById('github').value,
-        }
+   
+        TeamName = document.getElementById('company').value;
+        projectName = document.getElementById('projectName').value;
+        capstoneYear = selectedYears;
+        capstoneSemester = selectedSemesters;
+        ProjectIntro = document.getElementById('intro').value;
+        Project_About = document.getElementById('about').value;
+        Project_Approach = document.getElementById('approach').value;
+        tech = selectedTechnologies;
+        teamMembers = selectedTeam;
+        VideoLink = document.getElementById('yt').value;
+        githubLink = document.getElementById('github').value;
 
 
-        project.push(newProject)
+            fetch('/project/FormAddProject', {
+                method: 'POST',
+                headers: { "Accept": "application/json", "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    "ProjectName": projectName,
+                    "IsApproved": 0,
+                    "projectDec": project_About,
+                    "githubLink": githubLink,
+                    "capstoneYear": capstoneYear,
+                    "capstoneSemester": capstoneSemester,
+                    "adminID_FK": 7,
+                    "TeamName": TeamName,
+                    "VideoLink": VideoLink,
+                    "ProjectIntro": ProjectIntro,
+                    "Project_Approach": Project_Approach,
+                    "Files": [],
+                    "Technologies": tech,
+                    "Users": teamMembers
+
+                })
+            }).then(() => {
+                console.log('ProjectAdded')
+                getComments();
+
+            })
+   
+
+    }
 
 
-        fetch('/project/AddProject', {
-            method: 'POST',
-            headers: { "Accept": "application/json", "Content-Type": "application/json" },
-            body: JSON.stringify(project)
-        }).then(() => {
-            console.log('Project Added')
+    return (
+        <div>
 
-        })
-
-        console.log(project)
-    
-}
-
-
-return (
-    <div>
-
-        <form className='projectsubmitform' onSubmit={handleSubmit}>
-            <MDBRow className='mb-4'>
-                <MDBCol>
-                    <MDBInput id='company' label='Company Name' />
-                </MDBCol>
-                <MDBCol>
-                    <MDBInput id='projectName' label='Project Title' />
-                </MDBCol>
-            </MDBRow>
+            <form className='projectsubmitform' onSubmit={handleSubmit}>
+                <MDBRow className='mb-4'>
+                    <MDBCol>
+                        <MDBInput id='company' label='Company Name' />
+                    </MDBCol>
+                    <MDBCol>
+                        <MDBInput id='projectName' label='Project Title' />
+                    </MDBCol>
+                </MDBRow>
 
 
-            <MDBRow className='mb-4'>
-                <MDBCol>
-                    <Select
-                        id='year'
-                        className="basic-single"
-                        classNamePrefix="select"
-                        isClearable
-                        isSearchable
-                        name="year"
-                        options={years}
-                        components={animatedComponents}
-                        placeholder='Select year project was completed'
-                        onChange={handleChangeYears}
-                    />
-                </MDBCol>
-                <MDBCol>
-                    <Select
-                        id='semester'
-                        className="basic-single"
-                        classNamePrefix="select"
-                        isClearable
-                        isSearchable
-                        components={animatedComponents}
-                        name="year"
-                        options={semester}
-                        placeholder='Select semester project was completed'
-                        onChange={handleChangeSemesters}
+                <MDBRow className='mb-4'>
+                    <MDBCol>
+                        <Select
+                            id='year'
+                            className="basic-single"
+                            classNamePrefix="select"
+                            isClearable
+                            isSearchable
+                            name="year"
+                            options={years}
+                            components={animatedComponents}
+                            placeholder='Select year project was completed'
+                            onChange={handleChangeYears}
+                        />
+                    </MDBCol>
+                    <MDBCol>
+                        <Select
+                            id='semester'
+                            className="basic-single"
+                            classNamePrefix="select"
+                            isClearable
+                            isSearchable
+                            components={animatedComponents}
+                            name="year"
+                            options={semester}
+                            placeholder='Select semester project was completed'
+                            onChange={handleChangeSemesters}
 
-                    />
-                </MDBCol>
-            </MDBRow>
-            <MDBTextArea label='Project introduction' id='intro' className='textAreaExample' rows={2} />
-            <MDBTextArea label='Tell us about your project' id='about' className='textAreaExample' rows={4} />
-            <MDBTextArea label='Tell us about your project approach' id='approach' className='textAreaExample' rows={4} />
+                        />
+                    </MDBCol>
+                </MDBRow>
+                <MDBTextArea label='Project introduction' id='intro' className='textAreaExample' rows={2} />
+                <MDBTextArea label='Tell us about your project' id='about' className='textAreaExample' rows={4} />
+                <MDBTextArea label='Tell us about your project approach' id='approach' className='textAreaExample' rows={4} />
 
-            <CreatableSelect id='tech' isMulti components={animatedComponents} options={technologies} onChange={handleChangeTechnologies} placeholder='Select from the drop down or type' />
-            <CreatableSelect id='teamMembers' components={animatedComponents} isMulti onChange={handleChangeTeam} placeholder='Type names' />
+                <CreatableSelect id='tech' isMulti components={animatedComponents} options={technologies} onChange={handleChangeTechnologies} placeholder='Select from the drop down or type' />
+                <CreatableSelect id='teamMembers' components={animatedComponents} isMulti onChange={handleChangeTeam} placeholder='Type names' />
 
-            <MDBInput label='Github Link' id='github' type='url' />
-            <MDBInput label='Youtube demo link' id='yt' type='url' />
+                <MDBInput label='Github Link' id='github' type='url' />
+                <MDBInput label='Youtube demo link' id='yt' type='url' />
 
-            <label for="formFileMultiple" class="form-label">Upload screenshots of your project</label>
-            <input class="form-control" type="file" id="formFileMultiple" multiple maxNumber={maxnumber} />
+                <label for="formFileMultiple" class="form-label">Upload screenshots of your project</label>
+                <input class="form-control" type="file" id="formFileMultiple" multiple maxNumber={maxnumber} />
 
-            <MDBBtn className='mb-4' type='submit' block>
-                Submit Project!
-            </MDBBtn>
-        </form>
-    </div>
-);
+                <MDBBtn className='mb-4' type='submit' block>
+                    Submit Project!
+                </MDBBtn>
+            </form>
+        </div>
+    );
 }
