@@ -218,7 +218,7 @@ class ProjectSchema3 {
     Project_Approach; //int
     Files; //array of strings
     Technologies; //array of strings
-    Users; //array of id/int?
+    Users; //array of strings
     constructor() { }
 }
 
@@ -299,32 +299,34 @@ projectRouter.post('/FormAddProject', express.json(), async (req, res) => { //
             finalUserSQLQueries.push(`INSERT INTO Capfolio.Student (UserID, UserTypeID, projectID) VALUES (${id.UserID}, 1, ${insertId})`);
         });
         const addedStudents = await executeMultipleSQLstatement(finalUserSQLQueries);
-        
+
 
         //ADDING FILES
         const toAddFiles = reqBodyFromClient.Files;
-        toAddFiles.forEach(async (file) => await addFilesFunction(file, reqBodyFromClient.TeamName));
-        async function addFilesFunction(filename, TeamName) {
-            const REGION = "ap-southeast-2";
-            const s3ServiceObject = new S3({
-                region: REGION,
-                credentials: {
-                    accessKeyId: 'AKIAUDUQU75VEF3VDCEL',
-                    secretAccessKey: '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'
-                }
-            });
-            const fileContent = fs.readFileSync(filename);
-            const filenameShort = path.basename(filename);
-            const params = {
-                Bucket: "capfoliostorage",
-                Key: '' + TeamName + "/" + filenameShort,
-                Body: fileContent,
-                ContentType: "image/*"
-            };
-            const results = await s3ServiceObject.send(new PutObjectCommand(params));
+        if (toAddFiles !== undefined || toAddFiles.length != 0) {
+            toAddFiles.forEach(async (file) => await addFilesFunction(file, reqBodyFromClient.TeamName));
+            async function addFilesFunction(filename, TeamName) {
+                const REGION = "ap-southeast-2";
+                const s3ServiceObject = new S3({
+                    region: REGION,
+                    credentials: {
+                        accessKeyId: 'AKIAUDUQU75VEF3VDCEL',
+                        secretAccessKey: '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'
+                    }
+                });
+                const fileContent = fs.readFileSync(filename);
+                const filenameShort = path.basename(filename);
+                const params = {
+                    Bucket: "capfoliostorage",
+                    Key: '' + TeamName + "/" + filenameShort,
+                    Body: fileContent,
+                    ContentType: "image/*"
+                };
+                const results = await s3ServiceObject.send(new PutObjectCommand(params));
+            }
         }
 
-        return res.status(200).setHeader("Content-Type", "application/json").send({id: insertId});
+        return res.status(200).setHeader("Content-Type", "application/json").send({ id: insertId });
     }
     catch (err) {
         //console.log(err.message);
@@ -453,14 +455,18 @@ const data = {
     "ProjectIntro": "'Our goal is to create'",
     "Project_Approach": "'Our goal is to create'",
     "Files": [
-    "C:/Users/Krist/OneDrive/Desktop/Compsci 399/Capfolio Project/Images/winterTree.jpg",
-    "C:/Users/Krist/OneDrive/Desktop/Compsci 399/Capfolio Project/Images/summerTree.jpg",
-    "C:/Users/Krist/OneDrive/Desktop/Compsci 399/Capfolio Project/Images/autumnTree.jpg"],
-    "Technologies": ["TypeScript", "HTML", "CSS", "React"], 
-    "Users": [ 
-    {"FirstName": "Daisy", "lastName": "SuperMarioFamily"},
-    {"FirstName": "Peach", "lastName": "SuperMarioFamily"},
-    {"FirstName": "Browser", "lastName": "SuperMarioFamily"},
-    {"FirstName": "Mario", "lastName": "SuperMarioFamily"}]
+        "C:/Users/Krist/OneDrive/Desktop/Compsci 399/Capfolio Project/Images/winterTree.jpg",
+        "C:/Users/Krist/OneDrive/Desktop/Compsci 399/Capfolio Project/Images/summerTree.jpg",
+        "C:/Users/Krist/OneDrive/Desktop/Compsci 399/Capfolio Project/Images/autumnTree.jpg"],
+    "Technologies": ["TypeScript", "HTML", "CSS", "React"],
+    "Users": [
+        { "FirstName": "Daisy", "lastName": "SuperMarioFamily" },
+        { "FirstName": "Peach", "lastName": "SuperMarioFamily" },
+        { "FirstName": "Browser", "lastName": "SuperMarioFamily" },
+        { "FirstName": "Mario", "lastName": "SuperMarioFamily" }]
 }
 //console.log(JSON.parse(JSON.stringify(data)));
+
+async function readFile(filename) {
+
+}
