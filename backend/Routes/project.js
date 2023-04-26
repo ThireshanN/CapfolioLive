@@ -228,60 +228,6 @@ class TechnologiesSchema {
     constructor() { }
 }
 
-class TechnologyNames {
-    HTML;
-    CSS;
-    JavaScript;
-    '.NET';
-    docker;
-    php;
-    nodeJS;
-    'Linux Server';
-    'SQL lite';
-    Bootstrap;
-    Github;
-    Unity;
-    FireStore;
-    'Adobe Premiere/Audition';
-    'Artist\'s choice';
-    Discord;
-    Trello;
-    'C#';
-    Aseprite;
-    NextJS;
-    React;
-    MariaDB;
-    Piston;
-    Firebase;
-    'Visual Studio Code';
-    'Visual Studio';
-    Python;
-    JSON;
-    TypeScript;
-    techs;
-    constructor() { }
-}
-const tech = new TechnologyNames();
-tech.CSS = true;
-tech.JavaScript = true;
-tech.HTML = true
-tech.React = true;
-tech.techs = [1, 2, 3];
-let arr = tech.techs;
-const newarr = arr.map(t => `technologyName=\'${t}\'`);
-//console.log(newarr);
-const techStr = newarr.join(' OR ');
-//console.log(techStr);
-const { ...objectDestructured } = tech;
-const jsonTech = JSON.stringify(tech);
-const jsTech = JSON.parse(jsonTech);
-// console.log("\nprinting the class object looks like:\n", tech);
-// console.log("\nprinting the destructured class object looks like:\n", objectDestructured);
-// console.log("\nprinting the json equivalent:\n", jsonTech);
-// console.log("\nprinting the js equivalent:\n", jsTech);
-// console.log("class object:\n", tech.HTML); 
-// console.log("json:\n", jsonTech.HTML); //DOESNT WORK
-// console.log("js object:\n", jsTech.HTML); //WORKS
 
 //http://localhost:3000/project/FormAddProject
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/FormAddProject
@@ -298,7 +244,7 @@ projectRouter.post('/FormAddProject', express.json(), async (req, res) => { //
         //add the entries into the ProjectTech. If there are 4 technologies, then there are 4 new entries
         //then add the files to the S3 bucket
 
-        
+
         //PROJECT TABLE
         const projectFields = (await ProjectSchemaAndFieldNames())[0];
         let fieldNames = [];
