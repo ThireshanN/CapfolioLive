@@ -48,7 +48,7 @@ async function executeSQLstatement(sql) { //working 23/04/2023
     //console.log(rows);
     return [rows, result];
 }
-//executeSQLstatement("SELECT techID, technologyName FROM Capfolio.technologiesUsed WHERE (technologyName='JavaScript' OR technologyName='docker' OR technologyName='nodeJS')");
+//executeSQLstatement("");
 
 
 
@@ -237,13 +237,6 @@ projectRouter.post('/FormAddProject', express.json(), async (req, res) => { //
         //CLIENT DATA FROM FRONTEND
         const reqBodyFromClient = req.body;
 
-        //insert the respective fields of the project table, into the project table
-        //get the id of that inserted project from results
-        //get the array of id for those technologies
-        //const array = [{ techID: 3, technologyName: 'JavaScript' }]
-        //add the entries into the ProjectTech. If there are 4 technologies, then there are 4 new entries
-        //then add the files to the S3 bucket
-
 
         //PROJECT TABLE
         const projectFields = (await ProjectSchemaAndFieldNames())[0];
@@ -264,11 +257,8 @@ projectRouter.post('/FormAddProject', express.json(), async (req, res) => { //
         const insertId = addedProject["insertId"];
 
 
+
         //TECHNOLOGIES TABLE
-        //we have the ProjectID
-        //we need the TechID
-        //`INSERT INTO Capfolio.ProjectTech (TechID, ProjectID) VALUES (?, ${insertId})`;
-        // reqBodyFromClient.Technologies = ['TypeScript', 'HTML', 'CSS', 'React']; 
         const techArray = reqBodyFromClient.Technologies;
         const newarr = techArray.map(tech => `technologyName=\'${tech}\'`);
         const techStr = newarr.join(' OR ');
@@ -281,31 +271,53 @@ projectRouter.post('/FormAddProject', express.json(), async (req, res) => { //
         const addedProjectTech = await executeMultipleSQLstatement(finalTechQueries);
 
 
-        //USERS TABLE
-        //we have the Student table -> (USERID, USERTYPEID=1, STUDENTUPI, PROJECTID, LINKEDINPROGILE)
-        //we have the Users table -> (USERID, USERTYPEID, FIRSTNAME, LASTNAME, EMAIL, PASSWORD)
-        //get the userid from the Capfolio.Users table, based on the user name and lastname
-        //insert a new record into the Student table, where userid comes from the above, usertypeid=1, studentUPI=blankForNow, projectId=insertedId
-        //next question is getting the upi when inserting a record into the Student table.
-        //SELECT UserID FROM Capfolio.Users WHERE (FirstName='Daisy' AND lastName='SuperMarioFamily') OR (FirstName='Peach' AND lastName='SuperMarioFamily');
-        const users = reqBodyFromClient.Users;
-        const whereConditionArr = users.map(user => {
-            return `(FirstName=\'${user.FirstName}\' AND lastName=\'${user.lastName}\')`;
+        //USERS TABLE based on "Users": [ {"FirstName": "Daisy", "lastName": "SuperMarioFamily"} ]
+        // const users = reqBodyFromClient.Users; //actually the UPIs
+        // const whereConditionArr = users.map(user => {
+        //     return `(FirstName=\'${user.FirstName}\' AND lastName=\'${user.lastName}\')`;
+        // });
+        // const whereConditionstr = whereConditionArr.join(' OR ');
+        // const userIds = (await executeSQLstatement(`SELECT UserID FROM Capfolio.Users WHERE ${whereConditionstr}`))[0];
+        // const finalUserSQLQueries = []
+        // userIds.forEach(id => {
+        //     finalUserSQLQueries.push(`INSERT INTO Capfolio.Student (UserID, UserTypeID, projectID) VALUES (${id.UserID}, 1, ${insertId})`);
+        // });
+        // const addedStudents = await executeMultipleSQLstatement(finalUserSQLQueries);
+
+
+        //USERS TABLE based on Users: ['upi']
+        //get the userId based on the UPI's provided
+        //if UPI is not found in the database, create a new user and only populate the upi field? then when the user actually registers themselves, it check the database for that upi, and just populates the rest of the fields, rather than creating a duplicate record
+        const UPIs = reqBodyFromClient.Users; //actually the UPIs
+        const checkForMissingUPIarray = UPIs.map(upi => { return `SELECT \'${upi}\' AS MissingUPI`; });
+        const checkForMissingUPIstring = checkForMissingUPIarray.join(' UNION ALL ');
+        const checkForMissingUPICommand = (await executeSQLstatement(`SELECT v.MissingUPI FROM (${checkForMissingUPIstring}) v WHERE v.MissingUPI NOT IN (SELECT StudentUPI FROM Capfolio.Student)`))[0];
+        const noSuchUPI = checkForMissingUPICommand.map(element => element.MissingUPI);
+        UPIs.forEach(async upi => {
+            if (noSuchUPI.includes(upi)) {
+                //they have no userid, so just insert into student table, and populate ProjectID and UserTypeID and StudentUPI
+                const rows = (await executeSQLstatement(`INSERT INTO Capfolio.Student (projectID, UserTypeID, StudentUPI) VALUES (${insertId}, 1, \'${upi}\')`))[0];
+            } else {
+                //all valid upis, userid already exist for them?, insert into Student table and just populate ProjectID and UserTypeID
+                const rows = (await executeSQLstatement(`UPDATE Capfolio.Student SET projectID = ${insertId}, UserTypeID = 1 WHERE Capfolio.Student.StudentUPI = \'${upi}\'`))[0];
+            }
         });
-        const whereConditionstr = whereConditionArr.join(' OR ');
-        const userIds = (await executeSQLstatement(`SELECT UserID FROM Capfolio.Users WHERE ${whereConditionstr}`))[0];
-        const finalUserSQLQueries = []
-        userIds.forEach(id => {
-            finalUserSQLQueries.push(`INSERT INTO Capfolio.Student (UserID, UserTypeID, projectID) VALUES (${id.UserID}, 1, ${insertId})`);
-        });
-        const addedStudents = await executeMultipleSQLstatement(finalUserSQLQueries);
+
 
 
         //ADDING FILES
         const toAddFiles = reqBodyFromClient.Files;
         if (toAddFiles !== undefined || toAddFiles.length != 0) {
             toAddFiles.forEach(async (file) => await addFilesFunction(file, reqBodyFromClient.TeamName));
-            async function addFilesFunction(filename, TeamName) {
+            async function addFilesFunction(file, TeamName) {
+                const rawFile = String.raw`${file}`;
+                const filename = (rawFile.split('\\')).join('/');
+                if (fs.existsSync(filename)) {
+                    console.log('file exists');
+                } else {
+                    console.log('file not found!');
+                }
+
                 const REGION = "ap-southeast-2";
                 const s3ServiceObject = new S3({
                     region: REGION,
@@ -325,7 +337,7 @@ projectRouter.post('/FormAddProject', express.json(), async (req, res) => { //
                 const results = await s3ServiceObject.send(new PutObjectCommand(params));
             }
         }
-
+        
         return res.status(200).setHeader("Content-Type", "application/json").send({ id: insertId });
     }
     catch (err) {
@@ -467,13 +479,5 @@ const data = {
 }
 //console.log(JSON.parse(JSON.stringify(data)));
 
+let filePath = "C:\Users\Kristen Coupe\OneDrive\Desktop\Compsci 399\Capfolio Git Repo\Images\winter.jpg";
 
-let filePath = './my-awesome-file.txt';
-filePath = "C:/Users/Krist/OneDrive/Desktop/Compsci 399/Capfolio Project/Images/winterTree.jpg";
-if (fs.existsSync(filePath)) {
-  console.log('file exists');
-} else {
-  console.log('file not found!');
-}
-
-//SELECT DISTINCT * FROM Capfolio.Users CROSS JOIN Capfolio.Student ON Capfolio.Users.UserID=Capfolio.Student.UserID ORDER BY Capfolio.Users.UserID;
