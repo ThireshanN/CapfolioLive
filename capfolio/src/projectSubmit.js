@@ -82,7 +82,10 @@ export default function ProjectSubmit() {
         const VideoLink = document.getElementById('yt').value;
         const githubLink = document.getElementById('github').value;
 
-
+        const string = String.raw`C:\Development\profile\aboutme.html`;
+        console.log(string)
+        let newstring = string.split('\\').join('/');
+        console.log(newstring)
         //Puts the objects into an array
         const arrayTech = [];
 
