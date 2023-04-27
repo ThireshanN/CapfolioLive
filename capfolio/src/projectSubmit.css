@@ -24,3 +24,17 @@
 .form-outline{
     margin-bottom: 20px;
 }
+.thumbnail {
+    display:flex;
+    height: auto;
+    width: 50px;
+}
+
+
+.mb-4{
+    margin-top: 50px;
+}
+
+.displayThumbnail{
+    display: flex;
+}

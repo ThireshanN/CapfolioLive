@@ -1,4 +1,4 @@
-import React, { useState, KeyboardEventHandler } from 'react';
+import React, { useState, ChangeEvent, KeyboardEventHandler } from 'react';
 import {
     MDBRow,
     MDBCol,
@@ -17,31 +17,6 @@ import App from './App';
 
 
 export default function ProjectSubmit() {
-    const animatedComponents = makeAnimated();
-
-    const [selectedYears, setSelectedYears] = useState([]);
-    const handleChangeYears = (selectedYears) => {
-        setSelectedYears(selectedYears);
-    };
-
-    const [selectedSemesters, setSelectedSemesters] = useState([]);
-    const handleChangeSemesters = (selectedSemesters) => {
-        setSelectedSemesters(selectedSemesters);
-    };
-
-    const [selectedTechnologies, setSelectedTechnologies] = useState([]);
-    const handleChangeTechnologies = (selectedTechnologies) => {
-        setSelectedTechnologies(selectedTechnologies);
-    };
-
-    const [selectedTeam, setSelectedTeam] = useState([]);
-    const handleChangeTeam = (selectedTeam) => {
-        setSelectedTeam(selectedTeam);
-    }
-
-
-
-
     const technologies = [
         { value: "blues", label: "React" },
         { value: "rock", label: "Javascript" },
@@ -65,11 +40,60 @@ export default function ProjectSubmit() {
 
     ];
 
-    const maxnumber = 3
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    const animatedComponents = makeAnimated();
 
+    const [selectedYears, setSelectedYears] = useState([]);
+    const handleChangeYears = (selectedYears) => {
+        setSelectedYears(selectedYears);
+    };
+
+    const [selectedSemesters, setSelectedSemesters] = useState([]);
+    const handleChangeSemesters = (selectedSemesters) => {
+        setSelectedSemesters(selectedSemesters);
+    };
+
+    const [selectedTechnologies, setSelectedTechnologies] = useState([]);
+    const handleChangeTechnologies = (selectedTechnologies) => {
+        setSelectedTechnologies(selectedTechnologies);
+    };
+
+    const [selectedTeam, setSelectedTeam] = useState([]);
+    const handleChangeTeam = (selectedTeam) => {
+        setSelectedTeam(selectedTeam);
+    }
+
+    const [imageUrls, setImageUrls] = useState([]);
+
+
+    const handleImageChange = (e) => {
+        const files = e.target.files;
+        const urls = [];
+
+        for (let i = 0; i < files.length; i++) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                urls.push(event.target.result);
+                if (urls.length === files.length) {
+                    setImageUrls([...imageUrls, ...urls]);
+                }
+            };
+            reader.readAsDataURL(files[i]);
+        }
+
+        console.log(imageUrls)
+   }
+    
+
+    function handleDelete(index) {
+        setImageUrls(imageUrls.filter((_, i) => i !== index));
+    }
+
+
+    const handleSubmit = (event) => {
+
+        event.preventDefault();
+        
         const TeamName = document.getElementById('company').value;
         const projectName = document.getElementById('projectName').value;
         const capstoneYear = selectedYears;
@@ -79,25 +103,37 @@ export default function ProjectSubmit() {
         const Project_Approach = document.getElementById('approach').value;
         const tech = selectedTechnologies;
         const teamMembers = selectedTeam;
+        const files = imageUrls
         const VideoLink = document.getElementById('yt').value;
         const githubLink = document.getElementById('github').value;
 
-        const string = String.raw`C:\Development\profile\aboutme.html`;
-        console.log(string)
-        let newstring = string.split('\\').join('/');
-        console.log(newstring)
+
+
+        //const string = String.raw`C:\Development\profile\aboutme.html`;
+        //let newstring = string.split('\\').join('/');
+
+
+
+
         //Puts the objects into an array
         const arrayTech = [];
+        const usersArray = []
 
         tech.forEach(e => arrayTech.push(e.label))
 
-        const usersArray = []
-        teamMembers.forEach(e => usersArray.push(e.label))
-     
-        
-        console.log(capstoneSemester)
-        let semesterString = capstoneSemester.label;
+        for (let i = 0; i < arrayTech.length; i++) {
+            arrayTech[i] = arrayTech[i].replace(/'/g, "\"");
+        }
 
+        teamMembers.forEach(e => usersArray.push(e.label))
+        for (let i = 0; i < usersArray.length; i++) {
+            usersArray[i] = usersArray[i].replace(/'/g, "\"");
+        }
+
+
+        let yearString = capstoneYear.value;
+
+        let semesterString = capstoneSemester.label;
         if (semesterString == 'Semester One') {
             semesterString = 1
         }
@@ -106,14 +142,14 @@ export default function ProjectSubmit() {
         }
 
 
-
-        let yearString = capstoneYear.value;
-
+        for (let i = 0; i < files.length; i++) {
+            files[i] = files[i].replace(/'/g, "\"");
+        }
 
         const data2 = {
             "ProjectName": "'" + projectName + "'",
             "IsApproved": 0,
-            "projectDec": "'" + Project_About+ "'" ,
+            "projectDec": "'" + Project_About + "'",
             "githubLink": "'" + githubLink + "'",
             "capstoneYear": "'" + yearString + "'",
             "capstoneSemester": semesterString,
@@ -122,37 +158,12 @@ export default function ProjectSubmit() {
             "VideoLink": "'" + VideoLink + "'",
             "ProjectIntro": "'" + ProjectIntro + "'",
             "Project_Approach": "'" + Project_Approach + "'",
-            "Files": [],
+            "Files": files,
             "Technologies": arrayTech,
             "Users": usersArray
         }
-
-        console.log(JSON.parse(JSON.stringify(data2)));
-
-
-
-        const data = {
-            "ProjectName": "'woofs'",
-            "IsApproved": 0,
-            "projectDec": "'progressive web application'",
-            "githubLink": "'http: //github.com'",
-            "capstoneYear": "'2022'",
-            "capstoneSemester": 1,
-            "adminID_FK": 7,
-            "TeamName": "'Animal'",
-            "VideoLink": "'https: //www.youtube.com'",
-            "ProjectIntro": "'Our goal is to create'",
-            "Project_Approach": "'Our goal is to create'",
-            "Files": [],
-            "Technologies": ["TypeScript", "HTML", "CSS", "React"],
-            "Users": [
-                { "FirstName": "Jim", "lastName": "SuperMarioFamily" },
-                { "FirstName": "Pam", "lastName": "SuperMarioFamily" },
-                { "FirstName": "Dwight", "lastName": "SuperMarioFamily" },
-                { "FirstName": "Kevin", "lastName": "SuperMarioFamily" }]
-        }
-        const body = JSON.parse(JSON.stringify(data))
-        console.log(JSON.parse(JSON.stringify(data)));
+        const project = JSON.parse(JSON.stringify(data2))
+        console.log(project);
 
 
 
@@ -161,7 +172,7 @@ export default function ProjectSubmit() {
             headers: { "Accept": "application/json", "Content-Type": "application/json" },
             body: {
 
-                body
+                project
                 //"ProjectName": projectName,
                 //"IsApproved": 0,
                 //"projectDec": Project_About,
@@ -185,6 +196,7 @@ export default function ProjectSubmit() {
 
 
     }
+
 
 
     return (
@@ -241,14 +253,30 @@ export default function ProjectSubmit() {
 
                 <MDBInput label='Github Link' id='github' type='url' />
                 <MDBInput label='Youtube demo link' id='yt' type='url' />
+<input
+        type="file"
+        id="image-upload"
+        name="image-upload"
+        onChange={handleImageChange}
+        multiple
+      />
 
-                <label for="formFileMultiple" class="form-label">Upload screenshots of your project</label>
-                <input class="form-control" type="file" id="formFileMultiple" multiple maxNumber={maxnumber} />
+
+                <div className='displayThumbnail'>
+                    {imageUrls.map((url, index) => (
+                        <div key={index} >
+                            <img className='thumbnail' src={url} alt={`Thumbnail ${index}`} />
+                            <button onClick={() => handleDelete(index)}>Remove</button>                </div>
+                    ))}
+                </div>
 
                 <MDBBtn className='mb-4' type='submit' block>
                     Submit Project!
                 </MDBBtn>
             </form>
+
+
+
         </div>
     );
 }
