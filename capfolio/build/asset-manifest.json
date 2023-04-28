@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.ed486273.css",
-    "main.js": "/static/js/main.f9918447.js",
+    "main.css": "/static/css/main.8631675c.css",
+    "main.js": "/static/js/main.72b1a67c.js",
     "static/media/homepage-mockup.png": "/static/media/homepage-mockup.948e13b55052dc5b020e.png",
     "static/media/fa-solid-900.ttf": "/static/media/fa-solid-900.4a2cd718d7031b732e76.ttf",
     "static/media/thirdimage.png": "/static/media/thirdimage.0f0644618221e42c4f3d.png",
@@ -14,15 +14,16 @@
     "static/media/fa-regular-400.ttf": "/static/media/fa-regular-400.d87474231f4192884802.ttf",
     "static/media/red-heart.png": "/static/media/red-heart.2142f9a93e5e15a94118.png",
     "static/media/fa-regular-400.woff2": "/static/media/fa-regular-400.3223dc79c1adee56370b.woff2",
+    "static/media/color.png": "/static/media/color.6441e63a57ccc5105bad.png",
     "static/media/fa-v4compatibility.ttf": "/static/media/fa-v4compatibility.0e3a648be390bd8cb094.ttf",
     "static/media/fa-v4compatibility.woff2": "/static/media/fa-v4compatibility.68577e40f3e70067b5da.woff2",
     "static/media/hand.svg": "/static/media/hand.0de74997a1caab714bc8b968482cdd0d.svg",
     "index.html": "/index.html",
-    "main.ed486273.css.map": "/static/css/main.ed486273.css.map",
-    "main.f9918447.js.map": "/static/js/main.f9918447.js.map"
+    "main.8631675c.css.map": "/static/css/main.8631675c.css.map",
+    "main.72b1a67c.js.map": "/static/js/main.72b1a67c.js.map"
   },
   "entrypoints": [
-    "static/css/main.ed486273.css",
-    "static/js/main.f9918447.js"
+    "static/css/main.8631675c.css",
+    "static/js/main.72b1a67c.js"
   ]
 }

@@ -8,37 +8,37 @@ import Sidebar from './Sidebar';
 
 
 const ProjectGallery = () => {
-    
 
-    const [projects, setProjects] = useState('');
-    // Function to collect data
-    const AllProjectData = async () => {
-      const response = await fetch(
-          "/project/AllProjectData"
-      ).then((response) => response.json());
-      // console.log(response)
-      setProjects(response);
-      setFiltered(false); // Set filtered state to false when fetching all projects
-    };
+
+  const [projects, setProjects] = useState('');
+  // Function to collect data
+  const AllProjectData = async () => {
+    const response = await fetch(
+      "/project/AllProjectData"
+    ).then((response) => response.json());
+    // console.log(response)
+    setProjects(response);
+    setFiltered(false); // Set filtered state to false when fetching all projects
+  };
 
   // console.log(projects)
 
-       useEffect(() => {
-        AllProjectData();
-    }, []);
+  useEffect(() => {
+    AllProjectData();
+  }, []);
 
-    // Add a state to manage whether to show filtered projects or not
-    const [filtered, setFiltered] = useState(false);
+  // Add a state to manage whether to show filtered projects or not
+  const [filtered, setFiltered] = useState(false);
 
-    const [filteredProjects, setFilteredProjects] = useState('');
-    // Function to collect filtered data
-    const FilteredProjectData = async () => {
-      const response = await fetch("/project/FilteredProjectData").then((response) =>
-        response.json()
-      );
-      setFilteredProjects(response);
-      setFiltered(true); // Set filtered state to true when fetching filtered projects
-    };
+  const [filteredProjects, setFilteredProjects] = useState('');
+  // Function to collect filtered data
+  const FilteredProjectData = async () => {
+    const response = await fetch("/project/FilteredProjectData").then((response) =>
+      response.json()
+    );
+    setFilteredProjects(response);
+    setFiltered(true); // Set filtered state to true when fetching filtered projects
+  };
 
   console.log(filteredProjects)
 
@@ -73,9 +73,9 @@ const ProjectGallery = () => {
                 </CCardFooter>
                 <CCardFooter>
                   <Link to={`/project-view/${project.ProjectID}`}>
-                      <CButton><span>View Project</span></CButton>
+                    <CButton><span>View Project</span></CButton>
                   </Link>
-                          <LikeButton likenumber={project.ProjectID} />
+                  <LikeButton likenumber={project.ProjectID} />
                 </CCardFooter>
               </CCard>
             </CCol>
