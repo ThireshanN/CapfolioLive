@@ -31,7 +31,7 @@ export class ProjectFilter {
     capstoneSemester; //array of int
     technologyName; //array of string
     AwardName; //array of string
-    SortBy; //not sure yet
+    SortBy; //['likes'] OR ['ProjectID'] OR 
     constructor() { }
 }
 
@@ -87,7 +87,6 @@ projectRouter.get('/executeSQLcommand', async (req, res) => {
             throw new Error('no sql command provided in request body');
         }
         const projects = (await executeSQLstatement(sql))[0];
-        //console.log("Our Data: \n", projects);
         return res.status(200).setHeader("Content-Type", "application/json").send(projects);
     }
     catch (err) {
@@ -119,15 +118,19 @@ projectRouter.get('/FilteredProjectData', async (req, res) => { //working 28/04/
     try {
         //CLIENT DATA FROM FRONTEND 
         const filterFields = req.body;
+
         const sql = `
-        SELECT Project.*, GROUP_CONCAT(technologiesUsed.technologyName) AS Technologies, AwardName, AwardDesc
+        SELECT Project.*, count(DISTINCT likeID) AS likes, GROUP_CONCAT(DISTINCT technologiesUsed.technologyName) AS Technologies, AwardName, AwardDesc
         FROM Project INNER JOIN ProjectAward ON ProjectAward.ProjectID_FK = Project.ProjectID
         INNER JOIN ProjectTech ON ProjectTech.ProjectID_FK = Project.ProjectID
         INNER JOIN Award ON Award.AwardID = ProjectAward.AwardID_FK
         INNER JOIN technologiesUsed ON technologiesUsed.techID = ProjectTech.techID_FK
+        INNER JOIN likes ON likes.ProjectID_FK = Project.ProjectID
         WHERE Project.capstoneYear IN ('${filterFields.capstoneYear.join('\', \'')}') AND Project.capstoneSemester IN (${filterFields.capstoneSemester.join(', ')})
         AND Award.AwardName IN ('${filterFields.AwardName.join('\', \'')}') AND technologiesUsed.technologyName IN ('${filterFields.technologyName.join('\', \'')}')
-        GROUP BY Project.ProjectID;`;
+        GROUP BY ProjectID 
+        ORDER BY ${!filterFields.SortBy? "likes" : filterFields.SortBy[0] || "likes" };
+        `;
 
         const projects = (await executeSQLstatement(sql))[0]//.catch(err => console.log("The following error generated:\n" + err));
         if (projects.length === 0) {
@@ -139,49 +142,6 @@ projectRouter.get('/FilteredProjectData', async (req, res) => { //working 28/04/
         return res.status(400).setHeader("Content-Type", "text/plain").send("Sorry! " + err);
     }
 });
-
-//http://localhost:3000/project/AddProject
-//http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/AddProject
-projectRouter.post('/AddProject', express.json(), async (req, res) => { //working 23/04/2023
-    try {
-        //CLIENT DATA FROM FRONTEND
-        const regBodyFromClient = new ProjectDetails();
-        regBodyFromClient.ProjectName = '\'Simulacrum\'';
-        regBodyFromClient.IsApproved = 1;
-        regBodyFromClient.projectDec = '\'progressive web application\'';
-        //regBodyFromClient.githubLink = '';
-        regBodyFromClient.capstoneYear = '\'2022\'';
-        regBodyFromClient.capstoneSemester = 2;
-        regBodyFromClient.adminID_FK = 7;
-        regBodyFromClient.TeamName = '\'Gan Solutions\'';
-        regBodyFromClient.VideoLink = '\'https://www.youtube.com/watch?v=7MmxuVqHpWA\'';
-        regBodyFromClient.ProjectIntro = '\'Our goal is to create a progressive web application that helps students find teammates or groups that want to work on the same type of projects\'';
-
-        const projectFields = (await ProjectTableFields())[0];
-        let fieldNames = [];
-        let fieldValues = [];
-        projectFields.forEach(field => myFunction(field));
-        function myFunction(field) {
-            if (regBodyFromClient[`${field}`]) {
-                fieldNames.push(`${field}`);
-                fieldValues.push(regBodyFromClient[`${field}`]);
-            }
-        }
-        fieldNames = fieldNames.join(', ');
-        fieldValues = fieldValues.join(', ');
-
-        const sql = `INSERT INTO Capfolio.Project (${fieldNames}) VALUES (${fieldValues})`;
-        //console.log(sql);
-        const addedProjects = (await executeSQLstatement(sql))[0];
-        //console.log("The Data: \n", addedProjects);
-        return res.status(200).setHeader("Content-Type", "application/json").send(addedProjects);
-    }
-    catch (err) {
-        //console.log(err.message);
-        return res.status(400).setHeader("Content-Type", "text/plain").send("Sorry! " + err);
-    }
-});
-
 
 
 //http://localhost:3000/project/FormAddProject
