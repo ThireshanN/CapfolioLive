@@ -98,11 +98,18 @@ projectRouter.get('/executeSQLcommand', async (req, res) => {
 
 //http://localhost:3000/project/AllProjectData
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/AllProjectData
-projectRouter.get('/AllProjectData', async (req, res) => { //working 23/04/2023
+projectRouter.get('/AllProjectData', async (req, res) => { //working 28/04/2023
     try {
-        const sql = "SELECT * FROM Capfolio.Project";
+        const sql = `
+        SELECT Project.*, count(DISTINCT likeID) AS likes, GROUP_CONCAT(DISTINCT technologiesUsed.technologyName) AS Technologies, AwardName, AwardDesc
+        FROM Project LEFT JOIN ProjectAward ON ProjectAward.ProjectID_FK = Project.ProjectID
+        LEFT JOIN ProjectTech ON ProjectTech.ProjectID_FK = Project.ProjectID
+        LEFT JOIN Award ON Award.AwardID = ProjectAward.AwardID_FK
+        LEFT JOIN technologiesUsed ON technologiesUsed.techID = ProjectTech.techID_FK
+        LEFT JOIN likes ON likes.ProjectID_FK = Project.ProjectID
+        GROUP BY ProjectID ORDER BY ProjectID;
+        `;
         const allProjects = (await executeSQLstatement(sql))[0]//.catch(err => console.log("The following error generated:\n" + err));
-        //console.log("Our Data: \n", allProjects);
         return res.status(200).setHeader("Content-Type", "application/json").send(allProjects);
     }
     catch (err) {
@@ -118,7 +125,6 @@ projectRouter.get('/FilteredProjectData', async (req, res) => { //working 28/04/
     try {
         //CLIENT DATA FROM FRONTEND 
         const filterFields = req.body;
-
         const sql = `
         SELECT Project.*, count(DISTINCT likeID) AS likes, GROUP_CONCAT(DISTINCT technologiesUsed.technologyName) AS Technologies, AwardName, AwardDesc
         FROM Project INNER JOIN ProjectAward ON ProjectAward.ProjectID_FK = Project.ProjectID
@@ -129,7 +135,7 @@ projectRouter.get('/FilteredProjectData', async (req, res) => { //working 28/04/
         WHERE Project.capstoneYear IN ('${filterFields.capstoneYear.join('\', \'')}') AND Project.capstoneSemester IN (${filterFields.capstoneSemester.join(', ')})
         AND Award.AwardName IN ('${filterFields.AwardName.join('\', \'')}') AND technologiesUsed.technologyName IN ('${filterFields.technologyName.join('\', \'')}')
         GROUP BY ProjectID 
-        ORDER BY ${!filterFields.SortBy? "likes" : filterFields.SortBy[0] || "likes" };
+        ORDER BY ${!filterFields.SortBy ? "likes" : filterFields.SortBy[0] || "likes"};
         `;
 
         const projects = (await executeSQLstatement(sql))[0]//.catch(err => console.log("The following error generated:\n" + err));
