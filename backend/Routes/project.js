@@ -7,36 +7,31 @@ import fs from 'fs';
 import path from 'path';
 
 
-class ProjectSchema {
-    constructor(ProjectID = null, ProjectName = null, IsApproved = null, projectDec = null, capstoneYear = null, capstoneSemester = null, githubLink = null, adminID_FK = null, TeamName = null, VideoLink = null, ProjectIntro = null, Project_Approach = null) {
-        this.ProjectID = ProjectID;
-        this.ProjectName = ProjectName;
-        this.IsApproved = IsApproved;
-        this.projectDec = projectDec;
-        this.capstoneYear = capstoneYear;
-        this.capstoneSemester = capstoneSemester;
-        this.githubLink = githubLink;
-        this.adminID_FK = adminID_FK;
-        this.TeamName = TeamName;
-        this.VideoLink = VideoLink;
-        this.ProjectIntro = ProjectIntro;
-        this.Project_Approach = Project_Approach;
-    }
+class ProjectDetails {
+    ProjectID; //int
+    ProjectName; //string
+    IsApproved; //int
+    projectDec; //string
+    capstoneYear; //int
+    capstoneSemester; //int
+    githubLink; //string
+    adminID_FK; //int
+    TeamName; //string
+    VideoLink; //string
+    ProjectIntro; //string
+    Project_Approach; //string
+    Files; //array of string
+    Technologies; //aray of string
+    Users; //array of UPIs
+    constructor() { }
 }
 
-class ProjectSchema2 {
-    ProjectID;
-    ProjectName;
-    IsApproved;
-    projectDec;
-    capstoneYear;
-    capstoneSemester;
-    githubLink;
-    adminID_FK;
-    TeamName;
-    VideoLink;
-    ProjectIntro;
-    Project_Approach;
+export class ProjectFilter {
+    capstoneYear; // array of string
+    capstoneSemester; //array of int
+    technologyName; //array of string
+    AwardName; //array of string
+    SortBy; //not sure yet
     constructor() { }
 }
 
@@ -45,11 +40,8 @@ async function executeSQLstatement(sql) { //working 23/04/2023
     const [rows, result] = await connection.execute(sql);
     await connection.end();
     //console.log(rows, result);
-    //console.log(rows);
     return [rows, result];
 }
-//executeSQLstatement("");
-
 
 
 async function executeMultipleSQLstatement(sqlArray) { //working 23/04/2023
@@ -64,14 +56,12 @@ async function executeMultipleSQLstatement(sqlArray) { //working 23/04/2023
     return rowArray;
 }
 
-async function ProjectSchemaAndFieldNames() { //working 23/04/2023
-    //GET all FIELDS from PROJECT table
+async function ProjectTableFields() { //working 23/04/2023
     try {
         const sql = "SHOW FIELDS FROM Capfolio.Project";
         let fieldData = (await executeSQLstatement(sql))[0];
         const columnsArray = fieldData.map(element => element['Field']);
         const columnsString = columnsArray.join(", ");
-        //console.log('\n\n',columnsArray, columnsString, '\n\n');
         return [columnsArray, columnsString];
     }
     catch (err) {
@@ -89,7 +79,6 @@ async function ProjectSchemaAndFieldNames() { //working 23/04/2023
 
 //http://localhost:3000/project/executeSQLcommand
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/executeSQLcommand
-
 projectRouter.get('/executeSQLcommand', async (req, res) => {
     try {
 
@@ -110,7 +99,6 @@ projectRouter.get('/executeSQLcommand', async (req, res) => {
 
 //http://localhost:3000/project/AllProjectData
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/AllProjectData
-
 projectRouter.get('/AllProjectData', async (req, res) => { //working 23/04/2023
     try {
         const sql = "SELECT * FROM Capfolio.Project";
@@ -127,25 +115,20 @@ projectRouter.get('/AllProjectData', async (req, res) => { //working 23/04/2023
 
 //http://localhost:3000/project/FilteredProjectData
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/FilteredProjectData
-
-projectRouter.get('/FilteredProjectData', async (req, res) => { //working 23/04/2023 YUP
+projectRouter.get('/FilteredProjectData', async (req, res) => { //working 28/04/2023 YUP
     try {
         //CLIENT DATA FROM FRONTEND 
-        const regBodyFromClient = new ProjectSchema2();
-        regBodyFromClient.capstoneSemester = 1;
-        regBodyFromClient.capstoneYear = '2023';
+        const filterFields = req.body;
+        const sql = `
+        SELECT Project.*, GROUP_CONCAT(technologiesUsed.technologyName) AS Technologies, AwardName, AwardDesc
+        FROM Project INNER JOIN ProjectAward ON ProjectAward.ProjectID_FK = Project.ProjectID
+        INNER JOIN ProjectTech ON ProjectTech.ProjectID_FK = Project.ProjectID
+        INNER JOIN Award ON Award.AwardID = ProjectAward.AwardID_FK
+        INNER JOIN technologiesUsed ON technologiesUsed.techID = ProjectTech.techID_FK
+        WHERE Project.capstoneYear IN ('${filterFields.capstoneYear.join('\', \'')}') AND Project.capstoneSemester IN (${filterFields.capstoneSemester.join(', ')})
+        AND Award.AwardName IN ('${filterFields.AwardName.join('\', \'')}') AND technologiesUsed.technologyName IN ('${filterFields.technologyName.join('\', \'')}')
+        GROUP BY Project.ProjectID;`;
 
-        const projectFields = (await ProjectSchemaAndFieldNames())[0];
-        let finalFilter = [];
-        projectFields.forEach(element => myFunction(element));
-        function myFunction(element) {
-            if (regBodyFromClient[`${element}`] !== undefined) {
-                finalFilter.push(`${element} = ${regBodyFromClient[`${element}`]}`);
-            }
-        }
-        finalFilter = finalFilter.join(' AND ');
-
-        const sql = `SELECT * FROM Capfolio.Project WHERE ${finalFilter}`;
         const projects = (await executeSQLstatement(sql))[0]//.catch(err => console.log("The following error generated:\n" + err));
         if (projects.length === 0) {
             throw new Error("There were no projects found");
@@ -153,19 +136,16 @@ projectRouter.get('/FilteredProjectData', async (req, res) => { //working 23/04/
         return res.status(200).setHeader("Content-Type", "application/json").send(projects);
     }
     catch (err) {
-        //console.log(err.message);
         return res.status(400).setHeader("Content-Type", "text/plain").send("Sorry! " + err);
     }
 });
 
-
 //http://localhost:3000/project/AddProject
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/AddProject
-
 projectRouter.post('/AddProject', express.json(), async (req, res) => { //working 23/04/2023
     try {
         //CLIENT DATA FROM FRONTEND
-        const regBodyFromClient = new ProjectSchema2();
+        const regBodyFromClient = new ProjectDetails();
         regBodyFromClient.ProjectName = '\'Simulacrum\'';
         regBodyFromClient.IsApproved = 1;
         regBodyFromClient.projectDec = '\'progressive web application\'';
@@ -177,7 +157,7 @@ projectRouter.post('/AddProject', express.json(), async (req, res) => { //workin
         regBodyFromClient.VideoLink = '\'https://www.youtube.com/watch?v=7MmxuVqHpWA\'';
         regBodyFromClient.ProjectIntro = '\'Our goal is to create a progressive web application that helps students find teammates or groups that want to work on the same type of projects\'';
 
-        const projectFields = (await ProjectSchemaAndFieldNames())[0];
+        const projectFields = (await ProjectTableFields())[0];
         let fieldNames = [];
         let fieldValues = [];
         projectFields.forEach(field => myFunction(field));
@@ -203,43 +183,16 @@ projectRouter.post('/AddProject', express.json(), async (req, res) => { //workin
 });
 
 
-class ProjectSchema3 {
-    ProjectID; //int
-    ProjectName; //string
-    IsApproved; //int
-    projectDec; //string
-    capstoneYear; //year/string
-    capstoneSemester; //int
-    githubLink; //string
-    adminID_FK; //int
-    TeamName; //string
-    VideoLink; //string
-    ProjectIntro; //int
-    Project_Approach; //int
-    Files; //array of strings
-    Technologies; //array of strings
-    Users; //array of strings
-    constructor() { }
-}
-
-class TechnologiesSchema {
-    techID;
-    technologyName;
-    constructor() { }
-}
-
 
 //http://localhost:3000/project/FormAddProject
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/FormAddProject
-
 projectRouter.post('/FormAddProject', express.json(), async (req, res) => { //
     try {
         //CLIENT DATA FROM FRONTEND
         const reqBodyFromClient = req.body;
 
-
         //PROJECT TABLE
-        const projectFields = (await ProjectSchemaAndFieldNames())[0];
+        const projectFields = (await ProjectTableFields())[0];
         let fieldNames = [];
         let fieldValues = [];
         projectFields.forEach(field => myFunction(field));
@@ -255,7 +208,6 @@ projectRouter.post('/FormAddProject', express.json(), async (req, res) => { //
         const sql = `INSERT INTO Capfolio.Project (${fieldNames}) VALUES (${fieldValues})`;
         const addedProject = (await executeSQLstatement(sql))[0];
         const insertId = addedProject["insertId"];
-
 
 
         //TECHNOLOGIES TABLE
@@ -304,7 +256,6 @@ projectRouter.post('/FormAddProject', express.json(), async (req, res) => { //
         });
 
 
-
         //ADDING FILES
         const toAddFiles = reqBodyFromClient.Files;
         if (toAddFiles !== undefined || toAddFiles.length != 0) {
@@ -337,7 +288,7 @@ projectRouter.post('/FormAddProject', express.json(), async (req, res) => { //
                 const results = await s3ServiceObject.send(new PutObjectCommand(params));
             }
         }
-        
+
         return res.status(200).setHeader("Content-Type", "application/json").send({ id: insertId });
     }
     catch (err) {
@@ -353,16 +304,16 @@ projectRouter.post('/FormAddProject', express.json(), async (req, res) => { //
 projectRouter.put('/UpdateProject', express.json(), async (req, res) => { //working 23/04/2023
     try {
         //CLIENT DATA FROM FRONTEND
-        const existingProjectDetails = new ProjectSchema2();
+        const existingProjectDetails = new ProjectDetails();
         existingProjectDetails.capstoneYear = '\'2022\'';
         existingProjectDetails.ProjectID = 8;
         existingProjectDetails.capstoneSemester = 2;
-        const updateProjectDetails = new ProjectSchema2();
+        const updateProjectDetails = new ProjectDetails();
         updateProjectDetails.capstoneYear = '\'2023\'';
         updateProjectDetails.capstoneSemester = 1;
 
         const sqlArray = [];
-        const projectFields = (await ProjectSchemaAndFieldNames())[0];
+        const projectFields = (await ProjectTableFields())[0];
         projectFields.forEach(field => myFunction(field));
         function myFunction(field) {
             if (updateProjectDetails[`${field}`]) {
@@ -398,6 +349,7 @@ projectRouter.post('/uploadFile', async (req, res) => { //working 23/04/2023
             }
         });
         const fileContent = fs.readFileSync(filename);
+        console.log(fileContent.toString());
         const filenameShort = path.basename(filename);
         const params = {
             Bucket: "capfoliostorage",
@@ -418,7 +370,7 @@ projectRouter.post('/uploadFile', async (req, res) => { //working 23/04/2023
 
 //http://localhost:3000/project/retrieveFile
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/retrieveFile
-//NOT COMPLETE YET
+//NOT COMPLETE YET, see articles on resource doc
 projectRouter.get('/retrieveFile', async (req, res) => { //
     try {
         //"filename": "Meowland3/tree.jpg"
@@ -478,6 +430,4 @@ const data = {
         { "FirstName": "Mario", "lastName": "SuperMarioFamily" }]
 }
 //console.log(JSON.parse(JSON.stringify(data)));
-
-let filePath = "C:\Users\Kristen Coupe\OneDrive\Desktop\Compsci 399\Capfolio Git Repo\Images\winter.jpg";
 
