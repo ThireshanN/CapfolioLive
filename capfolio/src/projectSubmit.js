@@ -162,7 +162,7 @@ export default function ProjectSubmit() {
             "Technologies": arrayTech,
             "Users": usersArray
         }
-        const project = JSON.parse(JSON.stringify(data2))
+        const project = JSON.stringify(data2)
         console.log(project);
 
 
