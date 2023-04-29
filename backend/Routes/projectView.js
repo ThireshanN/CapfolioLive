@@ -12,6 +12,7 @@ async function executeSQLstatement(sql) {
     return [rows, result];
 }
 
+//have to make the technologies input field mandatory
 
 //http://localhost:3000/projects/project?id=2
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/projects/project?id=2
@@ -19,7 +20,12 @@ async function executeSQLstatement(sql) {
 projectViewRouter.get("/project", async (req, res) => { 
     const id = req.query.id;
     try {
-        const sql = `SELECT * FROM Capfolio.Project WHERE ProjectID = ${id}`;
+        const sql = `SELECT ProjectID, Project.ProjectName,IsApproved, projectDec, Project.capstoneYear, Project.capstoneSemester, githubLink, VideoLink, TeamName, ProjectIntro, Project_Approach, GROUP_CONCAT(technologiesUsed.technologyName) AS 'technologies'
+        FROM Capfolio.Project
+        INNER JOIN ProjectTech ON Project.ProjectID = ProjectTech.ProjectID_FK 
+        INNER JOIN technologiesUsed ON ProjectTech.techID_FK = technologiesUsed.techID
+        WHERE ProjectID = ${id}
+        GROUP BY ProjectID;`;
         const selectedProject = (await executeSQLstatement(sql))[0]//.catch(err => console.log("The following error generated:\n" + err));
         //console.log("Our Data: \n", selectedProject);
         if(selectedProject.length===0){
@@ -35,6 +41,34 @@ projectViewRouter.get("/project", async (req, res) => {
     }
 });
 
+//http://localhost:3000/projects/award?id=2
+//the id here is the same ProjectId as http://localhost:3000/projects/project?id=2
+//http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/projects/project?id=2
+
+projectViewRouter.get("/award", async (req, res) => { 
+    const projectId = req.query.id;
+    try {
+        const sql = `SELECT ProjectID, ProjectName,GROUP_CONCAT(Award.AwardName) AS 'awards', GROUP_CONCAT(Award.WinnerType) AS 'place'
+        FROM Capfolio.Project
+        INNER JOIN ProjectAward ON Project.ProjectID = ProjectAward.ProjectID_FK 
+        INNER JOIN Award ON ProjectAward.AwardID_FK = Award.AwardID
+        WHERE ProjectID = ${projectId}
+        GROUP BY ProjectID;`;
+        const selectedProject = (await executeSQLstatement(sql))[0]//.catch(err => console.log("The following error generated:\n" + err));
+        if(selectedProject.length===0){
+            res.status(200).setHeader("Content-Type", "text/plain").send("No awards for this project yet!"); //return 404 if project not found
+        }
+        else{
+        return res.status(200).setHeader("Content-Type", "application/json").send(selectedProject);
+        }
+    }
+    catch (err) {
+        console.log(err.message);
+        res.status(400).setHeader("Content-Type", "text/plain").send("failed to fetch project data because of " + err);
+        return
+    }
+});
+
 
 //http://localhost:3000/projects/comment?id=2
 //the id here is the same ProjectId as http://localhost:3000/projects/project?id=2
@@ -46,7 +80,7 @@ projectViewRouter.get("/comment", async (req, res) => {
         const sql = `SELECT CommentDesc, FirstName, lastName, SUBSTRING(createdTime, 1, 10) AS createdTime, ProjectName, UserType FROM Comment INNER JOIN Users ON Comment.UserID_FK = Users.UserID  INNER JOIN Project ON Comment.ProjectID_FK = Project.ProjectID INNER JOIN UserType ON Users.UserTypeID = UserType.UserTypeID  WHERE ProjectID = ${projectId} ORDER BY CommentID DESC;`;
         const selectedProject = (await executeSQLstatement(sql))[0]//.catch(err => console.log("The following error generated:\n" + err));
         if(selectedProject.length===0){
-            res.status(404).send("No comments yet!"); //return 404 if project not found
+            res.status(200).send("No comments yet!"); //return 404 if project not found
         }
         else{
         return res.status(200).setHeader("Content-Type", "application/json").send(selectedProject);
@@ -116,11 +150,14 @@ projectViewRouter.post('/postComment', express.json(), async (req, res) => {
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/projects/postLike
 
 async function newLike(likeBody){
-    if(currentUserId===null){return "Only logged in Users can like"}
+    let message = "Error in defining a new like";
+    if(currentUserId===null){
+        message = "Only loggeed in users can like"
+        return message;
+    }
     const sql = `Insert into likes(UserID_FK, ProjectID_FK) VALUES (${currentUserId}, ${likeBody.projectId});`;
     //console.log(sql);
     const likes = (await executeSQLstatement(sql));
-    let message = 'Error in defining a new like';
     if (likes.length!==0) {
       message = 'New like created successfully\n';
     }
@@ -255,5 +292,17 @@ projectViewRouter.get("/ProjectsLiked", async (req, res) => {
     }
 });
 
-
-
+//http://localhost:3000/projects/AllProjectsTech
+//http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/AllProjectData
+projectViewRouter.get('/AllProjectsTech', async (req, res) => {
+    try {
+        const sql = "SELECT ProjectID, Project.ProjectName,IsApproved, projectDec, capstoneYear, capstoneSemester, githubLink, VideoLink, TeamName, adminID_FK, ProjectIntro, GROUP_CONCAT(technologiesUsed.technologyName) AS 'techologies' FROM technologiesUsed INNER JOIN ProjectTech ON technologiesUsed.techID = ProjectTech.techID_FK INNER JOIN Project ON ProjectTech.ProjectID_FK = Project.ProjectID GROUP BY Project.ProjectID;";
+        const allProjects = (await executeSQLstatement(sql))[0]//.catch(err => console.log("The following error generated:\n" + err));
+        
+        return res.status(200).setHeader("Content-Type", "application/json").send(allProjects);
+    }
+    catch (err) {
+        console.log(err.message);
+        return res.status(400).setHeader("Content-Type", "text/plain").send("failed to fetch project data because of " + err);
+    }
+});

@@ -13,7 +13,7 @@
 
 SQL COMMANDS:
 
-Insert into Users(UserTypeID, FirstName, lastName)
+Insert into Users(UserID, UserTypeID, FirstName, lastName)
 values (1, "Ricky", "Katafono");
 
 Insert into Student(UserID, StudentUPI)
