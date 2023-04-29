@@ -306,11 +306,18 @@ projectRouter.put('/UpdateProject', express.json(), async (req, res) => { //work
 
 //http://localhost:3000/project/uploadFile
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/uploadFile
-//NEEDS TO SORT OUT BACKSLASHES
-projectRouter.post('/uploadFile', async (req, res) => { //working 23/04/2023
+projectRouter.post('/uploadFile', async (req, res) => { 
     try {
-        const filename = req.body.filename;
+        const file = req.body.filename;
         const TeamName = req.body.TeamName;
+        const rawFile = String.raw`${file}`;
+        const filename = (rawFile.split('\\')).join('/');
+        if (fs.existsSync(filename)) {
+            console.log('file exists');
+        } else {
+            console.log('file not found!');
+        }
+
         const REGION = "ap-southeast-2";
         const s3ServiceObject = new S3({
             region: REGION,
