@@ -144,49 +144,31 @@ export default function ProjectSubmit() {
             files[i] = files[i].replace(/'/g, "\"");
         }
 
-        const data2 = {
-            "ProjectName": "'" + projectName + "'",
-            "IsApproved": 0,
-            "projectDec": "'" + Project_About + "'",
-            "githubLink": "'" + githubLink + "'",
-            "capstoneYear": "'" + yearString + "'",
-            "capstoneSemester": semesterString,
-            "adminID_FK": 7,
-            "TeamName": TeamName,
-            "VideoLink": "'" + VideoLink + "'",
-            "ProjectIntro": "'" + ProjectIntro + "'",
-            "Project_Approach": "'" + Project_Approach + "'",
-            "Files": files,
-            "Technologies": arrayTech,
-            "Users": usersArray
-        }
-        const project = JSON.parse(JSON.stringify(data2))
-        console.log(project);
+      
+       
+        let newLink = VideoLink.replace("watch?v=", "embed/");
 
 
 
         fetch('/project/FormAddProject', {
             method: 'POST',
             headers: { "Accept": "application/json", "Content-Type": "application/json" },
-            body: {
-
-                project
-                //"ProjectName": projectName,
-                //"IsApproved": 0,
-                //"projectDec": Project_About,
-                //"githubLink": githubLink,
-                //"capstoneYear": capstoneYear,
-                //"capstoneSemester": capstoneSemester,
-                //"adminID_FK": 7,
-                //"TeamName": TeamName,
-                //"VideoLink": VideoLink,
-                //"ProjectIntro": ProjectIntro,
-                //"Project_Approach": Project_Approach,
-                //"Files": [],
-                //"Technologies": tech,
-                //"Users": teamMembers
-
-            }
+            body: JSON.stringify({
+                "ProjectName": "'" + projectName + "'",
+                "IsApproved": 0,
+                "projectDec": "'" + Project_About + "'",
+                "githubLink": "'" + githubLink + "'",
+                "capstoneYear": "'" + yearString + "'",
+                "capstoneSemester": semesterString,
+                "adminID_FK": 7,
+                "TeamName": "'" + TeamName + "'",
+                "VideoLink": "'" + newLink + "'",
+                "ProjectIntro": "'" + ProjectIntro + "'",
+                "Project_Approach": "'" + Project_Approach + "'",
+                "Files": files,
+                "Technologies": arrayTech,
+                "Users": usersArray
+            })
         }).then(() => {
             console.log('ProjectAdded')
 
