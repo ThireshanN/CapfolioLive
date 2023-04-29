@@ -64,8 +64,6 @@ export default function ProjectSubmit() {
     }
 
     const [imageUrls, setImageUrls] = useState([]);
-
-
     const handleImageChange = (e) => {
         const files = e.target.files;
         const urls = [];
@@ -82,8 +80,8 @@ export default function ProjectSubmit() {
         }
 
         console.log(imageUrls)
-   }
-    
+    }
+
 
     function handleDelete(index) {
         setImageUrls(imageUrls.filter((_, i) => i !== index));
@@ -93,7 +91,7 @@ export default function ProjectSubmit() {
     const handleSubmit = (event) => {
 
         event.preventDefault();
-        
+
         const TeamName = document.getElementById('company').value;
         const projectName = document.getElementById('projectName').value;
         const capstoneYear = selectedYears;
@@ -235,13 +233,13 @@ export default function ProjectSubmit() {
 
                 <MDBInput label='Github Link' id='github' type='url' />
                 <MDBInput label='Youtube demo link' id='yt' type='url' />
-<input
-        type="file"
-        id="image-upload"
-        name="image-upload"
-        onChange={handleImageChange}
-        multiple
-      />
+                <input
+                    type="file"
+                    id="image-upload"
+                    name="image-upload"
+                    onChange={handleImageChange}
+                    multiple
+                />
 
 
                 <div className='displayThumbnail'>
