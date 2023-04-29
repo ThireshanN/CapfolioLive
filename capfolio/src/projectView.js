@@ -28,7 +28,7 @@ const ProjectView = () => {
     const params = useParams();
     const [comments, setComments] = useState('');
     const [projects, setProject] = useState('');
-    const [likes, setLikes] = useState('');
+    const [tech, setTech] = useState('');
 
     // const blueBoxRef = useRef();
 
@@ -42,8 +42,11 @@ const ProjectView = () => {
 
 
         console.log(response)
+
+        let string = response[0].technologies.split(",");
         setProject(response)
-        
+
+        setTech(string)        
     };
 
 
@@ -156,22 +159,14 @@ const ProjectView = () => {
 
                 <div className='techUsed'>
 
-                <div className='tech'>
-                       <p>"React"</p>
-                    </div>
-                    <div className='tech'>
-                        <p>"HTML"</p>
-                    </div>
-                    <div className='tech'>
-                        <p>"JS"</p>
-                    </div>
+             
 
 
-                    {/*{project.tech.map((tech, i) =>*/}
-                    {/*    <div className='tech'>*/}
-                    {/*        <p key={`Key${i}`}>{tech}</p>*/}
-                    {/*    </div>*/}
-                    {/*)}*/}
+                    { tech && tech.map((tech, i) =>
+                        <div className='tech'>
+                            <p key={`Key${i}`}>{tech}</p>
+                        </div>
+                    )}
                 </div>
 
                 <div className='pv-buttons'>
@@ -247,6 +242,8 @@ const ProjectView = () => {
             <div className='projectInformation-wrapper'>
                 <div className='projectInformation'>
                     <h2>About {projects && projects.map((project) => project.ProjectName)}</h2>
+
+                  
                     <p className='about'>{projects && projects.map((project) => project.ProjectIntro)} </p>
                     <h2>Project Approach</h2>
                     <p className='projectApproach'>{projects && projects.map((project) => project.Project_Approach)}</p>
