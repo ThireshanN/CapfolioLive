@@ -269,44 +269,9 @@ projectRouter.post('/FormAddProject', express.json(), async (req, res) => { //
 });
 
 
-//http://localhost:3000/project/AddProject
-//http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/AddProject
-//NEEDS AUTHORIZATION and NOT COMPLETE YET
-projectRouter.put('/UpdateProject', express.json(), async (req, res) => { //working 23/04/2023
-    try {
-        //CLIENT DATA FROM FRONTEND
-        const existingProjectDetails = new ProjectDetails();
-        existingProjectDetails.capstoneYear = '\'2022\'';
-        existingProjectDetails.ProjectID = 8;
-        existingProjectDetails.capstoneSemester = 2;
-        const updateProjectDetails = new ProjectDetails();
-        updateProjectDetails.capstoneYear = '\'2023\'';
-        updateProjectDetails.capstoneSemester = 1;
-
-        const sqlArray = [];
-        const projectFields = (await ProjectTableFields())[0];
-        projectFields.forEach(field => myFunction(field));
-        function myFunction(field) {
-            if (updateProjectDetails[`${field}`]) {
-                const sql = `UPDATE Capfolio.Project SET ${field} = ${updateProjectDetails[`${field}`]} WHERE ProjectID = ${existingProjectDetails.ProjectID}`;
-                sqlArray.push(sql);
-            }
-        }
-
-        const updatedProjects = await executeMultipleSQLstatement(sqlArray);
-        //console.log("The Data: \n", updatedProjects);
-        return res.status(200).setHeader("Content-Type", "application/json").send(updatedProjects);
-    }
-    catch (err) {
-        //console.log(err.message);
-        return res.status(400).setHeader("Content-Type", "text/plain").send("Sorry! " + err);
-    }
-});
-
-
 //http://localhost:3000/project/uploadFile
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/uploadFile
-projectRouter.post('/uploadFile', async (req, res) => { 
+projectRouter.post('/uploadFile', async (req, res) => {
     try {
         const file = req.body.filename;
         const TeamName = req.body.TeamName;
@@ -316,6 +281,7 @@ projectRouter.post('/uploadFile', async (req, res) => {
             console.log('file exists');
         } else {
             console.log('file not found!');
+            //throw new Error('no such file found!');
         }
 
         const REGION = "ap-southeast-2";
@@ -327,7 +293,7 @@ projectRouter.post('/uploadFile', async (req, res) => {
             }
         });
         const fileContent = fs.readFileSync(filename);
-        console.log(fileContent.toString());
+        //console.log(fileContent.toString());
         const filenameShort = path.basename(filename);
         const params = {
             Bucket: "capfoliostorage",
@@ -338,6 +304,52 @@ projectRouter.post('/uploadFile', async (req, res) => {
         const results = await s3ServiceObject.send(new PutObjectCommand(params));
         //console.log("Successfully created " + params.Key + " and uploaded it to " + params.Bucket + "/" + params.Key);
         return res.status(200).setHeader("Content-Type", "application/json").send(results);
+    }
+    catch (err) {
+        //console.log(err.message);
+        return res.status(400).setHeader("Content-Type", "text/plain").send("failed because of " + err);
+    }
+});
+
+//http://localhost:3000/project/uploadFile
+//http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/uploadFile
+projectRouter.post('/uploadMultipleFiles', async (req, res) => {
+    try {
+        const files = req.body.files;
+        const TeamName = req.body.TeamName;
+
+        const REGION = "ap-southeast-2";
+        const s3ServiceObject = new S3({
+            region: REGION,
+            credentials: {
+                accessKeyId: 'AKIAUDUQU75VEF3VDCEL',
+                secretAccessKey: '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'
+            }
+        });
+        const resultsArray = [];
+        files.forEach(async file => {
+            const rawFile = String.raw`${file}`;
+            const filename = (rawFile.split('\\')).join('/');
+
+            if (fs.existsSync(filename)) {
+                console.log('file exists');
+            } else {
+                console.log('file not found!');
+                //throw new Error('no such file found!');
+            }
+            const fileContent = fs.readFileSync(filename);
+            //console.log(fileContent.toString());
+            const filenameShort = path.basename(filename);
+            const params = {
+                Bucket: "capfoliostorage",
+                Key: '' + TeamName + "/" + filenameShort,
+                Body: fileContent,
+                ContentType: "image/*"
+            };
+            const results = await s3ServiceObject.send(new PutObjectCommand(params));
+            resultsArray.push(results);
+        })
+        return res.status(200).setHeader("Content-Type", "application/json").send(resultsArray);
     }
     catch (err) {
         //console.log(err.message);
@@ -414,7 +426,7 @@ projectRouter.get('/listTeamFiles/:TeamName', async (req, res) => { //WORKS 29/0
         const fileList = [];
         while (isTruncated) {
             const { Contents, IsTruncated, NextContinuationToken } = await s3ServiceObject.send(command);
-            Contents.forEach(file => {fileList.push(file.Key)});
+            Contents.forEach(file => { fileList.push(file.Key) });
             isTruncated = IsTruncated;
             command.input.ContinuationToken = NextContinuationToken;
         }
@@ -423,6 +435,41 @@ projectRouter.get('/listTeamFiles/:TeamName', async (req, res) => { //WORKS 29/0
     catch (err) {
         //console.log(err.message);
         return res.status(400).setHeader("Content-Type", "text/plain").send("failed because of " + err);
+    }
+});
+
+
+//http://localhost:3000/project/AddProject
+//http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/AddProject
+//NEEDS AUTHORIZATION and NOT COMPLETE YET
+projectRouter.put('/UpdateProject', express.json(), async (req, res) => { //working 23/04/2023
+    try {
+        //CLIENT DATA FROM FRONTEND
+        const existingProjectDetails = new ProjectDetails();
+        existingProjectDetails.capstoneYear = '\'2022\'';
+        existingProjectDetails.ProjectID = 8;
+        existingProjectDetails.capstoneSemester = 2;
+        const updateProjectDetails = new ProjectDetails();
+        updateProjectDetails.capstoneYear = '\'2023\'';
+        updateProjectDetails.capstoneSemester = 1;
+
+        const sqlArray = [];
+        const projectFields = (await ProjectTableFields())[0];
+        projectFields.forEach(field => myFunction(field));
+        function myFunction(field) {
+            if (updateProjectDetails[`${field}`]) {
+                const sql = `UPDATE Capfolio.Project SET ${field} = ${updateProjectDetails[`${field}`]} WHERE ProjectID = ${existingProjectDetails.ProjectID}`;
+                sqlArray.push(sql);
+            }
+        }
+
+        const updatedProjects = await executeMultipleSQLstatement(sqlArray);
+        //console.log("The Data: \n", updatedProjects);
+        return res.status(200).setHeader("Content-Type", "application/json").send(updatedProjects);
+    }
+    catch (err) {
+        //console.log(err.message);
+        return res.status(400).setHeader("Content-Type", "text/plain").send("Sorry! " + err);
     }
 });
 
