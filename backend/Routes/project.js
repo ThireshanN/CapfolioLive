@@ -326,8 +326,8 @@ projectRouter.post('/uploadMultipleFiles', async (req, res) => {
                 secretAccessKey: '5yonS9Qlo01ZFoNAe+U+ApjqeBMeG9jD1UEYej0M'
             }
         });
-        const resultsArray = [];
-        files.forEach(async file => {
+
+        const resultsArray = files.map(async file => {
             const rawFile = String.raw`${file}`;
             const filename = (rawFile.split('\\')).join('/');
 
@@ -347,9 +347,11 @@ projectRouter.post('/uploadMultipleFiles', async (req, res) => {
                 ContentType: "image/*"
             };
             const results = await s3ServiceObject.send(new PutObjectCommand(params));
-            resultsArray.push(results);
-        })
-        return res.status(200).setHeader("Content-Type", "application/json").send(resultsArray);
+            return results;
+        });
+        //for some reason, the resultsArray returns empty
+        //probablbly the promise not fullfilled yet
+        return res.status(200).send("successfully uploaded the files");
     }
     catch (err) {
         //console.log(err.message);
