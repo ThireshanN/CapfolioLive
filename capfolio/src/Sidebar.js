@@ -79,18 +79,18 @@ const Sidebar = ({ onApplyFilter }) => {
       };
     
       const handleApplyFilter = () => {
-        const allSelectedOptions = [
-          ...selectedYears,
-          ...selectedSemesters,
-          ...selectedTechnologies,
-          ...selectedAwards,
-        ];
+        const allSelectedOptions = {
+          selectedYears,
+          selectedSemesters,
+          selectedTechnologies,
+          selectedAwards,
+          selectedSortBy,
+        };
         console.log("Selected Filters: ", allSelectedOptions);
-        console.log("Sort By: ", selectedSortBy);
-
+      
         // Call the FilteredProjectData function passed as a prop
         if (typeof onApplyFilter === 'function') {
-          onApplyFilter();
+          onApplyFilter(allSelectedOptions);
         }
       };
 

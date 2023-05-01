@@ -121,33 +121,43 @@ projectRouter.get('/AllProjectData', async (req, res) => { //working 28/04/2023
 
 //http://localhost:3000/project/FilteredProjectData
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/FilteredProjectData
-projectRouter.get('/FilteredProjectData', async (req, res) => { //working 28/04/2023 YUP
+projectRouter.post('/FilteredProjectData', async (req, res) => {
     try {
-        //CLIENT DATA FROM FRONTEND 
-        const filterFields = req.body;
-        const sql = `
-        SELECT Project.*, count(DISTINCT likeID) AS likes, GROUP_CONCAT(DISTINCT technologiesUsed.technologyName) AS Technologies, AwardName, AwardDesc
-        FROM Project INNER JOIN ProjectAward ON ProjectAward.ProjectID_FK = Project.ProjectID
-        INNER JOIN ProjectTech ON ProjectTech.ProjectID_FK = Project.ProjectID
-        INNER JOIN Award ON Award.AwardID = ProjectAward.AwardID_FK
-        INNER JOIN technologiesUsed ON technologiesUsed.techID = ProjectTech.techID_FK
-        INNER JOIN likes ON likes.ProjectID_FK = Project.ProjectID
-        WHERE Project.capstoneYear IN ('${filterFields.capstoneYear.join('\', \'')}') AND Project.capstoneSemester IN (${filterFields.capstoneSemester.join(', ')})
-        AND Award.AwardName IN ('${filterFields.AwardName.join('\', \'')}') AND technologiesUsed.technologyName IN ('${filterFields.technologyName.join('\', \'')}')
-        GROUP BY ProjectID 
-        ORDER BY ${!filterFields.SortBy ? "likes" : filterFields.SortBy[0] || "likes"};
-        `;
-
-        const projects = (await executeSQLstatement(sql))[0]//.catch(err => console.log("The following error generated:\n" + err));
-        if (projects.length === 0) {
-            throw new Error("There were no projects found");
-        }
-        return res.status(200).setHeader("Content-Type", "application/json").send(projects);
+      //CLIENT DATA FROM FRONTEND 
+      const filterFields = req.body;
+      console.log("filterFields:", filterFields);
+  
+      const yearFilter = filterFields.selectedYears.length > 0 ? `Project.capstoneYear IN ('${filterFields.selectedYears.map(year => year.value).join('\', \'')}')` : '';
+      const semesterFilter = filterFields.selectedSemesters.length > 0 ? `Project.capstoneSemester IN ('${filterFields.selectedSemesters.map(semester => semester.value).join('\', \'')}')` : '';
+      const awardFilter = filterFields.selectedAwards.length > 0 ? `Award.AwardName IN ('${filterFields.selectedAwards.map(award => award.value).join('\', \'')}')` : '';
+      const technologyFilter = filterFields.selectedTechnologies.length > 0 ? `technologiesUsed.technologyName IN ('${filterFields.selectedTechnologies.map(tech => tech.value).join('\', \'')}')` : '';
+  
+      const whereClauses = [yearFilter, semesterFilter, awardFilter, technologyFilter].filter(clause => clause).join(' AND ');
+  
+      const sql = `
+      SELECT Project.*, count(DISTINCT likeID) AS likes, GROUP_CONCAT(DISTINCT technologiesUsed.technologyName) AS Technologies, AwardName, AwardDesc
+      FROM Project LEFT JOIN ProjectAward ON ProjectAward.ProjectID_FK = Project.ProjectID
+      LEFT JOIN ProjectTech ON ProjectTech.ProjectID_FK = Project.ProjectID
+      LEFT JOIN Award ON Award.AwardID = ProjectAward.AwardID_FK
+      LEFT JOIN technologiesUsed ON technologiesUsed.techID = ProjectTech.techID_FK
+      LEFT JOIN likes ON likes.ProjectID_FK = Project.ProjectID
+      ${whereClauses ? 'WHERE ' + whereClauses : ''}
+      GROUP BY ProjectID 
+      ORDER BY ${!filterFields.selectedSortBy ? "likes" : filterFields.selectedSortBy.value || "likes"};
+      `;
+  
+      console.log("Generated SQL statement:", sql);
+  
+      const projects = (await executeSQLstatement(sql))[0]
+      if (projects.length === 0) {
+        throw new Error("There were no projects found");
+      }
+      return res.status(200).setHeader("Content-Type", "application/json").send(projects);
     }
     catch (err) {
-        return res.status(400).setHeader("Content-Type", "text/plain").send("Sorry! " + err);
+      return res.status(400).setHeader("Content-Type", "text/plain").send("Sorry! " + err);
     }
-});
+  });
 
 
 //http://localhost:3000/project/FormAddProject

@@ -32,14 +32,23 @@ const ProjectGallery = () => {
 
   const [filteredProjects, setFilteredProjects] = useState('');
   // Function to collect filtered data
-  const FilteredProjectData = async () => {
-    const response = await fetch("/project/FilteredProjectData").then((response) =>
-      response.json()
-    );
-    setFilteredProjects(response);
-    setFiltered(true); // Set filtered state to true when fetching filtered projects
+  const FilteredProjectData = async (filters) => {
+    const response = await fetch("/project/FilteredProjectData", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(filters),
+    }).then((response) => response.json());
+  
+    if (response.error) {
+      console.error(response.error);
+    } else {
+      console.log(response);
+      setFilteredProjects(response);
+      setFiltered(true); // Set filtered state to true when fetching filtered projects
+    }
   };
-
   console.log(filteredProjects)
 
   return (
