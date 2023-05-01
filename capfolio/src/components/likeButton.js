@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import cn from "classnames";
 import { ReactComponent as Hand } from "../images/hand.svg";
-
+import { redirect } from "react-router-dom";
 import "./likeStyles.css";
 
 const particleList = Array.from(Array(10));
@@ -28,7 +28,6 @@ const LikeButton2 = (props) => {
 
     const initialLikes = async () => {
         const response = await fetch('/projects/ProjectsLiked?id=' + props.likenumber).then((response) => response.json());
-
       
         if (response[response.length - 1].hasLiked == '0') {
             setLiked(false)
@@ -39,39 +38,54 @@ const LikeButton2 = (props) => {
 
         if (response[response.length - 1].hasLiked == '1') {
             setLiked(true)
-            setClicked(true)        }
+            setClicked(true)
+        }
 
     }
 
 
 
     const checkLikes = async () => {
-        const response = await fetch('/projects/ProjectsLiked?id=' + props.likenumber).then((response) => response.json());
+    
+            const response = await fetch('/projects/ProjectsLiked?id=' + props.likenumber).then((response) => response.json())
 
-        if (response[response.length - 1].hasLiked == '0') { 
-          
-            newlike()
-            setLiked(true)
-            setClicked(true)
 
-        }
 
-        if (response[response.length - 1].hasLiked == '1') {
-            removeLike()
-            setLiked(false)
-            setClicked(false)
-        }
+
+
+            if (response.length == 0) {
+                newlike()
+                setLiked(true)
+                setClicked(true)
+            }
+            else if (response.length > 0 && response[response.length - 1].hasLiked == '0') {
+
+                newlike()
+                setLiked(true)
+                setClicked(true)
+
+            }
+
+            else if (response.length > 0 && response[response.length - 1].hasLiked == '1') {
+                removeLike()
+                setLiked(false)
+                setClicked(false)
+            }
+        
+       
 
     }
 
     const newlike = async () => {
-        await fetch(
+        const postlike = await fetch(
             "/projects/postLike",{
             method: 'POST',
             headers: { "Accept": "application/json", "Content-Type": "application/json" },
             body: JSON.stringify({
                 'projectId': props.likenumber
             })
+
+
         })
     
         getLikes();

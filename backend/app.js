@@ -24,9 +24,8 @@ const __dirname = path.dirname(__filename);
 //app.use(express.static(path.join(__dirname, '../clientdemo/build'))); //basic website with react
 app.use(express.static(path.join(__dirname, '../capfolio/build'))); //final website with react
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 
 
