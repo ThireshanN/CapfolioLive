@@ -292,7 +292,8 @@ projectRouter.post('/uploadFile', async (req, res) => {
                 secretAccessKey: '5yonS9Qlo01ZFoNAe+U+ApjqeBMeG9jD1UEYej0M'
             }
         });
-        const fileContent = fs.readFileSync(filename);
+        //const fileContent = fs.readFileSync(filename);
+        const fileContent = fs.readFileSync(filename, {encoding: 'base64'});
         //console.log(fileContent.toString());
         const filenameShort = path.basename(filename);
         const params = {
@@ -303,7 +304,7 @@ projectRouter.post('/uploadFile', async (req, res) => {
         };
         const results = await s3ServiceObject.send(new PutObjectCommand(params));
         //console.log("Successfully created " + params.Key + " and uploaded it to " + params.Bucket + "/" + params.Key);
-        return res.status(200).setHeader("Content-Type", "application/json").send(results);
+        return res.status(200).setHeader("Content-Type", "application/json").send("results\n\n");
     }
     catch (err) {
         //console.log(err.message);
@@ -311,8 +312,8 @@ projectRouter.post('/uploadFile', async (req, res) => {
     }
 });
 
-//http://localhost:3000/project/uploadFile
-//http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/uploadFile
+//http://localhost:3000/project/uploadMultipleFiles
+//http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/uploadMultipleFiles
 projectRouter.post('/uploadMultipleFiles', async (req, res) => {
     try {
         const files = req.body.files;
@@ -360,9 +361,10 @@ projectRouter.post('/uploadMultipleFiles', async (req, res) => {
 });
 
 
+
 //http://localhost:3000/project/retrieveFile/Meowland3/tree.jpg
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/retrieveFile/Meowland3/tree.jpg
-projectRouter.get('/retrieveFile/:File([\\/A-Za-z.]+)', async (req, res) => { //WORKS 29/04/2023
+projectRouter.get('/retrieveFile/:File([\\/A-Za-z.0-9_]+)', async (req, res) => { //WORKS 29/04/2023
     try {
         //(\\d+)
         //"filename": "DeleteME/tree.jpg";
@@ -476,9 +478,6 @@ projectRouter.put('/UpdateProject', express.json(), async (req, res) => { //work
 });
 
 
-//module.exports = projectRouter;
-
-
 const data = {
     "ProjectName": "'Meow'",
     "IsApproved": 0,
@@ -503,4 +502,9 @@ const data = {
         { "FirstName": "Mario", "lastName": "SuperMarioFamily" }]
 }
 //console.log(JSON.parse(JSON.stringify(data)));
+
+
+
+
+//module.exports = projectRouter;
 
