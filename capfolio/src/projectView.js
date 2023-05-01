@@ -109,22 +109,7 @@ const ProjectView = () => {
         nextArrow: <button style={{ ...buttonStyle }}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="#fff"><path d="M512 256L270 42.6v138.2H0v150.6h270v138z" /></svg></button>
     }
 
-    const CheckVideo = () => {
-        const videolink = projects && projects.map((project) => project.VideoLink)
-        if (videolink.include('embed'))
-        {
-            return (<iframe width="100%" height="400vw" allowfullscreen src={projects && projects.map((project) => project.VideoLink)}>
-            </iframe >)
-        
-        }
-
-        return (
-                <p></p>
-            )
- 
-            
-    }
-
+    
 
 
     const Example = () => {
@@ -259,7 +244,8 @@ const ProjectView = () => {
                     <p className='about'>{projects && projects.map((project) => project.ProjectIntro)} </p>
                     <h2>Project Approach</h2>
                     <p className='projectApproach'>{projects && projects.map((project) => project.Project_Approach)}</p>
-                    <CheckVideo />
+                    (<iframe width="100%" height="400vw" allowfullscreen src={projects && projects.map((project) => project.VideoLink)}>
+                    </iframe >)
                     
                 </div>
             </div>
