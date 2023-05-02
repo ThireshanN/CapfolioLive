@@ -1,53 +1,90 @@
-import React, { useState, useEffect, useRef } from 'react';
-import './projectView.css';
-import redheart from './images/red-heart.png';
-import avatar from './images/avatar.png';
-import mainImage from './images/homepage-mockup.png';
-import secondimage from './images/secondimage.png';
-import thirdimage from './images/thirdimage.png';
-import submitcomment from './images/send-button.png'
+import { CButton } from '@coreui/react';
+import {
+    MDBTextArea
+} from 'mdb-react-ui-kit';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { Slide } from 'react-slideshow-image';
 import 'react-slideshow-image/dist/styles.css';
 import LikeButton from "./components/likeButton";
-import { CButton, } from '@coreui/react';
-import { withTheme } from '@emotion/react';
+import avatar from './images/avatar.png';
 import gitHubLogo from './images/github-mark-white.png';
-import { useParams } from 'react-router-dom';
-import {
-    MDBRow,
-    MDBCol,
-    MDBInput,
-    MDBCheckbox,
-    MDBBtn,
-    MDBTextArea
-} from 'mdb-react-ui-kit';
+import './projectView.css';
+
+import AWS from "aws-sdk";
+
+const bucketName = 'capfoliostorage';
+const bucketRegion = "ap-southeast-2";
+const accessKeyId = 'AKIAUDUQU75VEF3VDCEL';
+const secretAccessKey = '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';
+
+const s3 = new AWS.S3({
+    region: bucketRegion,
+    accessKeyId: accessKeyId,
+    secretAccessKey: secretAccessKey,
+});
+
 
 
 
 const ProjectView = () => {
+
+    const [data, setData] = useState([]);
+    const [responses, setResponses] = useState([]);
+
     const params = useParams();
     const [comments, setComments] = useState('');
     const [projects, setProject] = useState('');
     const [tech, setTech] = useState('');
-
     // const blueBoxRef = useRef();
 
 
     const getProject = async () => {
-     
-
         const response = await fetch(
             "/projects/project?id=" + params.id
         ).then((response) => response.json());
 
+        fetch('/project/listTeamFiles/' + response[0].TeamName)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data)
+                setData(data)
 
-        console.log(response)
+            })
+            .catch(error => {
+                console.error('There was a problem fetching the data:', error);
+            });
 
         let string = response[0].technologies.split(",");
         setProject(response)
 
-        setTech(string)        
+        setTech(string)
+
+
     };
+
+
+
+    useEffect(() => {
+        const fetchResponses = async () => {
+            const responseArray = [];
+
+            for (const element of data) {
+                const response = await fetch(`/project/retrieveFile/${element}`);
+                const data = await response.text();
+                responseArray.push(data);
+            }
+            console.log(responseArray)
+            setResponses(responseArray);
+        };
+
+        fetchResponses();
+    }, [data]);
 
 
     // Function to collect data
@@ -61,20 +98,20 @@ const ProjectView = () => {
 
 
 
-    
 
-    
+
+
     const handleSubmit = (e) => {
         e.preventDefault();
         var CommentDesc = document.getElementById('comment').value
-     
-        
+
+
         fetch('/projects/PostComment?id=' + params.id, {
             method: 'POST',
             headers: { "Accept": "application/json", "Content-Type": "application/json" },
             body: JSON.stringify({
                 "CommentDesc": CommentDesc,
-             
+
             })
         }).then(() => {
             console.log('comment Added')
@@ -88,11 +125,15 @@ const ProjectView = () => {
     useEffect(() => {
         getComments();
     }, []);
-    
+
     useEffect(() => {
         getProject();
     }, []);
-    
+
+
+
+
+
 
 
 
@@ -109,7 +150,7 @@ const ProjectView = () => {
         nextArrow: <button style={{ ...buttonStyle }}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="#fff"><path d="M512 256L270 42.6v138.2H0v150.6h270v138z" /></svg></button>
     }
 
-    
+
 
 
     const Example = () => {
@@ -117,21 +158,12 @@ const ProjectView = () => {
         return (
             <Slide indicators={true} duration={2000} className='slideshow' {...properties}>
 
-                <div className="each-slide-effect">
-                    <div style={{ 'backgroundImage': `url(${mainImage})` }}>
+                {responses.map(response => (
 
+                    <div className="each-slide-effect">
+                        <div style={{ 'backgroundImage': `url(${response})` }}></div>
                     </div>
-                </div>
-                <div className="each-slide-effect">
-                    <div style={{ 'backgroundImage': `url(${secondimage})` }}>
-
-                    </div>
-                </div>
-                <div className="each-slide-effect">
-                    <div style={{ 'backgroundImage': `url(${thirdimage})` }}>
-
-                    </div>
-                </div>
+                ))}
             </Slide>
 
         );
@@ -157,10 +189,10 @@ const ProjectView = () => {
 
                 <div className='techUsed'>
 
-             
 
 
-                    { tech && tech.map((tech, i) =>
+
+                    {tech && tech.map((tech, i) =>
                         <div className='tech'>
                             <p key={`Key${i}`}>{tech}</p>
                         </div>
@@ -171,8 +203,8 @@ const ProjectView = () => {
                     <CButton>  <a href={project.githubLink} target="_blank"> <img src={gitHubLogo}></img>  GitHub</a></CButton>
                     <div>
                         <div className='pv-likeButton'>
-                            <LikeButton likenumber={params.id}/>
-                            
+                            <LikeButton likenumber={params.id} />
+
                         </div>
                     </div>
                 </div>
@@ -181,10 +213,10 @@ const ProjectView = () => {
         );
     };
 
-    
 
 
-    
+
+
 
 
 
@@ -207,7 +239,7 @@ const ProjectView = () => {
             }
         }
     };
-    
+
     // const blueBoxCallbackRef = (node) => {
     //     if (node) {
     //         blueBoxRef.current = node;
@@ -216,8 +248,8 @@ const ProjectView = () => {
 
     return (
         <div>
-        
-        
+
+
             <div className='bluebox-top'></div>
             <div className='bluebox' style={{ '--right-column-height': 'auto' }}>
                 <div className='p-row'>
@@ -240,14 +272,18 @@ const ProjectView = () => {
                 <div className='projectInformation'>
                     <h2>About {projects && projects.map((project) => project.ProjectName)}</h2>
 
-                  
+
                     <p className='about'>{projects && projects.map((project) => project.ProjectIntro)} </p>
                     <h2>Project Approach</h2>
                     <p className='projectApproach'>{projects && projects.map((project) => project.Project_Approach)}</p>
-                    (<iframe width="100%" height="400vw" allowfullscreen src={projects && projects.map((project) => project.VideoLink)}>
-                    </iframe >)
-                    
+                    <iframe width="100%" height="400vw" allowfullscreen src={projects && projects.map((project) => project.VideoLink)}>
+                    </iframe >
+
                 </div>
+
+
+
+
             </div>
 
 
