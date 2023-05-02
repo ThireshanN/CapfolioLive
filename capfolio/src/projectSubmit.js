@@ -1,19 +1,27 @@
-import React, { useState, ChangeEvent, KeyboardEventHandler } from 'react';
 import {
-    MDBRow,
-    MDBCol,
-    MDBInput,
-    MDBCheckbox,
-    MDBBtn,
-    MDBTextArea
+    MDBBtn, MDBCol,
+    MDBInput, MDBRow, MDBTextArea
 } from 'mdb-react-ui-kit';
-import CreatableSelect from 'react-select/creatable';
-import makeAnimated from "react-select/animated";
+import React, { useState } from 'react';
 import Select from 'react-select';
+import makeAnimated from "react-select/animated";
+import CreatableSelect from 'react-select/creatable';
 import './projectSubmit.css';
-import App from './App';
+import { Buffer } from "buffer";
+import S3FileUpload from "react-s3";
+import AWS from "aws-sdk";
 
 
+const bucketName='capfoliostorage';
+const bucketRegion = "ap-southeast-2";
+const accessKeyId= 'AKIAUDUQU75VEF3VDCEL';
+const secretAccessKey= '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';
+
+const s3 = new AWS.S3({
+    region: bucketRegion,
+    accessKeyId: accessKeyId,
+    secretAccessKey: secretAccessKey,
+});
 
 
 export default function ProjectSubmit() {
@@ -39,10 +47,18 @@ export default function ProjectSubmit() {
         { value: "2", label: "Semester Two" },
 
     ];
+    
 
+    const config = {
+        bucketName: 'capfoliostorage',
+        region: "ap-southeast-2",
+        accessKeyId: 'AKIAUDUQU75VEF3VDCEL',
+        secretAccessKey: '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',
+    }
 
     const animatedComponents = makeAnimated();
 
+    //Has all the set states 
     const [selectedYears, setSelectedYears] = useState([]);
     const handleChangeYears = (selectedYears) => {
         setSelectedYears(selectedYears);
@@ -63,32 +79,21 @@ export default function ProjectSubmit() {
         setSelectedTeam(selectedTeam);
     }
 
-    const [imageUrls, setImageUrls] = useState([]);
-    const handleImageChange = (e) => {
-        const files = e.target.files;
-        const urls = [];
-
-        for (let i = 0; i < files.length; i++) {
-            const reader = new FileReader();
-            reader.onload = function (event) {
-                urls.push(event.target.result);
-                if (urls.length === files.length) {
-                    setImageUrls([...imageUrls, ...urls]);
-                }
-            };
-            reader.readAsDataURL(files[i]);
-        }
-
-        console.log(imageUrls)
-    }
 
 
-    function handleDelete(index) {
-        setImageUrls(imageUrls.filter((_, i) => i !== index));
-    }
+    const [images, setImages] = useState([]);
+    const handleImageChange = (event) => {
+        const selectedImages = Array.from(event.target.files);
+        setImages([...images, ...selectedImages]);
+    };
+    const handleRemoveImage = (index) => {
+        const newImages = [...images];
+        newImages.splice(index, 1);
+        setImages(newImages);
+    };
 
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
 
         event.preventDefault();
 
@@ -101,7 +106,6 @@ export default function ProjectSubmit() {
         const Project_Approach = document.getElementById('approach').value;
         const tech = selectedTechnologies;
         const teamMembers = selectedTeam;
-        const files = imageUrls
         const VideoLink = document.getElementById('yt').value;
         const githubLink = document.getElementById('github').value;
 
@@ -139,12 +143,7 @@ export default function ProjectSubmit() {
             semesterString = 2
         }
 
-
-        for (let i = 0; i < files.length; i++) {
-            files[i] = files[i].replace(/'/g, "\"");
-        }
-
-      
+ 
        
         let newLink = VideoLink.replace("watch?v=", "embed/");
 
@@ -165,7 +164,7 @@ export default function ProjectSubmit() {
                 "VideoLink": "'" + newLink + "'",
                 "ProjectIntro": "'" + ProjectIntro + "'",
                 "Project_Approach": "'" + Project_Approach + "'",
-                "Files": files,
+                //"Files": files,
                 "Technologies": arrayTech,
                 "Users": usersArray
             })
@@ -173,6 +172,33 @@ export default function ProjectSubmit() {
             console.log('ProjectAdded')
 
         })
+
+
+        const promises = images.map(async (image) => {
+            console.log(image)
+            const filename = image.name;
+            const key = '' + TeamName + "/" +filename ;
+            const params = {
+                Bucket: bucketName,
+                Key: key,
+                Body: image,
+                ContentType: "image/*"
+            };
+
+            try {
+                const data = await s3.upload(params).promise();
+                return data;
+            } catch (err) {
+                console.error(err);
+            }
+        });
+
+        try {
+            const results = await Promise.all(promises);
+            console.log(results);
+        } catch (err) {
+            console.error(err);
+        }
 
 
     }
@@ -243,10 +269,10 @@ export default function ProjectSubmit() {
 
 
                 <div className='displayThumbnail'>
-                    {imageUrls.map((url, index) => (
+                    {images.map((url, index) => (
                         <div key={index} >
-                            <img className='thumbnail' src={url} alt={`Thumbnail ${index}`} />
-                            <button onClick={() => handleDelete(index)}>Remove</button>                </div>
+                            <img className='thumbnail' src={URL.createObjectURL(url)} alt={`Thumbnail ${index}`} />
+                            <button onClick={() => handleRemoveImage(index)}>Remove</button>                </div>
                     ))}
                 </div>
 
