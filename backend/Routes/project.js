@@ -123,7 +123,7 @@ projectRouter.get('/AllProjectData', async (req, res) => { //working 28/04/2023
 
 //http://localhost:3000/project/FilteredProjectData
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/FilteredProjectData
-projectRouter.get('/FilteredProjectData', async (req, res) => { //working 28/04/2023 YUP
+projectRouter.post('/FilteredProjectData', async (req, res) => { //working 28/04/2023 YUP
     try {
         //CLIENT DATA FROM FRONTEND 
         const filterFields = req.body;
