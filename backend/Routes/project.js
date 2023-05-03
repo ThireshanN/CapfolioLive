@@ -5,6 +5,7 @@ import { config } from '../sqlconfig.js';
 import { PutObjectCommand, S3, GetObjectCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";
 import fs from 'fs';
 import path from 'path';
+import { error } from 'console';
 
 
 export class ProjectDetails {
@@ -128,24 +129,49 @@ projectRouter.post('/FilteredProjectData', async (req, res) => { //working 28/04
         //CLIENT DATA FROM FRONTEND 
         const filterFields = req.body;
 
-        const sql = `
-        SELECT Project.*, count(DISTINCT likeID) AS likes, GROUP_CONCAT(DISTINCT technologiesUsed.technologyName) AS Technologies, AwardName, AwardDesc
+        let sortBy = "";
+
+        console.log(filterFields.SortBy[0])
+        switch (filterFields.SortBy[0]) {
+            case "'Oldest to latest'":
+                sortBy = "'Project.capstoneYear ASC'";
+                break;
+            case "Latest to Oldest":
+                sortBy = "'Project.capstoneYear DESC'";
+                break;
+            case "Highest to lowest likes":
+                sortBy = "'likes DESC'";
+                break;
+            case "Lowest to highest likes":
+                sortBy = "'likes ASC'";
+                break;
+            case "Alphabetical (A - Z)":
+                sortBy = "'Project.ProjectName ASC'";
+                break;
+            case "Alphabetical (Z - A)":
+                sortBy = "'Project.ProjectName DESC'";
+                break;
+            default:
+                sortBy = "'likes DESC'";
+        }
+
+        console.log(sortBy)
+        const sql = `SELECT Project.*, count(DISTINCT likeID) AS likes, GROUP_CONCAT(DISTINCT technologiesUsed.technologyName) AS Technologies, AwardName, AwardDesc
         FROM Project LEFT JOIN ProjectAward ON ProjectAward.ProjectID_FK = Project.ProjectID
         LEFT JOIN ProjectTech ON ProjectTech.ProjectID_FK = Project.ProjectID
         LEFT JOIN Award ON Award.AwardID = ProjectAward.AwardID_FK
         LEFT JOIN technologiesUsed ON technologiesUsed.techID = ProjectTech.techID_FK
         LEFT JOIN likes ON likes.ProjectID_FK = Project.ProjectID
-        WHERE Project.capstoneYear IN ('${filterFields.capstoneYear.join('\', \'')}') 
-        AND Project.capstoneSemester IN (${filterFields.capstoneSemester.join(', ')})
-        AND Award.AwardName IN ('${filterFields.AwardName.join('\', \'')}') 
-        AND technologiesUsed.technologyName IN ('${filterFields.technologyName.join('\', \'')}')
+        WHERE (${filterFields.capstoneYear.length === 0 ? 'FALSE' : `Project.capstoneYear IN ('${filterFields.capstoneYear.join('\', \'')}')`})
+        OR (${filterFields.capstoneSemester.length === 0 ? 'FALSE' : `Project.capstoneSemester IN (${filterFields.capstoneSemester.join(', ')})`})
+        OR (${filterFields.AwardName.length === 0 ? 'FALSE' : `Award.AwardName IN ('${filterFields.AwardName.join('\', \'')}')`})
+        OR (${filterFields.technologyName.length === 0 ? 'FALSE' : `technologiesUsed.technologyName IN ('${filterFields.technologyName.join('\', \'')}')`})
         GROUP BY ProjectID 
-        ORDER BY ${!filterFields.SortBy ? "likes" : filterFields.SortBy[0] || "likes"};
-        `;
+        ORDER BY ${sortBy};`;
 
         const projects = (await executeSQLstatement(sql))[0]//.catch(err => console.log("The following error generated:\n" + err));
         if (projects.length === 0) {
-            throw new Error("There were no projects found");
+            throw new Error("There were no projects found" + error);
         }
         return res.status(200).setHeader("Content-Type", "application/json").send(projects);
     }
@@ -228,39 +254,39 @@ projectRouter.post('/FormAddProject', express.json(), async (req, res) => { //
 
 
         //ADDING FILES
-    //    const toAddFiles = reqBodyFromClient.Files;
-    //    if (toAddFiles !== undefined || toAddFiles.length != 0) {
-    //        toAddFiles.forEach(async (file) => await addFilesFunction(file, reqBodyFromClient.TeamName));
-    //        async function addFilesFunction(file, TeamName) {
-    //            const rawFile = String.raw`${file}`;
-    //            const filename = (rawFile.split('\\')).join('/');
-    //            if (fs.existsSync(filename)) {
-    //                console.log('file exists');
-    //            } else {
-    //                console.log('file not found!');
-    //            }
+        //    const toAddFiles = reqBodyFromClient.Files;
+        //    if (toAddFiles !== undefined || toAddFiles.length != 0) {
+        //        toAddFiles.forEach(async (file) => await addFilesFunction(file, reqBodyFromClient.TeamName));
+        //        async function addFilesFunction(file, TeamName) {
+        //            const rawFile = String.raw`${file}`;
+        //            const filename = (rawFile.split('\\')).join('/');
+        //            if (fs.existsSync(filename)) {
+        //                console.log('file exists');
+        //            } else {
+        //                console.log('file not found!');
+        //            }
 
-    //            const REGION = "ap-southeast-2";
-    //            const s3ServiceObject = new S3({
-    //                region: REGION,
-    //                credentials: {
-    //                    accessKeyId: 'AKIAUDUQU75VEF3VDCEL',
-    //                    secretAccessKey: '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'
-    //                }
-    //            });
-    //            const fileContent = fs.readFileSync(filename);
-    //            const filenameShort = path.basename(filename);
-    //            const params = {
-    //                Bucket: "capfoliostorage",
-    //                Key: '' + TeamName + "/" + filenameShort,
-    //                Body: fileContent,
-    //                ContentType: "image/*"
-    //            };
-    //            const results = await s3ServiceObject.send(new PutObjectCommand(params));
-    //        }
-    //    }
+        //            const REGION = "ap-southeast-2";
+        //            const s3ServiceObject = new S3({
+        //                region: REGION,
+        //                credentials: {
+        //                    accessKeyId: 'AKIAUDUQU75VEF3VDCEL',
+        //                    secretAccessKey: '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'
+        //                }
+        //            });
+        //            const fileContent = fs.readFileSync(filename);
+        //            const filenameShort = path.basename(filename);
+        //            const params = {
+        //                Bucket: "capfoliostorage",
+        //                Key: '' + TeamName + "/" + filenameShort,
+        //                Body: fileContent,
+        //                ContentType: "image/*"
+        //            };
+        //            const results = await s3ServiceObject.send(new PutObjectCommand(params));
+        //        }
+        //    }
 
-    //    return res.status(200).setHeader("Content-Type", "application/json").send({ id: insertId });
+        //    return res.status(200).setHeader("Content-Type", "application/json").send({ id: insertId });
     }
     catch (err) {
         //console.log(err.message);
@@ -293,7 +319,7 @@ projectRouter.post('/uploadFile', async (req, res) => {
             }
         });
         //const fileContent = fs.readFileSync(filename);
-        const fileContent = fs.readFileSync(filename, {encoding: 'base64'});
+        const fileContent = fs.readFileSync(filename, { encoding: 'base64' });
         //console.log(fileContent.toString());
         const filenameShort = path.basename(filename);
         const params = {

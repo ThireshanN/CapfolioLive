@@ -45,7 +45,7 @@ const Sidebar = ({ onApplyFilter }) => {
         { value: "Latest to oldest", label: "Latest to oldest" },
         { value: "Oldest to latest", label: "Oldest to latest" },
         { value: "Highest to lowest likes", label: "Highest to lowest likes" },
-        { value: "Lowest to highest Likes", label: "Lowest to highest Likes" },
+        { value: "Lowest to highest Likes", label: "Lowest to highest likes" },
         { value: "Alphabetical (A - Z)", label: "Alphabetical (A - Z)" },
         { value: "Alphabetical (Z - A)", label: "Alphabetical (Z - A)" },
 
@@ -84,7 +84,7 @@ const Sidebar = ({ onApplyFilter }) => {
           const semesterArray = []
           const techArray = []
           const AwardsArray = []
-
+          const selectArray = []
 
           selectedYears.forEach(e => yearArray.push(e.label))
           for (let i = 0; i < yearArray.length; i++) {
@@ -113,7 +113,10 @@ const Sidebar = ({ onApplyFilter }) => {
               
 
           }
-      
+
+          console.log(selectedSortBy.label)
+          selectArray.push(selectedSortBy.label)
+        
           console.log("Sort By: ", selectedSortBy);
 
 
@@ -122,7 +125,7 @@ const Sidebar = ({ onApplyFilter }) => {
                   "capstoneSemester": semesterArray,
                   "technologyName": techArray,
                   "AwardName": AwardsArray,
-                  "SortBy": selectedSortBy
+                  "SortBy": selectArray
               })
          
 
