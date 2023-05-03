@@ -228,39 +228,39 @@ projectRouter.post('/FormAddProject', express.json(), async (req, res) => { //
 
 
         //ADDING FILES
-        const toAddFiles = reqBodyFromClient.Files;
-        if (toAddFiles !== undefined || toAddFiles.length != 0) {
-            toAddFiles.forEach(async (file) => await addFilesFunction(file, reqBodyFromClient.TeamName));
-            async function addFilesFunction(file, TeamName) {
-                const rawFile = String.raw`${file}`;
-                const filename = (rawFile.split('\\')).join('/');
-                if (fs.existsSync(filename)) {
-                    console.log('file exists');
-                } else {
-                    console.log('file not found!');
-                }
+    //    const toAddFiles = reqBodyFromClient.Files;
+    //    if (toAddFiles !== undefined || toAddFiles.length != 0) {
+    //        toAddFiles.forEach(async (file) => await addFilesFunction(file, reqBodyFromClient.TeamName));
+    //        async function addFilesFunction(file, TeamName) {
+    //            const rawFile = String.raw`${file}`;
+    //            const filename = (rawFile.split('\\')).join('/');
+    //            if (fs.existsSync(filename)) {
+    //                console.log('file exists');
+    //            } else {
+    //                console.log('file not found!');
+    //            }
 
-                const REGION = "ap-southeast-2";
-                const s3ServiceObject = new S3({
-                    region: REGION,
-                    credentials: {
-                        accessKeyId: 'AKIAUDUQU75VEF3VDCEL',
-                        secretAccessKey: '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'
-                    }
-                });
-                const fileContent = fs.readFileSync(filename);
-                const filenameShort = path.basename(filename);
-                const params = {
-                    Bucket: "capfoliostorage",
-                    Key: '' + TeamName + "/" + filenameShort,
-                    Body: fileContent,
-                    ContentType: "image/*"
-                };
-                const results = await s3ServiceObject.send(new PutObjectCommand(params));
-            }
-        }
+    //            const REGION = "ap-southeast-2";
+    //            const s3ServiceObject = new S3({
+    //                region: REGION,
+    //                credentials: {
+    //                    accessKeyId: 'AKIAUDUQU75VEF3VDCEL',
+    //                    secretAccessKey: '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'
+    //                }
+    //            });
+    //            const fileContent = fs.readFileSync(filename);
+    //            const filenameShort = path.basename(filename);
+    //            const params = {
+    //                Bucket: "capfoliostorage",
+    //                Key: '' + TeamName + "/" + filenameShort,
+    //                Body: fileContent,
+    //                ContentType: "image/*"
+    //            };
+    //            const results = await s3ServiceObject.send(new PutObjectCommand(params));
+    //        }
+    //    }
 
-        return res.status(200).setHeader("Content-Type", "application/json").send({ id: insertId });
+    //    return res.status(200).setHeader("Content-Type", "application/json").send({ id: insertId });
     }
     catch (err) {
         //console.log(err.message);
@@ -364,7 +364,8 @@ projectRouter.post('/uploadMultipleFiles', async (req, res) => {
 
 //http://localhost:3000/project/retrieveFile/Meowland3/tree.jpg
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/retrieveFile/Meowland3/tree.jpg
-projectRouter.get('/retrieveFile/:File([\\/A-Za-z.0-9_]+)', async (req, res) => { //WORKS 29/04/2023
+projectRouter.get('/retrieveFile/:File([\\w\\S]+)', async (req, res) => { //WORKS 29/04/2023
+
     try {
         //(\\d+)
         //"filename": "DeleteME/tree.jpg";

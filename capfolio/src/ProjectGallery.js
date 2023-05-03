@@ -5,7 +5,7 @@ import { Collapse, CButton, CCollapse, CListGroup, CListGroupItem, CCard, CCardB
 import LikeButton from "./components/likeButton";
 import AwardBanner from "./components/awardBanner.js";
 import Sidebar from './Sidebar';
-
+import MainImage from './components/getMainImage';
 
 const ProjectGallery = () => {
 
@@ -42,7 +42,7 @@ const ProjectGallery = () => {
 
   console.log(filteredProjects)
 
-  return (
+         return (
     <div className="project-gallery">
       {/* Pass the FilteredProjectData function as a prop */}
       <Sidebar onApplyFilter={FilteredProjectData} />
@@ -53,7 +53,7 @@ const ProjectGallery = () => {
             <CCol xs>
               <CCard className="project-card h-100">
                 {'None' != "None" && <AwardBanner text={'None'} />}
-                <CCardImage orientation="top" src={'https://via.placeholder.com/350x200'} />
+                      <MainImage teamname={ project.TeamName} />
                 <CCardBody>
                   <CCardTitle>{project.ProjectName}</CCardTitle>
                   <CCardText>
