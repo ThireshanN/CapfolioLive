@@ -364,7 +364,7 @@ projectRouter.post('/uploadMultipleFiles', async (req, res) => {
 
 //http://localhost:3000/project/retrieveFile/Meowland3/tree.jpg
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/retrieveFile/Meowland3/tree.jpg
-projectRouter.get('/retrieveFile/:File([\\/A-Za-z.0-9_]+)', async (req, res) => { //WORKS 29/04/2023
+projectRouter.get('/retrieveFile/:File([\\w\\S]+)', async (req, res) => { //WORKS 29/04/2023
 
     try {
         //(\\d+)

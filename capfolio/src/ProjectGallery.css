@@ -128,5 +128,8 @@ p.card-text {
 .project-gallery .card .btn {
     font-size: 16px;
     padding: 9px 16px;
+}
 
+.card .card-img-top {
+    max-height: 200px;
 }
