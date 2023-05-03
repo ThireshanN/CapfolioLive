@@ -79,18 +79,56 @@ const Sidebar = ({ onApplyFilter }) => {
       };
     
       const handleApplyFilter = () => {
-        const allSelectedOptions = [
-          ...selectedYears,
-          ...selectedSemesters,
-          ...selectedTechnologies,
-          ...selectedAwards,
-        ];
-        console.log("Selected Filters: ", allSelectedOptions);
-        console.log("Sort By: ", selectedSortBy);
+
+          const yearArray = []
+          const semesterArray = []
+          const techArray = []
+          const AwardsArray = []
+
+
+          selectedYears.forEach(e => yearArray.push(e.label))
+          for (let i = 0; i < yearArray.length; i++) {
+              yearArray[i] = yearArray[i].replace(/'/g, "\"");
+          }
+
+          selectedSemesters.forEach(e => semesterArray.push(e.label))
+          for (let i = 0; i < semesterArray.length; i++) {
+              if (semesterArray[i] == 'Semester One') {
+                  semesterArray[i] = 1
+              }
+              else {
+                  semesterArray[i] = 2
+              }
+          }
+
+          selectedTechnologies.forEach(e => techArray.push(e.label))
+          for (let i = 0; i < techArray.length; i++) {
+
+              techArray[i] = techArray[i].replace(/'/g, "\"");
+          }
+
+          selectedAwards.forEach(e => AwardsArray.push(e.label))
+          for (let i = 0; i < AwardsArray.length; i++) {
+              AwardsArray[i] = AwardsArray[i].replace(/'/g, "\"");
+              
+
+          }
+      
+          console.log("Sort By: ", selectedSortBy);
+
+
+             const body = JSON.stringify({
+                  "capstoneYear": yearArray,
+                  "capstoneSemester": semesterArray,
+                  "technologyName": techArray,
+                  "AwardName": AwardsArray,
+                  "SortBy": selectedSortBy
+              })
+         
 
         // Call the FilteredProjectData function passed as a prop
         if (typeof onApplyFilter === 'function') {
-          onApplyFilter();
+          onApplyFilter(body);
         }
       };
 
