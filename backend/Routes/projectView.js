@@ -4,6 +4,8 @@ import mysql from 'mysql2/promise';
 import { config } from '../sqlconfig.js';
 import {currentUserId} from './auth.js';
 
+let viewCount=0;
+
 async function executeSQLstatement(sql) { 
     const connection = await mysql.createConnection(config.db);
     const [rows, result] = await connection.execute(sql);
