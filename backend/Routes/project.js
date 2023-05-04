@@ -137,8 +137,13 @@ projectRouter.get('/searchProject', async (req, res) => {
         HAVING Project.ProjectName like "${searchWord}%"
         ORDER BY ProjectID;
         `;
-        const allProjects = (await executeSQLstatement(sql))[0]//.catch(err => console.log("The following error generated:\n" + err));
-        return res.status(200).setHeader("Content-Type", "application/json").send(allProjects);
+        const allProjects = (await executeSQLstatement(sql))[0]
+        if(allProjects.length===0){
+            res.status(200).setHeader("Content-Type", "application/json").send("No projects can be found for the given search phrase"); 
+        }
+        else{
+            return res.status(200).setHeader("Content-Type", "application/json").send(allProjects);
+        }
     }
     catch (err) {
         //console.log(err.message);
