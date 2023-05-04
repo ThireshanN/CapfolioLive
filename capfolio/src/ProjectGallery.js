@@ -8,91 +8,88 @@ import Sidebar from './Sidebar';
 import MainImage from './components/getMainImage';
 
 const ProjectGallery = () => {
+    const [projects, setProjects] = useState([]);
+    const [filteredProjects, setFilteredProjects] = useState([]);
+    const [isFiltered, setIsFiltered] = useState(false);
+    const [isNoResults, setIsNoResults] = useState(false);
 
-
-    const [projects, setProjects] = useState('');
-    // Function to collect data
-    const AllProjectData = async () => {
-        const response = await fetch(
-            "/project/AllProjectData"
-        ).then((response) => response.json());
-        // console.log(response)
+    const fetchAllProjects = async () => {
+        const response = await fetch("/project/AllProjectData").then((response) => response.json());
         setProjects(response);
-        setFiltered(false); // Set filtered state to false when fetching all projects
+        setIsFiltered(false);
     };
 
-    // console.log(projects)
-
     useEffect(() => {
-        AllProjectData();
+        fetchAllProjects();
     }, []);
 
-    // Add a state to manage whether to show filtered projects or not
-    const [filtered, setFiltered] = useState(false);
-
-    const [filteredProjects, setFilteredProjects] = useState('');
-    // Function to collect filtered data
-
-
-    const FilteredProjectData = async (body) => {
-        console.log(body)
+    const fetchFilteredProjects = async (body) => {
         const response = await fetch("/project/FilteredProjectData", {
             method: 'POST',
             headers: { "Accept": "application/json", "Content-Type": "application/json" },
             body: body
+        }).then((response) => response.json());
 
-        }).then((response) =>
-            response.json()
-        );
-        setFilteredProjects(response);
-        setFiltered(true); // Set filtered state to true when fetching filtered projects
-
-
-        console.log(filteredProjects)
+        if (response.length === 0) {
+            setIsNoResults(true);
+        } else {
+            setFilteredProjects(response);
+            setIsFiltered(true);
+            setIsNoResults(false);
+        }
     };
 
-return (
-    <div className="project-gallery">
-        {/* Pass the FilteredProjectData function as a prop */}
-        <Sidebar onApplyFilter={FilteredProjectData} />
-        <div className="project-list">
-            {/* Show filtered projects if filtered is true, otherwise show all projects */}
-            <CRow xs={{ cols: 1, gutter: 4 }} sm={{ cols: 2 }} md={{ cols: 3 }} lg={{ cols: 4 }}>
-                {(filtered ? filteredProjects : projects) && (filtered ? filteredProjects : projects).map((project) => (
-                    <CCol xs>
-                        <CCard className="project-card h-100">
-                            {'None' != "None" && <AwardBanner text={'None'} />}
-                            <MainImage teamname={project.TeamName} />
-                            <CCardBody>
-                                <CCardTitle>{project.ProjectName}</CCardTitle>
-                                <CCardText>
-                                    {project.TeamName}
-                                </CCardText>
-                                <CListGroup flush>
-                                    <div className='text-container'>
-                                        <CListGroupItem className='fade-text'>{project.ProjectIntro}</CListGroupItem>
-                                        <div className="fade-effect"></div>
-                                    </div>
-                                </CListGroup>
-                            </CCardBody>
-                            <CCardFooter>
-                                <CCardText>
-                                    {'React | Next.js | Javascript | HTML'}
-                                </CCardText>
-                            </CCardFooter>
-                            <CCardFooter>
-                                <Link to={`/project-view/${project.ProjectID}`}>
-                                    <CButton><span>View Project</span></CButton>
-                                </Link>
-                                <LikeButton likenumber={project.ProjectID} />
-                            </CCardFooter>
-                        </CCard>
-                    </CCol>
-                ))}
-            </CRow>
+    const handleApplyFilter = (body) => {
+        fetchFilteredProjects(body);
+    };
+
+    return (
+        <div className="project-gallery">
+            <Sidebar onApplyFilter={handleApplyFilter} />
+            {isNoResults && (
+                <div className="no-results-message">
+                    <h2>No results found.</h2>
+                </div>
+            )}
+            {!isNoResults && (
+                <div className="project-list">
+                    <CRow xs={{ cols: 1, gutter: 4 }} sm={{ cols: 2 }} md={{ cols: 3 }} lg={{ cols: 4 }}>
+                        {(isFiltered ? filteredProjects : projects).map((project) => (
+                            <CCol xs>
+                                <CCard className="project-card h-100">
+                                    <AwardBanner key={project.TeamName} text={project.AwardName} />
+                                    <MainImage key={project.TeamName} teamname={project.TeamName} />
+                                    <CCardBody>
+                                        <CCardTitle>{project.ProjectName}</CCardTitle>
+                                        <CCardText>
+                                            {project.TeamName}
+                                        </CCardText>
+                                        <CListGroup flush>
+                                            <div className='text-container'>
+                                                <CListGroupItem className='fade-text'>{project.ProjectIntro}</CListGroupItem>
+                                                <div className="fade-effect"></div>
+                                            </div>
+                                        </CListGroup>
+                                    </CCardBody>
+                                    <CCardFooter>
+                                        <CCardText>
+                                            {'React | Next.js | Javascript | HTML'}
+                                        </CCardText>
+                                    </CCardFooter>
+                                    <CCardFooter>
+                                        <Link to={`/project-view/${project.ProjectID}`}>
+                                            <CButton><span>View Project</span></CButton>
+                                        </Link>
+                                        <LikeButton key={project.TeamName} likenumber={project.ProjectID} />
+                                    </CCardFooter>
+                                </CCard>
+                            </CCol>
+                        ))}
+                    </CRow>
+                </div>
+            )}
         </div>
-    </div>
-);
+    );
 };
 
 export default ProjectGallery;

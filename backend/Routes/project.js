@@ -129,54 +129,49 @@ projectRouter.post('/FilteredProjectData', async (req, res) => { //working 28/04
         //CLIENT DATA FROM FRONTEND 
         const filterFields = req.body;
 
-        let sortBy = "";
+        const sql = `SELECT Project.*, likes.likes, technologies.technologiesUsed, AwardName, AwardDesc
+FROM Project 
+LEFT JOIN ProjectAward ON ProjectAward.ProjectID_FK = Project.ProjectID
+LEFT JOIN Award ON Award.AwardID = ProjectAward.AwardID_FK
+LEFT JOIN (
+  SELECT ProjectID_FK, count(DISTINCT likeID) AS likes
+  FROM likes 
+  GROUP BY ProjectID_FK
+) AS likes ON likes.ProjectID_FK = Project.ProjectID
+LEFT JOIN (
+  SELECT ProjectID_FK, GROUP_CONCAT(DISTINCT technologiesUsed.technologyName) AS technologiesUsed
+  FROM ProjectTech 
+  LEFT JOIN technologiesUsed ON technologiesUsed.techID = ProjectTech.techID_FK
+  GROUP BY ProjectID_FK
+) AS technologies ON technologies.ProjectID_FK = Project.ProjectID
+WHERE (
+  ${filterFields.capstoneYear.length === 0 ? "TRUE" : `Project.capstoneYear IN ('${filterFields.capstoneYear.join('\', \'')}')`}
+  AND ${filterFields.capstoneSemester.length === 0 ? "TRUE" : `Project.capstoneSemester IN (${filterFields.capstoneSemester.join(', ')})`}
+  AND ${filterFields.AwardName.length === 0 ? "TRUE" : `Award.AwardName IN ('${filterFields.AwardName.join('\', \'')}')`}
+  AND ${filterFields.technologyName.length === 0 ? "TRUE" : `technologiesUsed.technologyName IN ('${filterFields.technologyName.join('\', \'')}')`}
+)
+ORDER BY
+  ${filterFields.SortBy[0] === "Oldest to latest" ? "Project.capstoneYear ASC, Project.capstoneSemester ASC" : ""}
+  ${filterFields.SortBy[0] === "Latest to oldest" ? "Project.capstoneYear DESC, Project.capstoneSemester DESC" : ""}
+  ${filterFields.SortBy[0] === "Highest to lowest likes" ? "likes.likes DESC" : ""}
+  ${filterFields.SortBy[0] === "Lowest to highest likes" ? "likes.likes ASC" : ""}
+  ${filterFields.SortBy[0] === "Alphabetical (A - Z)" ? "Project.ProjectName ASC" : ""}
+  ${filterFields.SortBy[0] === "Alphabetical (Z - A)" ? "Project.ProjectName DESC" : ""}
+  ${filterFields.SortBy[0] === null ? "Project.capstoneYear ASC, Project.capstoneSemester ASC" : ""}
 
-        console.log(filterFields.SortBy[0])
-        switch (filterFields.SortBy[0]) {
-            case "'Oldest to latest'":
-                sortBy = "'Project.capstoneYear ASC'";
-                break;
-            case "Latest to Oldest":
-                sortBy = "'Project.capstoneYear DESC'";
-                break;
-            case "Highest to lowest likes":
-                sortBy = "'likes DESC'";
-                break;
-            case "Lowest to highest likes":
-                sortBy = "'likes ASC'";
-                break;
-            case "Alphabetical (A - Z)":
-                sortBy = "'Project.ProjectName ASC'";
-                break;
-            case "Alphabetical (Z - A)":
-                sortBy = "'Project.ProjectName DESC'";
-                break;
-            default:
-                sortBy = "'likes DESC'";
-        }
+  ;
 
-        console.log(sortBy)
-        const sql = `SELECT Project.*, count(DISTINCT likeID) AS likes, GROUP_CONCAT(DISTINCT technologiesUsed.technologyName) AS Technologies, AwardName, AwardDesc
-        FROM Project LEFT JOIN ProjectAward ON ProjectAward.ProjectID_FK = Project.ProjectID
-        LEFT JOIN ProjectTech ON ProjectTech.ProjectID_FK = Project.ProjectID
-        LEFT JOIN Award ON Award.AwardID = ProjectAward.AwardID_FK
-        LEFT JOIN technologiesUsed ON technologiesUsed.techID = ProjectTech.techID_FK
-        LEFT JOIN likes ON likes.ProjectID_FK = Project.ProjectID
-        WHERE (${filterFields.capstoneYear.length === 0 ? 'FALSE' : `Project.capstoneYear IN ('${filterFields.capstoneYear.join('\', \'')}')`})
-        OR (${filterFields.capstoneSemester.length === 0 ? 'FALSE' : `Project.capstoneSemester IN (${filterFields.capstoneSemester.join(', ')})`})
-        OR (${filterFields.AwardName.length === 0 ? 'FALSE' : `Award.AwardName IN ('${filterFields.AwardName.join('\', \'')}')`})
-        OR (${filterFields.technologyName.length === 0 ? 'FALSE' : `technologiesUsed.technologyName IN ('${filterFields.technologyName.join('\', \'')}')`})
-        GROUP BY ProjectID 
-        ORDER BY ${sortBy};`;
-
+`;
         const projects = (await executeSQLstatement(sql))[0]//.catch(err => console.log("The following error generated:\n" + err));
         if (projects.length === 0) {
+            
             throw new Error("There were no projects found" + error);
         }
         return res.status(200).setHeader("Content-Type", "application/json").send(projects);
     }
     catch (err) {
-        return res.status(400).setHeader("Content-Type", "text/plain").send("Sorry! " + err);
+        const errorarray = []
+        return res.status(400).setHeader("Content-Type", "application/json").send(errorarray);
     }
 });
 
