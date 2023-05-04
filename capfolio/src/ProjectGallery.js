@@ -53,9 +53,10 @@ const ProjectGallery = () => {
             )}
             {!isNoResults && (
                 <div className="project-list">
-                    <CRow xs={{ cols: 1, gutter: 4 }} sm={{ cols: 2 }} md={{ cols: 3 }} lg={{ cols: 4 }}>
+                    <CRow xs={{ cols: 1, gutter: 4 }} sm={{ cols: 2 }} md={{ cols: 3 }} lg={{ cols: 3 }} xl={{ cols: 3 }} xxl={{ cols: 4 }}>
                         {(isFiltered ? filteredProjects : projects).map((project) => (
                             <CCol xs>
+                              <Link to={`/project-view/${project.ProjectID}`}>
                                 <CCard className="project-card h-100">
                                     <AwardBanner key={project.ProjectID} text={project.AwardName} />
                                     <MainImage key={project.ProjectID} teamname={project.TeamName} />
@@ -71,18 +72,20 @@ const ProjectGallery = () => {
                                             </div>
                                         </CListGroup>
                                     </CCardBody>
-                                    <CCardFooter>
+                                    {/* <CCardFooter>
                                         <CCardText>
                                             {'React | Next.js | Javascript | HTML'}
                                         </CCardText>
-                                    </CCardFooter>
+                                    </CCardFooter> */}
                                     <CCardFooter>
-                                        <Link to={`/project-view/${project.ProjectID}`}>
+                                      <p className='semesterTag'>{project.capstoneYear} Semester {project.capstoneSemester}</p>
+                                        {/* <Link to={`/project-view/${project.ProjectID}`}>
                                             <CButton><span>View Project</span></CButton>
                                         </Link>
-                                        <LikeButton key={project.TeamName} likenumber={project.ProjectID} />
+                                        <LikeButton key={project.TeamName} likenumber={project.ProjectID} /> */}
                                     </CCardFooter>
                                 </CCard>
+                                </Link>
                             </CCol>
                         ))}
                     </CRow>
