@@ -2,7 +2,7 @@ import express from 'express';
 export const adminRouter = express.Router();
 import mysql from 'mysql2/promise';
 import { config } from '../sqlconfig.js';
-import {currentUserId} from './auth.js';
+//import {currentUserId} from './auth.js';
 
 async function executeSQLstatement(sql) { 
     const connection = await mysql.createConnection(config.db);
