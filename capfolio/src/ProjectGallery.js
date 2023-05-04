@@ -19,9 +19,10 @@ const ProjectGallery = () => {
         const response = await fetch("/project/AllProjectData").then((response) => response.json());
         setProjects(response);
         setIsFiltered(false);
-        setIsNoResults(false); // add this line to reset isNoResults
+        setIsNoResults(false);
 
     };
+   //Checks to see if it should render all projects or just filtered ones - used for when no options are selected
     useEffect(() => {
         if (!isFiltered) {
             setFilteredProjects([]);
@@ -40,6 +41,7 @@ const ProjectGallery = () => {
         }).then((response) => response.json());
 
         if (response.length === 0) {
+            //If nothing is return see noresults to true
             setIsNoResults(true);
         } else {
             setFilteredProjects(response);
@@ -55,11 +57,14 @@ const ProjectGallery = () => {
     return (
         <div className="project-gallery">
             <Sidebar onApplyFilter={handleApplyFilter} />
+
+            {/*checks to see if the filter returned anything - if it does not it will show the message other genreate the cards like normal*/}
             {isNoResults && (
                 <div className="no-results-message">
                     <h2>No results found.</h2>
                 </div>
             )}
+
             {!isNoResults && (
                 <div className="project-list">
                     <CRow xs={{ cols: 1, gutter: 4 }} sm={{ cols: 2 }} md={{ cols: 2 }} lg={{ cols: 3 }} xl={{ cols: 3 }} xxl={{ cols: 4 }}>

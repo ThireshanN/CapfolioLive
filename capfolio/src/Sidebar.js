@@ -80,18 +80,21 @@ const Sidebar = ({ onApplyFilter }) => {
 
     const handleApplyFilter = () => {
 
+
+        //Create an array for each of the filter option and push each selected option into it
         const yearArray = []
         const semesterArray = []
         const techArray = []
         const AwardsArray = []
         const selectArray = []
-
         selectedYears.forEach(e => yearArray.push(e.label))
-        for (let i = 0; i < yearArray.length; i++) {
-            yearArray[i] = yearArray[i].replace(/'/g, "\"");
-        }
-
         selectedSemesters.forEach(e => semesterArray.push(e.label))
+        selectedTechnologies.forEach(e => techArray.push(e.label))
+        selectedAwards.forEach(e => AwardsArray.push(e.label))
+        selectArray.push(selectedSortBy.label)
+
+
+        //Changes Semester to an either 1 or 2 
         for (let i = 0; i < semesterArray.length; i++) {
             if (semesterArray[i] == 'Semester One') {
                 semesterArray[i] = 1
@@ -101,17 +104,7 @@ const Sidebar = ({ onApplyFilter }) => {
             }
         }
 
-        selectedTechnologies.forEach(e => techArray.push(e.label))
-      
-
-        selectedAwards.forEach(e => AwardsArray.push(e.label))
-        
-        console.log(selectedSortBy.label)
-        selectArray.push(selectedSortBy.label)
-
-        console.log("Sort By: ", selectedSortBy);
-
-
+        //Puts all the selected options into an object 
         const body = JSON.stringify({
             "capstoneYear": yearArray,
             "capstoneSemester": semesterArray,
