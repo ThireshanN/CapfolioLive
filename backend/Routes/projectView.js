@@ -95,6 +95,31 @@ projectViewRouter.get("/comment", async (req, res) => {
     }
 });
 
+
+//http://localhost:3000/projects/teamname?id=2
+//the id here is the same ProjectId as http://localhost:3000/projects/teamname?id=2
+//http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/projects/teamname?id=2
+
+projectViewRouter.get("/teamname", async (req, res) => {
+    const projectId = req.query.id;
+    try {
+        const sql = `SELECT TeamName FROM Project WHERE ProjectID = ${projectId};`;
+        const selectedProject = (await executeSQLstatement(sql))[0]//.catch(err => console.log("The following error generated:\n" + err));
+        if (selectedProject.length === 0) {
+            res.status(200).send("No project exists yet!"); //return 404 if project not found
+        }
+        else {
+            return res.status(200).setHeader("Content-Type", "application/json").send(selectedProject);
+        }
+    }
+    catch (err) {
+        console.log(err.message);
+        res.status(400).setHeader("Content-Type", "text/plain").send("failed to fetch project data because of " + err);
+        return
+    }
+});
+
+
 //http://localhost:3000/projects/like?id=2
 //the id here is the same ProjectId as http://localhost:3000/projects/project?id=2
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/projects/like?id=2
