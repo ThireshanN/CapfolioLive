@@ -194,3 +194,16 @@ p.card-text {
   border-radius: 0.375rem;
   z-index: 1;
 }
+
+.project-stats {
+  float: right;
+  display: flex;
+  padding: 5px 10px;
+}
+
+.project-stats p {
+  margin-bottom: 0px;
+  margin-right: 10px;
+  font-size: 14px;
+}
+

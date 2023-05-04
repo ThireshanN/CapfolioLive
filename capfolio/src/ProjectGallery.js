@@ -6,6 +6,8 @@ import LikeButton from "./components/likeButton";
 import AwardBanner from "./components/awardBanner.js";
 import Sidebar from './Sidebar';
 import MainImage from './components/getMainImage';
+import { ReactComponent as Heart } from "./images/heart.svg";
+import { ReactComponent as Views } from "./images/views.svg";
 
 const ProjectGallery = () => {
     const [projects, setProjects] = useState([]);
@@ -60,7 +62,7 @@ const ProjectGallery = () => {
             )}
             {!isNoResults && (
                 <div className="project-list">
-                    <CRow xs={{ cols: 1, gutter: 4 }} sm={{ cols: 2 }} md={{ cols: 3 }} lg={{ cols: 3 }} xl={{ cols: 3 }} xxl={{ cols: 4 }}>
+                    <CRow xs={{ cols: 1, gutter: 4 }} sm={{ cols: 2 }} md={{ cols: 2 }} lg={{ cols: 3 }} xl={{ cols: 3 }} xxl={{ cols: 4 }}>
                         {(isFiltered ? filteredProjects : projects).map((project) => (
                             <CCol xs>
                               <Link to={`/project-view/${project.ProjectID}`}>
@@ -90,6 +92,10 @@ const ProjectGallery = () => {
                                             <CButton><span>View Project</span></CButton>
                                         </Link>
                                         <LikeButton key={project.TeamName} likenumber={project.ProjectID} /> */}
+                                        <div className='project-stats'>
+                                        <p> <Heart/> {project.ProjectID} </p> 
+                                        <p> <Views/> {project.ProjectID} </p> 
+                                        </div>
                                     </CCardFooter>
                                 </CCard>
                                 </Link>
