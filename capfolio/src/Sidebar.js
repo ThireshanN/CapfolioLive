@@ -102,10 +102,7 @@ const Sidebar = ({ onApplyFilter }) => {
         }
 
         selectedTechnologies.forEach(e => techArray.push(e.label))
-        for (let i = 0; i < techArray.length; i++) {
-
-            techArray[i] = techArray[i].replace(/'/g, "\"");
-        }
+      
 
         selectedAwards.forEach(e => AwardsArray.push(e.label))
         for (let i = 0; i < AwardsArray.length; i++) {

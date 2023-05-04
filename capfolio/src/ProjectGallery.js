@@ -57,8 +57,8 @@ const ProjectGallery = () => {
                         {(isFiltered ? filteredProjects : projects).map((project) => (
                             <CCol xs>
                                 <CCard className="project-card h-100">
-                                    <AwardBanner key={project.TeamName} text={project.AwardName} />
-                                    <MainImage key={project.TeamName} teamname={project.TeamName} />
+                                    <AwardBanner key={project.ProjectID} text={project.AwardName} />
+                                    <MainImage key={project.ProjectID} teamname={project.TeamName} />
                                     <CCardBody>
                                         <CCardTitle>{project.ProjectName}</CCardTitle>
                                         <CCardText>
