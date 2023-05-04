@@ -35,7 +35,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "git": "git add . && git commit -m fixed && git pull && git push",
-    "buildstart": "cd capfolio && npm run build && cd .. && cd backend && npm run start"
+    "buildstart": "cd capfolio && npm i && npm run build && cd .. && cd backend && npm run start"
   },
   "eslintConfig": {
     "extends": [
