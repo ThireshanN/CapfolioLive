@@ -5,6 +5,7 @@ import { config } from '../sqlconfig.js';
 import { PutObjectCommand, S3, GetObjectCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";
 import fs from 'fs';
 import path from 'path';
+import { error } from 'console';
 
 
 export class ProjectDetails {
@@ -123,34 +124,54 @@ projectRouter.get('/AllProjectData', async (req, res) => { //working 28/04/2023
 
 //http://localhost:3000/project/FilteredProjectData
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/FilteredProjectData
-projectRouter.get('/FilteredProjectData', async (req, res) => { //working 28/04/2023 YUP
+projectRouter.post('/FilteredProjectData', async (req, res) => { //working 28/04/2023 YUP
     try {
         //CLIENT DATA FROM FRONTEND 
         const filterFields = req.body;
 
-        const sql = `
-        SELECT Project.*, count(DISTINCT likeID) AS likes, GROUP_CONCAT(DISTINCT technologiesUsed.technologyName) AS Technologies, AwardName, AwardDesc
-        FROM Project LEFT JOIN ProjectAward ON ProjectAward.ProjectID_FK = Project.ProjectID
-        LEFT JOIN ProjectTech ON ProjectTech.ProjectID_FK = Project.ProjectID
-        LEFT JOIN Award ON Award.AwardID = ProjectAward.AwardID_FK
-        LEFT JOIN technologiesUsed ON technologiesUsed.techID = ProjectTech.techID_FK
-        LEFT JOIN likes ON likes.ProjectID_FK = Project.ProjectID
-        WHERE Project.capstoneYear IN ('${filterFields.capstoneYear.join('\', \'')}') 
-        AND Project.capstoneSemester IN (${filterFields.capstoneSemester.join(', ')})
-        AND Award.AwardName IN ('${filterFields.AwardName.join('\', \'')}') 
-        AND technologiesUsed.technologyName IN ('${filterFields.technologyName.join('\', \'')}')
-        GROUP BY ProjectID 
-        ORDER BY ${!filterFields.SortBy ? "likes" : filterFields.SortBy[0] || "likes"};
-        `;
+        const sql = `SELECT Project.*, likes.likes, technologies.technologiesUsed, AwardName, AwardDesc
+FROM Project 
+LEFT JOIN ProjectAward ON ProjectAward.ProjectID_FK = Project.ProjectID
+LEFT JOIN Award ON Award.AwardID = ProjectAward.AwardID_FK
+LEFT JOIN (
+  SELECT ProjectID_FK, count(DISTINCT likeID) AS likes
+  FROM likes 
+  GROUP BY ProjectID_FK
+) AS likes ON likes.ProjectID_FK = Project.ProjectID
+LEFT JOIN (
+  SELECT ProjectID_FK, GROUP_CONCAT(DISTINCT technologiesUsed.technologyName) AS technologiesUsed
+  FROM ProjectTech 
+  LEFT JOIN technologiesUsed ON technologiesUsed.techID = ProjectTech.techID_FK
+  GROUP BY ProjectID_FK
+) AS technologies ON technologies.ProjectID_FK = Project.ProjectID
+WHERE (
+  ${filterFields.capstoneYear.length === 0 ? "TRUE" : `Project.capstoneYear IN ('${filterFields.capstoneYear.join('\', \'')}')`}
+  AND ${filterFields.capstoneSemester.length === 0 ? "TRUE" : `Project.capstoneSemester IN (${filterFields.capstoneSemester.join(', ')})`}
+  AND ${filterFields.AwardName.length === 0 ? "TRUE" : `Award.AwardName IN ('${filterFields.AwardName.join('\', \'')}')`}
+  AND ${filterFields.technologyName.length === 0 ? "TRUE" : `technologiesUsed.technologyName IN ('${filterFields.technologyName.join('\', \'')}')`}
+)
+ORDER BY
+  ${filterFields.SortBy[0] === "Oldest to latest" ? "Project.capstoneYear ASC, Project.capstoneSemester ASC" : ""}
+  ${filterFields.SortBy[0] === "Latest to oldest" ? "Project.capstoneYear DESC, Project.capstoneSemester DESC" : ""}
+  ${filterFields.SortBy[0] === "Highest to lowest likes" ? "likes.likes DESC" : ""}
+  ${filterFields.SortBy[0] === "Lowest to highest likes" ? "likes.likes ASC" : ""}
+  ${filterFields.SortBy[0] === "Alphabetical (A - Z)" ? "Project.ProjectName ASC" : ""}
+  ${filterFields.SortBy[0] === "Alphabetical (Z - A)" ? "Project.ProjectName DESC" : ""}
+  ${filterFields.SortBy[0] === null ? "Project.capstoneYear ASC, Project.capstoneSemester ASC" : ""}
 
+  ;
+
+`;
         const projects = (await executeSQLstatement(sql))[0]//.catch(err => console.log("The following error generated:\n" + err));
         if (projects.length === 0) {
-            throw new Error("There were no projects found");
+            
+            throw new Error("There were no projects found" + error);
         }
         return res.status(200).setHeader("Content-Type", "application/json").send(projects);
     }
     catch (err) {
-        return res.status(400).setHeader("Content-Type", "text/plain").send("Sorry! " + err);
+        const errorarray = []
+        return res.status(400).setHeader("Content-Type", "application/json").send(errorarray);
     }
 });
 
@@ -228,39 +249,39 @@ projectRouter.post('/FormAddProject', express.json(), async (req, res) => { //
 
 
         //ADDING FILES
-    //    const toAddFiles = reqBodyFromClient.Files;
-    //    if (toAddFiles !== undefined || toAddFiles.length != 0) {
-    //        toAddFiles.forEach(async (file) => await addFilesFunction(file, reqBodyFromClient.TeamName));
-    //        async function addFilesFunction(file, TeamName) {
-    //            const rawFile = String.raw`${file}`;
-    //            const filename = (rawFile.split('\\')).join('/');
-    //            if (fs.existsSync(filename)) {
-    //                console.log('file exists');
-    //            } else {
-    //                console.log('file not found!');
-    //            }
+        //    const toAddFiles = reqBodyFromClient.Files;
+        //    if (toAddFiles !== undefined || toAddFiles.length != 0) {
+        //        toAddFiles.forEach(async (file) => await addFilesFunction(file, reqBodyFromClient.TeamName));
+        //        async function addFilesFunction(file, TeamName) {
+        //            const rawFile = String.raw`${file}`;
+        //            const filename = (rawFile.split('\\')).join('/');
+        //            if (fs.existsSync(filename)) {
+        //                console.log('file exists');
+        //            } else {
+        //                console.log('file not found!');
+        //            }
 
-    //            const REGION = "ap-southeast-2";
-    //            const s3ServiceObject = new S3({
-    //                region: REGION,
-    //                credentials: {
-    //                    accessKeyId: 'AKIAUDUQU75VEF3VDCEL',
-    //                    secretAccessKey: '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'
-    //                }
-    //            });
-    //            const fileContent = fs.readFileSync(filename);
-    //            const filenameShort = path.basename(filename);
-    //            const params = {
-    //                Bucket: "capfoliostorage",
-    //                Key: '' + TeamName + "/" + filenameShort,
-    //                Body: fileContent,
-    //                ContentType: "image/*"
-    //            };
-    //            const results = await s3ServiceObject.send(new PutObjectCommand(params));
-    //        }
-    //    }
+        //            const REGION = "ap-southeast-2";
+        //            const s3ServiceObject = new S3({
+        //                region: REGION,
+        //                credentials: {
+        //                    accessKeyId: 'AKIAUDUQU75VEF3VDCEL',
+        //                    secretAccessKey: '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'
+        //                }
+        //            });
+        //            const fileContent = fs.readFileSync(filename);
+        //            const filenameShort = path.basename(filename);
+        //            const params = {
+        //                Bucket: "capfoliostorage",
+        //                Key: '' + TeamName + "/" + filenameShort,
+        //                Body: fileContent,
+        //                ContentType: "image/*"
+        //            };
+        //            const results = await s3ServiceObject.send(new PutObjectCommand(params));
+        //        }
+        //    }
 
-    //    return res.status(200).setHeader("Content-Type", "application/json").send({ id: insertId });
+        //    return res.status(200).setHeader("Content-Type", "application/json").send({ id: insertId });
     }
     catch (err) {
         //console.log(err.message);
@@ -293,7 +314,7 @@ projectRouter.post('/uploadFile', async (req, res) => {
             }
         });
         //const fileContent = fs.readFileSync(filename);
-        const fileContent = fs.readFileSync(filename, {encoding: 'base64'});
+        const fileContent = fs.readFileSync(filename, { encoding: 'base64' });
         //console.log(fileContent.toString());
         const filenameShort = path.basename(filename);
         const params = {

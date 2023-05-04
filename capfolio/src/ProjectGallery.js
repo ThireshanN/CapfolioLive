@@ -8,111 +8,91 @@ import Sidebar from './Sidebar';
 import MainImage from './components/getMainImage';
 
 const ProjectGallery = () => {
+    const [projects, setProjects] = useState([]);
+    const [filteredProjects, setFilteredProjects] = useState([]);
+    const [isFiltered, setIsFiltered] = useState(false);
+    const [isNoResults, setIsNoResults] = useState(false);
 
+    const fetchAllProjects = async () => {
+        const response = await fetch("/project/AllProjectData").then((response) => response.json());
+        setProjects(response);
+        setIsFiltered(false);
+    };
 
-  const [projects, setProjects] = useState('');
-  // Function to collect data
-  const AllProjectData = async () => {
-    const response = await fetch(
-      "/project/AllProjectData"
-    ).then((response) => response.json());
-    // console.log(response)
-    setProjects(response);
-    setFiltered(false); // Set filtered state to false when fetching all projects
-  };
+    useEffect(() => {
+        fetchAllProjects();
+    }, []);
 
-  // console.log(projects)
+    const fetchFilteredProjects = async (body) => {
+        const response = await fetch("/project/FilteredProjectData", {
+            method: 'POST',
+            headers: { "Accept": "application/json", "Content-Type": "application/json" },
+            body: body
+        }).then((response) => response.json());
 
-  useEffect(() => {
-    AllProjectData();
-  }, []);
+        if (response.length === 0) {
+            setIsNoResults(true);
+        } else {
+            setFilteredProjects(response);
+            setIsFiltered(true);
+            setIsNoResults(false);
+        }
+    };
 
-  // Add a state to manage whether to show filtered projects or not
-  const [filtered, setFiltered] = useState(false);
+    const handleApplyFilter = (body) => {
+        fetchFilteredProjects(body);
+    };
 
-  const [filteredProjects, setFilteredProjects] = useState('');
-  // Function to collect filtered data
-  const FilteredProjectData = async () => {
-    const response = await fetch("/project/FilteredProjectData").then((response) =>
-      response.json()
+    return (
+        <div className="project-gallery">
+            <Sidebar onApplyFilter={handleApplyFilter} />
+            {isNoResults && (
+                <div className="no-results-message">
+                    <h2>No results found.</h2>
+                </div>
+            )}
+            {!isNoResults && (
+                <div className="project-list">
+                    <CRow xs={{ cols: 1, gutter: 4 }} sm={{ cols: 2 }} md={{ cols: 3 }} lg={{ cols: 3 }} xl={{ cols: 3 }} xxl={{ cols: 4 }}>
+                        {(isFiltered ? filteredProjects : projects).map((project) => (
+                            <CCol xs>
+                              <Link to={`/project-view/${project.ProjectID}`}>
+                                <CCard className="project-card h-100">
+                                    <AwardBanner key={project.TeamName} text={project.AwardName} />
+                                    <MainImage key={project.TeamName} teamname={project.TeamName} />
+                                    <CCardBody>
+                                        <CCardTitle>{project.ProjectName}</CCardTitle>
+                                        <CCardText>
+                                            {project.TeamName}
+                                        </CCardText>
+                                        <CListGroup flush>
+                                            <div className='text-container'>
+                                                <CListGroupItem className='fade-text'>{project.ProjectIntro}</CListGroupItem>
+                                                <div className="fade-effect"></div>
+                                            </div>
+                                        </CListGroup>
+                                    </CCardBody>
+                                    {/* <CCardFooter>
+                                        <CCardText>
+                                            {'React | Next.js | Javascript | HTML'}
+                                        </CCardText>
+                                    </CCardFooter> */}
+                                    <CCardFooter>
+                                      <p className='semesterTag'>{project.capstoneYear} Semester {project.capstoneSemester}</p>
+                                        {/* <Link to={`/project-view/${project.ProjectID}`}>
+                                            <CButton><span>View Project</span></CButton>
+                                        </Link>
+                                        <LikeButton key={project.TeamName} likenumber={project.ProjectID} /> */}
+                                    </CCardFooter>
+                                </CCard>
+                                </Link>
+                            </CCol>
+                        ))}
+                    </CRow>
+                </div>
+            )}
+        </div>
     );
-    setFilteredProjects(response);
-    setFiltered(true); // Set filtered state to true when fetching filtered projects
-  };
-
-  console.log(filteredProjects)
-
-
-  function renderAwardBanner(awardName) {
-    switch (awardName) {
-      case "Excellence Award":
-        return <AwardBanner text={awardName} color="gold" />;
-      case "Community Impact Award":
-        return <AwardBanner text={awardName} color="red" />;
-      case "People's Choice Award":
-        return <AwardBanner text={awardName} color="green" />;
-      default:
-        return null;
-    }
-  }
-
-
-  function getAwardBorderClass(awardName) {
-    switch (awardName) {
-      case "Excellence Award":
-        return "excellence-border";
-      case "Community Impact Award":
-        return "community-impact-border";
-      case "People's Choice Award":
-        return "peoples-choice-border";
-      default:
-        return "";
-    }
-  }
-  
-  return (
-    <div className="project-gallery">
-      {/* Pass the FilteredProjectData function as a prop */}
-      <Sidebar onApplyFilter={FilteredProjectData} />
-      <div className="project-list">
-        {/* Show filtered projects if filtered is true, otherwise show all projects */}
-        <CRow xs={{ cols: 1, gutter: 4 }} sm={{ cols: 2 }} md={{ cols: 3 }} lg={{ cols: 3 }} xl={{ cols: 3 }} xxl={{ cols: 4 }}>
-          {(filtered ? filteredProjects : projects) && (filtered ? filteredProjects : projects).map((project) => (
-            <CCol xs>
-              <Link to={`/project-view/${project.ProjectID}`}>
-              <CCard className={`project-card h-100 ${getAwardBorderClass(project.AwardName)}`}>
-              {project.AwardName !== "None" && renderAwardBanner(project.AwardName)}
-                    <MainImage teamname={ project.TeamName} />
-                <CCardBody>
-                  <CCardTitle>{project.ProjectName}</CCardTitle>
-                  <CCardText>
-                    {project.TeamName}
-                  </CCardText>
-                  <CListGroup flush>
-                    <div className='text-container'>
-                      <CListGroupItem className='fade-text'>{project.ProjectIntro}</CListGroupItem>
-                      <div className="fade-effect"></div>
-                    </div>
-                  </CListGroup>
-                </CCardBody>
-                {/* <CCardFooter>
-                  <CCardText>
-                    {'React | Next.js | Javascript | HTML'}
-                  </CCardText>
-                </CCardFooter> */}
-                <CCardFooter>
-                  <p className='semesterTag'>{project.capstoneYear} Semester {project.capstoneSemester}</p>
-                    {/* <CButton><span>View Project</span></CButton>                 
-                  <LikeButton likenumber={project.ProjectID} /> */}
-                </CCardFooter>
-              </CCard>
-              </Link>
-            </CCol>
-          ))}
-        </CRow>
-      </div>
-    </div>
-  );
 };
 
 export default ProjectGallery;
