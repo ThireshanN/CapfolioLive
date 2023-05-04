@@ -91,7 +91,7 @@
 
 .col .card:hover {
   box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
-  transition: ease-in-out 0.25s;
+  transition: ease-in-out 0.35s;
 
 }
 
@@ -207,3 +207,12 @@ p.card-text {
   font-size: 14px;
 }
 
+.custom-list-group-item {
+  position: relative;
+  display: block;
+  background-color: #fff;
+  box-sizing: border-box;
+  word-break: break-word;
+  font-size: 14px;
+  color: #424242;
+}
