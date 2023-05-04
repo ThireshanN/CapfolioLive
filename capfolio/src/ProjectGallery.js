@@ -42,18 +42,47 @@ const ProjectGallery = () => {
 
   console.log(filteredProjects)
 
-         return (
+
+  function renderAwardBanner(awardName) {
+    switch (awardName) {
+      case "Excellence Award":
+        return <AwardBanner text={awardName} color="gold" />;
+      case "Community Impact Award":
+        return <AwardBanner text={awardName} color="red" />;
+      case "People's Choice Award":
+        return <AwardBanner text={awardName} color="green" />;
+      default:
+        return null;
+    }
+  }
+
+
+  function getAwardBorderClass(awardName) {
+    switch (awardName) {
+      case "Excellence Award":
+        return "excellence-border";
+      case "Community Impact Award":
+        return "community-impact-border";
+      case "People's Choice Award":
+        return "peoples-choice-border";
+      default:
+        return "";
+    }
+  }
+  
+  return (
     <div className="project-gallery">
       {/* Pass the FilteredProjectData function as a prop */}
       <Sidebar onApplyFilter={FilteredProjectData} />
       <div className="project-list">
         {/* Show filtered projects if filtered is true, otherwise show all projects */}
-        <CRow xs={{ cols: 1, gutter: 4 }} sm={{ cols: 2 }} md={{ cols: 3 }} lg={{ cols: 4 }}>
+        <CRow xs={{ cols: 1, gutter: 4 }} sm={{ cols: 2 }} md={{ cols: 3 }} lg={{ cols: 3 }} xl={{ cols: 3 }} xxl={{ cols: 4 }}>
           {(filtered ? filteredProjects : projects) && (filtered ? filteredProjects : projects).map((project) => (
             <CCol xs>
-              <CCard className="project-card h-100">
-                {'None' != "None" && <AwardBanner text={'None'} />}
-                      <MainImage teamname={ project.TeamName} />
+              <Link to={`/project-view/${project.ProjectID}`}>
+              <CCard className={`project-card h-100 ${getAwardBorderClass(project.AwardName)}`}>
+              {project.AwardName !== "None" && renderAwardBanner(project.AwardName)}
+                    <MainImage teamname={ project.TeamName} />
                 <CCardBody>
                   <CCardTitle>{project.ProjectName}</CCardTitle>
                   <CCardText>
@@ -66,18 +95,18 @@ const ProjectGallery = () => {
                     </div>
                   </CListGroup>
                 </CCardBody>
-                <CCardFooter>
+                {/* <CCardFooter>
                   <CCardText>
                     {'React | Next.js | Javascript | HTML'}
                   </CCardText>
-                </CCardFooter>
+                </CCardFooter> */}
                 <CCardFooter>
-                  <Link to={`/project-view/${project.ProjectID}`}>
-                    <CButton><span>View Project</span></CButton>
-                  </Link>
-                  <LikeButton likenumber={project.ProjectID} />
+                  <p className='semesterTag'>{project.capstoneYear} Semester {project.capstoneSemester}</p>
+                    {/* <CButton><span>View Project</span></CButton>                 
+                  <LikeButton likenumber={project.ProjectID} /> */}
                 </CCardFooter>
               </CCard>
+              </Link>
             </CCol>
           ))}
         </CRow>

@@ -9,11 +9,15 @@
   align-items: center;
   height: 30px;
   background-image: linear-gradient(90deg, #feb119 0%, #f4ce28 25%, #e8a41d 50%, #f4ce28 75%, #feb119 100%);
-  color: #fff;
   font-weight: bold;
   font-size: 1.1rem;
   border-radius: 0px;
   width: 102%;
   transform: translateX(-4px);
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+}
+
+.project-gallery .card{
+  border: 2px solid;
+  border-image-source: linear-gradient(212.85deg, rgba(9, 122, 41, 0.76) 8.73%, rgba(43, 208, 90, 0.750223) 53.6%, rgba(177, 239, 128, 0.76) 94.01%);
 }
