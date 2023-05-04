@@ -17,7 +17,14 @@ const ProjectGallery = () => {
         const response = await fetch("/project/AllProjectData").then((response) => response.json());
         setProjects(response);
         setIsFiltered(false);
+        setIsNoResults(false); // add this line to reset isNoResults
+
     };
+    useEffect(() => {
+        if (!isFiltered) {
+            setFilteredProjects([]);
+        }
+    }, [isFiltered]);
 
     useEffect(() => {
         fetchAllProjects();
@@ -58,7 +65,7 @@ const ProjectGallery = () => {
                             <CCol xs>
                               <Link to={`/project-view/${project.ProjectID}`}>
                                 <CCard className="project-card h-100">
-                                    <AwardBanner key={project.ProjectID} text={project.AwardName} />
+                                    <AwardBanner key={project.TeamName} text={project.AwardName} />
                                     <MainImage key={project.ProjectID} teamname={project.TeamName} />
                                     <CCardBody>
                                         <CCardTitle>{project.ProjectName}</CCardTitle>

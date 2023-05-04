@@ -38,7 +38,7 @@ const Sidebar = ({ onApplyFilter }) => {
         { value: "None", label: "None" },
         { value: "Excellence Award", label: "Excellence Award" },
         { value: "Community Award", label: "Community Award" },
-        { value: "People's Choice Award", label: "People's Choice Award" },
+        { value: "Peoples Choice Award", label: "Peoples Choice Award" },
     ];
 
     const sortBy = [
@@ -105,12 +105,7 @@ const Sidebar = ({ onApplyFilter }) => {
       
 
         selectedAwards.forEach(e => AwardsArray.push(e.label))
-        for (let i = 0; i < AwardsArray.length; i++) {
-            AwardsArray[i] = AwardsArray[i].replace(/'/g, "\"");
-
-
-        }
-
+        
         console.log(selectedSortBy.label)
         selectArray.push(selectedSortBy.label)
 
