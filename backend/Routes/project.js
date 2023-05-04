@@ -121,6 +121,30 @@ projectRouter.get('/AllProjectData', async (req, res) => { //working 28/04/2023
     }
 });
 
+//http://localhost:3000/project/searchProject?keyword=Spellz
+//http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/AllProjectData
+projectRouter.get('/searchProject', async (req, res) => { 
+    const searchWord = req.query.keyword;
+    try {
+        const sql = `
+        SELECT Project.*, count(DISTINCT likeID) AS likes, GROUP_CONCAT(DISTINCT technologiesUsed.technologyName) AS Technologies, AwardName, AwardDesc
+        FROM Project LEFT JOIN ProjectAward ON ProjectAward.ProjectID_FK = Project.ProjectID
+        LEFT JOIN ProjectTech ON ProjectTech.ProjectID_FK = Project.ProjectID
+        LEFT JOIN Award ON Award.AwardID = ProjectAward.AwardID_FK
+        LEFT JOIN technologiesUsed ON technologiesUsed.techID = ProjectTech.techID_FK
+        LEFT JOIN likes ON likes.ProjectID_FK = Project.ProjectID
+        GROUP BY ProjectID 
+        HAVING Project.ProjectName like "${searchWord}%"
+        ORDER BY ProjectID;
+        `;
+        const allProjects = (await executeSQLstatement(sql))[0]//.catch(err => console.log("The following error generated:\n" + err));
+        return res.status(200).setHeader("Content-Type", "application/json").send(allProjects);
+    }
+    catch (err) {
+        //console.log(err.message);
+        return res.status(400).setHeader("Content-Type", "text/plain").send("failed to fetch project data because of " + err);
+    }
+});
 
 //http://localhost:3000/project/FilteredProjectData
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/FilteredProjectData
