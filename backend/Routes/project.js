@@ -110,6 +110,7 @@ projectRouter.get('/AllProjectData', async (req, res) => { //working 28/04/2023
         LEFT JOIN Award ON Award.AwardID = ProjectAward.AwardID_FK
         LEFT JOIN technologiesUsed ON technologiesUsed.techID = ProjectTech.techID_FK
         LEFT JOIN likes ON likes.ProjectID_FK = Project.ProjectID
+        WHERE Project.IsApproved = 1
         GROUP BY ProjectID ORDER BY ProjectID;
         `;
         const allProjects = (await executeSQLstatement(sql))[0]//.catch(err => console.log("The following error generated:\n" + err));
