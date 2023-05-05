@@ -8,12 +8,25 @@ import Sidebar from './Sidebar';
 import MainImage from './components/getMainImage';
 import { ReactComponent as Heart } from "./images/heart.svg";
 import { ReactComponent as Views } from "./images/views.svg";
+import ProjectIntro from './components/ProjectIntro'; 
+import { Pagination } from '@mui/material';
 
 const ProjectGallery = () => {
     const [projects, setProjects] = useState([]);
     const [filteredProjects, setFilteredProjects] = useState([]);
     const [isFiltered, setIsFiltered] = useState(false);
     const [isNoResults, setIsNoResults] = useState(false);
+    const [page, setPage] = useState(1);
+
+    const handleChangePage = (event, value) => {
+        setPage(value);
+    };
+
+    const projectsPerPage = 6;
+    const startIndex = (page - 1) * projectsPerPage;
+    const endIndex = startIndex + projectsPerPage;
+    const displayedProjects = (isFiltered ? filteredProjects : projects).slice(startIndex, endIndex);
+
 
     const fetchAllProjects = async () => {
         const response = await fetch("/project/AllProjectData").then((response) => response.json());
@@ -68,7 +81,8 @@ const ProjectGallery = () => {
             {!isNoResults && (
                 <div className="project-list">
                     <CRow xs={{ cols: 1, gutter: 4 }} sm={{ cols: 2 }} md={{ cols: 2 }} lg={{ cols: 3 }} xl={{ cols: 3 }} xxl={{ cols: 4 }}>
-                        {(isFiltered ? filteredProjects : projects).map((project) => (
+                      {displayedProjects.map((project) => (
+
                             <CCol xs>
                               <Link to={`/project-view/${project.ProjectID}`}>
                                 <CCard className="project-card h-100">
@@ -80,10 +94,7 @@ const ProjectGallery = () => {
                                             {project.TeamName}
                                         </CCardText>
                                         <CListGroup flush>
-                                            <div className='text-container'>
-                                                <CListGroupItem className='fade-text'>{project.ProjectIntro}</CListGroupItem>
-                                                <div className="fade-effect"></div>
-                                            </div>
+                                          <ProjectIntro projectIntro={project.ProjectIntro} />
                                         </CListGroup>
                                     </CCardBody>
                                     {/* <CCardFooter>
@@ -107,6 +118,13 @@ const ProjectGallery = () => {
                             </CCol>
                         ))}
                     </CRow>
+                      <Pagination
+                      count={Math.ceil((isFiltered ? filteredProjects.length : projects.length) / projectsPerPage)}
+                      page={page}
+                      onChange={handleChangePage}
+                      color="primary"
+                      sx={{ marginTop: '20px' }}
+                  />
                 </div>
             )}
         </div>
