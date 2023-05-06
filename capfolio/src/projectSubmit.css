@@ -1,40 +1,72 @@
-﻿.projectsubmitform{
-    padding-top: 100px;
-    margin-left: 30%;
-    margin-right: 30%;
+﻿.projectsubmitform {
+    margin: auto;
+    max-width: 100%;
+    min-width: 50px;
+    padding-top: 50px;
+    width: calc(900px - 2vw);
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.row{
+    margin-bottom: 20px;
+}
+
+.characterCount p {
+    display: flex;
+    margin-bottom: 1rem;
+    margin-top: 0;
+    padding-top: 0px;
+    margin-top: 0px;
+    justify-content: flex-end;
+    color: grey;
+    font-size: 12px;
+}
+
+.max p {
+    color: red;
 }
 
 
-
-.css-b62m3t-container {
+.formLinks{
     margin-bottom: 25px;
 }
 
 
 
-.mb-4{
-    margin-left: 0px;
+.AlldisplayThumbnail {
+    background-color: #f0f0f0;
+    padding: 10px;
+    box-shadow: 5px 4px 10px 2px rgba(20,20,20,0.4);
 }
 
-#formFileMultiple
-{
-    margin-bottom: 25px
+
+.displayImage {
+    position: relative;
+    display: inline-block;
+    margin-right: 30px;
+    margin-bottom: 15px;
+    
+}
+.noDisplayThumbnail{
+    display: none;
 }
 
-.form-outline{
-    margin-bottom: 20px;
-}
+
 .thumbnail {
-    display:flex;
-    height: auto;
-    width: 50px;
+    height: 100px;
+    width: auto;
+    transition: all .2s ease-in-out;
 }
 
-
-.mb-4{
-    margin-top: 50px;
-}
-
-.displayThumbnail{
-    display: flex;
+    .thumbnail:hover {
+        transform: scale(1.05);
+    }
+.cross {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1;
+    height: 20px;
+    width: auto;
 }

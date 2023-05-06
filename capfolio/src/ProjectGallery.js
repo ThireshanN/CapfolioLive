@@ -69,7 +69,7 @@ const ProjectGallery = () => {
 
             {!isNoResults && (
                 <div className="project-list">
-                    <CRow xs={{ cols: 1, gutter: 4 }} sm={{ cols: 2 }} md={{ cols: 2 }} lg={{ cols: 3 }} xl={{ cols: 3 }} xxl={{ cols: 4 }}>
+                   <CRow>
                         {(isFiltered ? filteredProjects : projects).map((project) => (
 
                             <CCol xs>
@@ -98,8 +98,8 @@ const ProjectGallery = () => {
                                         </Link>
                                         <LikeButton key={project.TeamName} likenumber={project.ProjectID} /> */}
                                         <div className='project-stats'>
-                                        <p> <Heart/> {project.ProjectID} </p> 
-                                        <p> <Views/> {project.ProjectID} </p> 
+                                            <p> <Heart/> {project.likes} </p> 
+                                            <p> <Views /> {project.viewCount} </p> 
                                         </div>
                                     </CCardFooter>
                                 </CCard>

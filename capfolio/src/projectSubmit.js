@@ -10,6 +10,7 @@ import './projectSubmit.css';
 import { Buffer } from "buffer";
 import S3FileUpload from "react-s3";
 import AWS from "aws-sdk";
+import { Collapse, CButton, CCollapse, CListGroup, CListGroupItem, CCard, CCardBody, CRow, CCol, CCardImage, CCardTitle, CCardText, CCardFooter } from '@coreui/react';
 
 
 const bucketName='capfoliostorage';
@@ -91,6 +92,37 @@ export default function ProjectSubmit() {
         newImages.splice(index, 1);
         setImages(newImages);
     };
+
+
+    const [text1, setText1] = useState("");
+    function handleText1Input(event) {
+        const inputText = event.target.value;
+        if (inputText.length <= 5000) { 
+            setText1(inputText);
+        }
+    }
+
+    const [text2, setText2] = useState("");
+    function handleText2Input(event) {
+        const inputText = event.target.value;
+        if (inputText.length <= 5000) {
+            setText2(inputText);
+        }
+    }
+
+    const [text3, setText3] = useState("");
+    function handleText3Input(event) {
+        const inputText = event.target.value;
+        if (inputText.length <= 5000) {
+            setText3(inputText);
+        }
+    }
+
+
+    const counterClassName = (text) =>
+        text.length >= 5000 ? "characterCount max" : "characterCount";
+
+    const thumbnailClassName = (length) => length < 1 ? "noDisplayThumbnail" : "AlldisplayThumbnail";
 
 
     const handleSubmit = async (event) => {
@@ -207,20 +239,21 @@ export default function ProjectSubmit() {
 
     return (
         <div>
-
-            <form className='projectsubmitform' onSubmit={handleSubmit}>
-                <MDBRow className='mb-4'>
-                    <MDBCol>
+           
+            <form id='studentprojectSubmit' className='projectsubmitform' onSubmit={handleSubmit}>
+                <CRow xs={{ cols: 1, gutter: 4 }} sm={{ cols: 1 }} md={{ cols: 1 }} lg={{ cols: 2 }} xl={{ cols: 2 }} xxl={{ cols: 2 }}>
+                <CCol xs>
+                   
                         <MDBInput id='company' label='Company Name' />
-                    </MDBCol>
-                    <MDBCol>
+                    </CCol>
+                    <CCol>
                         <MDBInput id='projectName' label='Project Title' />
-                    </MDBCol>
-                </MDBRow>
+                    </CCol>
+                </CRow>
 
 
-                <MDBRow className='mb-4'>
-                    <MDBCol>
+                <CRow xs={{ cols: 1, gutter: 4 }} sm={{ cols: 1 }} md={{ cols: 1 }} lg={{ cols: 2 }} xl={{ cols: 2 }} xxl={{ cols: 2 }}>
+                    <CCol xs>
                         <Select
                             id='year'
                             className="basic-single"
@@ -233,8 +266,8 @@ export default function ProjectSubmit() {
                             placeholder='Select year project was completed'
                             onChange={handleChangeYears}
                         />
-                    </MDBCol>
-                    <MDBCol>
+                    </CCol>
+                        <CCol>
                         <Select
                             id='semester'
                             className="basic-single"
@@ -248,18 +281,31 @@ export default function ProjectSubmit() {
                             onChange={handleChangeSemesters}
 
                         />
-                    </MDBCol>
-                </MDBRow>
-                <MDBTextArea label='Project introduction' id='intro' className='textAreaExample' rows={2} />
-                <MDBTextArea label='Tell us about your project' id='about' className='textAreaExample' rows={4} />
-                <MDBTextArea label='Tell us about your project approach' id='approach' className='textAreaExample' rows={4} />
+                    </CCol>
+                </CRow>
+                
+                <MDBTextArea label='Project introduction' id='intro' className='textAreaExample' rows={2} onInput={handleText1Input} value={text1}/>
+                <div className={counterClassName(text1)}>
+                    <p>{text1.length}/5000</p>
+                </div>
 
-                <CreatableSelect id='tech' isMulti components={animatedComponents} options={technologies} onChange={handleChangeTechnologies} placeholder='Select from the drop down or type' />
-                <CreatableSelect id='teamMembers' components={animatedComponents} isMulti onChange={handleChangeTeam} placeholder="type UPI's of students involved in this project" />
+                <MDBTextArea label='Tell us about your project' id='about' className='textAreaExample' rows={4} onInput={handleText2Input} value={text2} />
+                <div className={counterClassName(text2)}>
+                    <p>{text2.length}/5000</p>
+                </div>
 
-                <MDBInput label='Github Link' id='github' type='url' />
-                <MDBInput label='Youtube demo link' id='yt' type='url' />
+                <MDBTextArea label='Tell us about your project approach' id='approach' className='textAreaExample' rows={4} onInput={handleText3Input} value={text3} />
+                <div className={counterClassName(text3)}>
+                    <p>{text3.length}/5000</p>
+                </div>
+
+                <CreatableSelect className='formLinks' id='tech' isMulti components={animatedComponents} options={technologies} onChange={handleChangeTechnologies} placeholder='Select from the drop down or type' />
+                <CreatableSelect className='formLinks' id='teamMembers' components={animatedComponents} isMulti onChange={handleChangeTeam} placeholder="Type UPI's of students involved in this project - Please ensure all members are signed up with their UoA login" />
+
+                <MDBInput className='formLinks' label='Github Link' id='github' type='url' />
+                <MDBInput className='formLinks' label='Youtube demo link' id='yt' type='url' />
                 <input
+                    className='formLinks'
                     type="file"
                     id="image-upload"
                     name="image-upload"
@@ -268,11 +314,12 @@ export default function ProjectSubmit() {
                 />
 
 
-                <div className='displayThumbnail'>
+                <div className={thumbnailClassName(images.length)}>
                     {images.map((url, index) => (
-                        <div key={index} >
-                            <img className='thumbnail' src={URL.createObjectURL(url)} alt={`Thumbnail ${index}`} />
-                            <button onClick={() => handleRemoveImage(index)}>Remove</button>                </div>
+
+                        <div key={index} className='displayImage' >
+                            <img title='Click to delete' className='thumbnail' onClick={() => handleRemoveImage(index)} src={URL.createObjectURL(url)} alt={`Thumbnail ${index}`} />
+                        </div>
                     ))}
                 </div>
 
