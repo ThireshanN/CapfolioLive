@@ -9,12 +9,23 @@ import MainImage from './components/getMainImage';
 import { ReactComponent as Heart } from "./images/heart.svg";
 import { ReactComponent as Views } from "./images/views.svg";
 import ProjectIntro from './components/ProjectIntro'; 
+import { Pagination } from '@mui/material';
 
 const ProjectGallery = () => {
     const [projects, setProjects] = useState([]);
     const [filteredProjects, setFilteredProjects] = useState([]);
     const [isFiltered, setIsFiltered] = useState(false);
     const [isNoResults, setIsNoResults] = useState(false);
+    const [page, setPage] = useState(1);
+
+    const handleChangePage = (event, value) => {
+        setPage(value);
+    };
+
+    const projectsPerPage = 6;
+    const startIndex = (page - 1) * projectsPerPage;
+    const endIndex = startIndex + projectsPerPage;
+    const displayedProjects = (isFiltered ? filteredProjects : projects).slice(startIndex, endIndex);
 
 
     const fetchAllProjects = async () => {
@@ -69,8 +80,8 @@ const ProjectGallery = () => {
 
             {!isNoResults && (
                 <div className="project-list">
-                   <CRow>
-                        {(isFiltered ? filteredProjects : projects).map((project) => (
+                    <CRow xs={{ cols: 1, gutter: 4 }} sm={{ cols: 2 }} md={{ cols: 2 }} lg={{ cols: 3 }} xl={{ cols: 3 }} xxl={{ cols: 4 }}>
+                      {displayedProjects.map((project) => (
 
                             <CCol xs>
                               <Link to={`/project-view/${project.ProjectID}`}>
@@ -98,8 +109,8 @@ const ProjectGallery = () => {
                                         </Link>
                                         <LikeButton key={project.TeamName} likenumber={project.ProjectID} /> */}
                                         <div className='project-stats'>
-                                            <p> <Heart/> {project.likes} </p> 
-                                            <p> <Views /> {project.viewCount} </p> 
+                                        <p> <Heart/> {project.ProjectID} </p> 
+                                        <p> <Views/> {project.ProjectID} </p> 
                                         </div>
                                     </CCardFooter>
                                 </CCard>
@@ -107,6 +118,13 @@ const ProjectGallery = () => {
                             </CCol>
                         ))}
                     </CRow>
+                      <Pagination
+                      count={Math.ceil((isFiltered ? filteredProjects.length : projects.length) / projectsPerPage)}
+                      page={page}
+                      onChange={handleChangePage}
+                      color="primary"
+                      sx={{ marginTop: '20px' }}
+                  />
                 </div>
             )}
         </div>
