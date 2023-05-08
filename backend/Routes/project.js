@@ -110,6 +110,7 @@ projectRouter.get('/AllProjectData', async (req, res) => { //working 28/04/2023
         LEFT JOIN Award ON Award.AwardID = ProjectAward.AwardID_FK
         LEFT JOIN technologiesUsed ON technologiesUsed.techID = ProjectTech.techID_FK
         LEFT JOIN likes ON likes.ProjectID_FK = Project.ProjectID
+        WHERE Project.IsApproved = 1
         GROUP BY ProjectID ORDER BY ProjectID;
         `;
         const allProjects = (await executeSQLstatement(sql))[0]//.catch(err => console.log("The following error generated:\n" + err));
@@ -133,6 +134,7 @@ projectRouter.get('/searchProject', async (req, res) => {
         LEFT JOIN Award ON Award.AwardID = ProjectAward.AwardID_FK
         LEFT JOIN technologiesUsed ON technologiesUsed.techID = ProjectTech.techID_FK
         LEFT JOIN likes ON likes.ProjectID_FK = Project.ProjectID
+        WHERE Project.IsApproved = 1
         GROUP BY ProjectID 
         HAVING Project.ProjectName like "${searchWord}%"
         ORDER BY ProjectID;
@@ -166,8 +168,10 @@ projectRouter.post('/FilteredProjectData', async (req, res) => { //working 28/04
         LEFT JOIN Award ON Award.AwardID = ProjectAward.AwardID_FK
         LEFT JOIN technologiesUsed ON technologiesUsed.techID = ProjectTech.techID_FK
         LEFT JOIN likes ON likes.ProjectID_FK = Project.ProjectID
+
         WHERE (
-          ${filterFields.capstoneYear.length === 0 ? "TRUE" : `Project.capstoneYear IN ('${filterFields.capstoneYear.join('\', \'')}')`}
+          Project.IsApproved = 1
+          AND ${filterFields.capstoneYear.length === 0 ? "TRUE" : `Project.capstoneYear IN ('${filterFields.capstoneYear.join('\', \'')}')`}
           AND ${filterFields.capstoneSemester.length === 0 ? "TRUE" : `Project.capstoneSemester IN (${filterFields.capstoneSemester.join(', ')})`}
           AND ${filterFields.AwardName.length === 0 ? "TRUE" : `Award.AwardName IN ('${filterFields.AwardName.join('\', \'')}')`}
           AND ${filterFields.technologyName.length === 0 ? "TRUE" : `technologiesUsed.technologyName IN ('${filterFields.technologyName.join('\', \'')}')`}
