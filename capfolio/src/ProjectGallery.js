@@ -130,7 +130,7 @@ const ProjectGallery = () => {
                                         <LikeButton key={project.TeamName} likenumber={project.ProjectID} /> */}
                                         <div className='project-stats'>
                                         <p> <Heart/> {project.likes} </p> 
-                                        <p> <Views/> {project.Views} </p> 
+                                        <p> <Views/> {project.viewCount} </p> 
                                         </div>
                                     </CCardFooter>
                                 </CCard>
