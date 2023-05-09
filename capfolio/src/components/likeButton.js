@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
 import cn from "classnames";
 import { ReactComponent as Hand } from "../images/hand.svg";
-import { redirect } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import "./likeStyles.css";
 
 const particleList = Array.from(Array(10));
 
-const LikeButton2 = (props) => {
 
-    
+
+const LikeButton2 = (props) => {
+    const navigate = useNavigate();
+
+
     const [liked, setLiked] = useState(null);
     const [clicked, setClicked] = useState(null);
     const [likes, setLikes] = useState('');
@@ -20,7 +23,7 @@ const LikeButton2 = (props) => {
         ).then((response) => response.json());
 
         setLikes(response)
-   
+
 
 
     };
@@ -28,11 +31,10 @@ const LikeButton2 = (props) => {
 
     const initialLikes = async () => {
         const response = await fetch('/projects/ProjectsLiked?id=' + props.likenumber).then((response) => response.json());
-      
         if (response[response.length - 1].hasLiked == '0') {
             setLiked(false)
             setClicked(false)
-           
+
 
         }
 
@@ -46,19 +48,26 @@ const LikeButton2 = (props) => {
 
 
     const checkLikes = async () => {
-    
-            const response = await fetch('/projects/ProjectsLiked?id=' + props.likenumber).then((response) => response.json())
+
+        const response = await fetch('/projects/ProjectsLiked?id=' + props.likenumber);
 
 
+        if (!response.ok) {
+            console.log("test");
+            navigate("/login");
+        }
 
+        else {
 
+            const responseData = await response.json();
+            console.log(responseData)
 
-            if (response.length == 0) {
+            if (responseData.length == 0) {
                 newlike()
                 setLiked(true)
                 setClicked(true)
             }
-            else if (response.length > 0 && response[response.length - 1].hasLiked == '0') {
+            else if (responseData.length > 0 && responseData[responseData.length - 1].hasLiked == '0') {
 
                 newlike()
                 setLiked(true)
@@ -66,19 +75,24 @@ const LikeButton2 = (props) => {
 
             }
 
-            else if (response.length > 0 && response[response.length - 1].hasLiked == '1') {
+            else if (responseData.length > 0 && responseData[responseData.length - 1].hasLiked == '1') {
                 removeLike()
                 setLiked(false)
                 setClicked(false)
-            }
-        
-       
+            };
 
-    }
+
+        };
+
+
+
+
+    };
+
 
     const newlike = async () => {
         const postlike = await fetch(
-            "/projects/postLike",{
+            "/projects/postLike", {
             method: 'POST',
             headers: { "Accept": "application/json", "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -87,20 +101,20 @@ const LikeButton2 = (props) => {
 
 
         })
-    
+
         getLikes();
-        
+
     };
 
 
     const removeLike = async () => {
         await fetch(
-            "projects/postDisLike", {
-                method: 'DELETE',
-                headers: { "Accept": "application/json", "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    'projectId': props.likenumber
-                })
+            "/projects/postDisLike", {
+            method: 'DELETE',
+            headers: { "Accept": "application/json", "Content-Type": "application/json" },
+            body: JSON.stringify({
+                'projectId': props.likenumber
+            })
         })
         getLikes();
     };
@@ -115,20 +129,20 @@ const LikeButton2 = (props) => {
     }, []);
 
 
-  
+
 
 
 
     return (
         <button
 
-            
 
-            onClick={() => { 
+
+            onClick={() => {
                 checkLikes()
-           
-                
-                
+
+
+
             }}
             onAnimationEnd={() => setClicked(false)}
             className={cn("like-button-wrapper", {

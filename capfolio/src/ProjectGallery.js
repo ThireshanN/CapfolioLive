@@ -10,6 +10,7 @@ import { ReactComponent as Heart } from "./images/heart.svg";
 import { ReactComponent as Views } from "./images/views.svg";
 import ProjectIntro from './components/ProjectIntro'; 
 import { Pagination } from '@mui/material';
+import Search from './Search';
 
 const ProjectGallery = () => {
     const [projects, setProjects] = useState([]);
@@ -63,12 +64,31 @@ const ProjectGallery = () => {
         }
     };
 
+
+    const fetchSearchedProject = async (body) => {
+        console.log(body)
+        const response = await fetch('project/searchProject?keyword=' + body).then((response) => response.json());
+        if (response.length === 0) {
+            //If nothing is return see noresults to true
+            setIsNoResults(true);
+        } else {
+            setFilteredProjects(response);
+            setIsFiltered(true);
+            setIsNoResults(false);
+        }
+    }
+
     const handleApplyFilter = (body) => {
         fetchFilteredProjects(body);
     };
 
+    const handleApplySearch = body => {
+        fetchSearchedProject(body)
+    }
+
     return (
         <div className="project-gallery">
+            <Search onApplySearch={handleApplySearch} />
             <Sidebar onApplyFilter={handleApplyFilter} />
 
             {/*checks to see if the filter returned anything - if it does not it will show the message other genreate the cards like normal*/}
@@ -109,8 +129,8 @@ const ProjectGallery = () => {
                                         </Link>
                                         <LikeButton key={project.TeamName} likenumber={project.ProjectID} /> */}
                                         <div className='project-stats'>
-                                        <p> <Heart/> {project.ProjectID} </p> 
-                                        <p> <Views/> {project.ProjectID} </p> 
+                                        <p> <Heart/> {project.likes} </p> 
+                                        <p> <Views/> {project.viewCount} </p> 
                                         </div>
                                     </CCardFooter>
                                 </CCard>

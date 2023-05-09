@@ -4,10 +4,10 @@ import "./App.css";
 import SearchBar from './components/SearchBar';
 
 
-const Search = () => {
+const Search = ({ onApplySearch }) => {
 
   const handleSearch = (searchTerm) => {
-    console.log('Search:', searchTerm);
+    onApplySearch(searchTerm)
   };
 
   return (
