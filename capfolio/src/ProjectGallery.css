@@ -12,10 +12,10 @@
 }
 
 .project-list {
-  display: flex;
-  flex-wrap: wrap;
+  /* display: flex; */
+  /* flex-wrap: wrap; */
   max-width: 80%;
-  align-items: center;
+  /* align-items: center; */
   justify-content: center;
   margin: 0 auto;
   margin-top: 5%;
@@ -215,6 +215,12 @@ p.card-text {
   word-break: break-word;
   font-size: 14px;
   color: #424242;
+}
+
+.pagination-wrapper{
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
 
 

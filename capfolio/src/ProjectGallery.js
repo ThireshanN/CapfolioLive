@@ -138,6 +138,7 @@ const ProjectGallery = () => {
                             </CCol>
                         ))}
                     </CRow>
+                    <div className='pagination-wrapper'>
                       <Pagination
                       count={Math.ceil((isFiltered ? filteredProjects.length : projects.length) / projectsPerPage)}
                       page={page}
@@ -145,6 +146,7 @@ const ProjectGallery = () => {
                       color="primary"
                       sx={{ marginTop: '20px' }}
                   />
+                  </div>
                 </div>
             )}
         </div>

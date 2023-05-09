@@ -37,7 +37,7 @@ export default function Navbar() {
             <Link to="/" className="site-title">
                 <div className="logo">
                     <img
-                        src={require("./images/capfolio-logo-white.png")}
+                        src={require("./images/capfoliov2.png")}
                         alt="Logo"
                     />
                 </div>
@@ -45,11 +45,11 @@ export default function Navbar() {
             <ul className="nav-desktop">
                 {!isAuthenticated ? (
                     <>
-                        <CustomLink to="/login" className="button2">
+                        <CustomLink to="/login" className="login">
                             Log in
                         </CustomLink>
-                        <CustomLink to="/sign-up" className="button2">
-                            Sign Up
+                        <CustomLink to="/sign-up" className="signup">
+                            Sign up
                         </CustomLink>
                     </>
                 ) : (
