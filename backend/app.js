@@ -1,5 +1,7 @@
 
 import express from 'express';
+import http from 'http';
+import https from 'https';
 import cors from 'cors';
 import path from 'path';
 import passport from 'passport';
@@ -79,7 +81,7 @@ app.get('/test', (req, res) => {
 })
 
 
-
+//this get route is not needed, if you're already serving static files above with express.static()
 app.get('/*', (req, res) => { //http:localhost:3000/
     //res.sendFile(path.join(__dirname, '../clientdemo/build', index.html));
     res.sendFile(path.join(__dirname, '../capfolio/build/index.html'), function (err) {
@@ -92,8 +94,10 @@ app.get('/*', (req, res) => { //http:localhost:3000/
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => { 
-    console.log(`App listening on port ${port}\nGo to http://localhost:3000 (testing locally)\nGo to http://${dnsAWS}:3000 (testing on AWS)`); 
+    console.log(`App listening on port ${port}\nGo to http://localhost:${port} (testing locally)\nGo to http://${dnsAWS}:${port} (testing on AWS)`); 
 });
+//http.createServer(app).listen(80); 
+//https.createServer({}, app).listen(443);
 
 
 
