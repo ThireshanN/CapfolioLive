@@ -40,7 +40,7 @@ export default function Navbar() {
             <Link to="/" className="site-title">
                 <div className="logo">
                     <img
-                        //src={require("./images/capfoliov2.png")}
+                        src={require("./images/capfoliov2.png")}
                         alt="Logo"
                     />
                 </div>
@@ -57,10 +57,10 @@ export default function Navbar() {
                     </>
                 ) : (
                     <>
-                        <CustomLink to="/profile" className="button2">
+                        <CustomLink to="/profile" className="login">
                             Profile
                         </CustomLink>
-                        <CustomLink to="/"className="button2" onClick={handleLogout}>
+                        <CustomLink to="/"className="signup" onClick={handleLogout}>
                             Logout
                         </CustomLink>
                     </>

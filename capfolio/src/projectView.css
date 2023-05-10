@@ -70,7 +70,7 @@
     width: 100%;
     background-color: #00467f;
     height: 60px;
-    
+    margin-top: 40px;
 }
 
 .bluebox::before {
