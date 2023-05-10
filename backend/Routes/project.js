@@ -466,7 +466,7 @@ projectRouter.get('/listTeamFiles/:TeamName', async (req, res) => { //WORKS 29/0
 
         const params = {
             Bucket: "capfoliostorage",
-            Prefix: req.params.TeamName //omit this, to list all files in capfoliostorage
+            Prefix: req.params.TeamName + "/" //omit this, to list all files in capfoliostorage
         };
 
         const command = new ListObjectsV2Command(params);
