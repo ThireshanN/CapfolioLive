@@ -1,13 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Sen:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
 
 .filter-bg{
     width:100%;
-    color: #00467F;
-    background-color: #f2f2f2;
+    color: #2d4986;
+    background-color: #f8fbfc;
     align-items:center;
     justify-content: center;
     margin: 0 auto;
-    border: 10px solid #f2f2f2;
+    border: 10px solid #f8fbfc;
     border-radius: 5px;
     padding-top: 1%;
     padding-bottom: 2%;
@@ -52,6 +53,19 @@ h3 {
     padding:1% 10%;
 }
 
+.card.mt-3{
+    --bs-card-border-width: 0px!important;
+    margin: 0 0 0 10%;
+    padding-top: 0;
+    width: 18%;
+    float: left;
+    z-index: 1;
+}
+
+.card.mt-3 .card-body{
+    padding:0px;
+}
+
 .collapse .row,
 .collapsing .row{
     width: 100%;
@@ -82,6 +96,7 @@ h3 {
     margin-bottom: 0%;
     --bs-btn-bg: #00467F !important;
     --bs-btn-border-color: #00467F !important;
+    display: none;
 }
 
 .apply-filter-btn-wrapper{
@@ -108,9 +123,17 @@ h3 {
     text-decoration: none;
 }
 
+.btn.btn-primary.apply-filter-btn{
+    background-color: #0a89eb;
+    font-family: Nunito, sans-serif;
+    text-transform: none !important;
+}
+
 .filters p {
-    font-weight: 500;
     margin-bottom: 0;
+    font-family: Nunito, sans-serif;
+    font-size: 12px;
+    color: #2d4986;
 }
 
 @media screen and (max-width: 1200px) {
@@ -129,3 +152,11 @@ h3 {
         width: 100% !important;
     }
   }
+
+.row .w-25{
+    width: 100% !important;
+}
+
+.row .w-50{
+    width: 100% !important;
+}

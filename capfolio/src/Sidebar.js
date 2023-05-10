@@ -142,7 +142,7 @@ const Sidebar = ({ onApplyFilter }) => {
                         Filter
                     </CButton>
                 </div>
-                <CCollapse visible={visible}>
+                {/* <CCollapse visible={visible}> */}
                     <CCard className="mt-3">
                         <CCardBody>
                             <div class='filter-bg'>
@@ -214,7 +214,7 @@ const Sidebar = ({ onApplyFilter }) => {
                             </div>
                         </CCardBody>
                     </CCard>
-                </CCollapse>
+                {/* </CCollapse> */}
             </div>
         </div>
 
