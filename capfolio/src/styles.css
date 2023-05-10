@@ -89,6 +89,17 @@ body {
   color: #f8fbfc;
 }
 
+.logouotbutton {
+  background-color: #2d4986;
+
+}
+
+
+.profilebutton{
+  background-color: #2d4986;
+
+}
+
 .button2:disabled {
   cursor: default;
 }

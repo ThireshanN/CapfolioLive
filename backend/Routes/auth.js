@@ -7,10 +7,10 @@ import { Router } from 'express';
 import mysql from 'mysql2/promise';
 import { config } from '../sqlconfig.js';
 import bcrypt from 'bcrypt';
+const { OAuth2Client } = import('google-auth-library');
 
 
 export let currentUserId = null;
-
 
 async function executeSQLstatement(sql, values) {
     const connection = await mysql.createConnection(config.db);
@@ -108,7 +108,7 @@ passport.use(new GoogleStrategy({
         } else if (emailToCheck.endsWith('@aucklanduni.ac.nz')) {
             type = 1;
             sql = `Insert into Users(UserID, UserTypeID, FirstName, lastName, Email) values (${id}, ${type}, "${first_name}", "${last_name}", "${emailToCheck}");`;
-            sql2 = `Insert into Student(UserID, UserTypeID,  StudentUPI) values (${id}, 1, "${emailToCheck.substring(0,7)}");`;
+            sql2 = `Insert into Student(UserID, UserTypeID,  StudentUPI) values (${id}, 1, "${emailToCheck.substring(0, 7)}");`;
             const var1 = (await executeSQLstatement(sql));
             const var2 = (await executeSQLstatement(sql2));
         } else {
@@ -206,16 +206,12 @@ router.get('/logout', (req, res) => {
             res.clearCookie('connect.sid');
             res.json({ message: 'Logged out successfully' });
         });
+
+        currentUserId = null
+
     });
 });
 
-authRouter.get('/status', (req, res) => {
-    if (req.isAuthenticated()) {
-        res.json({ isAuthenticated: true, user: req.session.user });
-    } else {
-        res.json({ isAuthenticated: false });
-    }
-});
 
 
 router.post('/signup', async (req, res) => {

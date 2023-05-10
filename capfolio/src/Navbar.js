@@ -2,6 +2,7 @@ import { Link, useMatch, useResolvedPath } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
 import React, { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Cookies from 'js-cookie';
 
 export default function Navbar() {
     const { user, setUser } = useContext(AuthContext);
@@ -18,6 +19,8 @@ export default function Navbar() {
             const response = await fetch("http://localhost:3000/auth/logout");
             if (response.ok) {
                 const data = await response.json();
+                Cookies.remove('connect.sid', { path: '/' });
+                console.log(Cookies.get('connect.sid'))
                 setUser(null);
                 setIsAuthenticated(false);
                 navigate("/");
@@ -54,10 +57,10 @@ export default function Navbar() {
                     </>
                 ) : (
                     <>
-                        <CustomLink to="/profile" className="button2">
+                        <CustomLink to="/profile" className="login">
                             Profile
                         </CustomLink>
-                        <CustomLink to="/"className="button2" onClick={handleLogout}>
+                        <CustomLink to="/"className="signup" onClick={handleLogout}>
                             Logout
                         </CustomLink>
                     </>
