@@ -33,7 +33,6 @@ export class ProjectFilter {
     technologyName; //array of string
     AwardName; //array of string
     SortBy; //['likes'] OR ['ProjectID'] OR []
-    Meow;
     constructor() { }
 }
 
@@ -59,20 +58,21 @@ async function executeMultipleSQLstatement(sqlArray) { //working 23/04/2023
 }
 
 
-async function ProjectTableFields() { //working 23/04/2023
+async function TableFieldName(tableName = null) { //working 23/04/2023
     try {
-        const sql = "SHOW FIELDS FROM Capfolio.Project";
+        if (!tableName) {
+            throw new Error('no tableName specified');
+        }
+        const sql = `SHOW FIELDS FROM Capfolio.${tableName}`;
         let fieldData = (await executeSQLstatement(sql))[0];
         const columnsArray = fieldData.map(element => element['Field']);
         const columnsString = columnsArray.join(", ");
         return [columnsArray, columnsString];
     }
     catch (err) {
-        console.error("start up the database on AWS console \nOR the error is: " + err);
+        console.error(err.message);
     }
 };
-
-
 
 
 
@@ -97,6 +97,15 @@ projectRouter.get('/executeSQLcommand', async (req, res) => {
         return res.status(400).setHeader("Content-Type", "text/plain").send("failed because of " + err);
     }
 })
+
+//http://localhost:3000/project/technologyNames
+//http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/AllProjectData
+projectRouter.get('/technologyNames', async function (req, res) {
+    const sql = `SELECT GROUP_CONCAT(technologyName) as technology FROM Capfolio.technologiesUsed;`;
+    const resultArray = (await executeSQLstatement(sql))[0]//.catch(err => console.log("The following error generated:\n" + err));
+    const technologyArray = resultArray[0].technology.split(',');
+    return res.status(200).setHeader("Content-Type", "application/json").send(technologyArray);
+});
 
 
 //http://localhost:3000/project/AllProjectData
@@ -124,7 +133,7 @@ projectRouter.get('/AllProjectData', async (req, res) => { //working 28/04/2023
 
 //http://localhost:3000/project/searchProject?keyword=Spellz
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/AllProjectData
-projectRouter.get('/searchProject', async (req, res) => { 
+projectRouter.get('/searchProject', async (req, res) => {
     const searchWord = req.query.keyword;
     try {
         const sql = `
@@ -140,10 +149,10 @@ projectRouter.get('/searchProject', async (req, res) => {
         ORDER BY ProjectID;
         `;
         const allProjects = (await executeSQLstatement(sql))[0]
-        if(allProjects.length===0){
-            res.status(200).setHeader("Content-Type", "application/json").send("No projects can be found for the given search phrase"); 
+        if (allProjects.length === 0) {
+            res.status(200).setHeader("Content-Type", "application/json").send("No projects can be found for the given search phrase");
         }
-        else{
+        else {
             return res.status(200).setHeader("Content-Type", "application/json").send(allProjects);
         }
     }
@@ -160,6 +169,10 @@ projectRouter.post('/FilteredProjectData', async (req, res) => { //working 28/04
         //CLIENT DATA FROM FRONTEND 
         const filterFields = req.body;
 
+        if (!filterFields) {
+            throw new Error();
+        }
+
 
         const sql = `SELECT Project.*, count(DISTINCT likes.likeID) AS likes, GROUP_CONCAT(DISTINCT technologiesUsed.technologyName) AS Technologies, GROUP_CONCAT(DISTINCT Award.AwardName) AS AwardName, GROUP_CONCAT(DISTINCT Award.AwardDesc) AS AwardDesc
         FROM Project
@@ -175,7 +188,10 @@ projectRouter.post('/FilteredProjectData', async (req, res) => { //working 28/04
           AND ${filterFields.capstoneSemester.length === 0 ? "TRUE" : `Project.capstoneSemester IN (${filterFields.capstoneSemester.join(', ')})`}
           AND ${filterFields.AwardName.length === 0 ? "TRUE" : `Award.AwardName IN ('${filterFields.AwardName.join('\', \'')}')`}
           AND ${filterFields.technologyName.length === 0 ? "TRUE" : `technologiesUsed.technologyName IN ('${filterFields.technologyName.join('\', \'')}')`}
-        ) GROUP BY Project.ProjectID 
+        ) 
+        
+        GROUP BY Project.ProjectID 
+        
         ORDER BY 
           ${filterFields.SortBy[0] === "Oldest to latest" ? "Project.capstoneYear ASC, Project.capstoneSemester ASC" : ""}
           ${filterFields.SortBy[0] === "Latest to oldest" ? "Project.capstoneYear DESC, Project.capstoneSemester DESC" : ""}
@@ -183,10 +199,12 @@ projectRouter.post('/FilteredProjectData', async (req, res) => { //working 28/04
           ${filterFields.SortBy[0] === "Lowest to highest likes" ? "likes ASC" : ""}
           ${filterFields.SortBy[0] === "Alphabetical (A - Z)" ? "Project.ProjectName ASC" : ""}
           ${filterFields.SortBy[0] === "Alphabetical (Z - A)" ? "Project.ProjectName DESC" : ""}
-          ${filterFields.SortBy[0] === null ? "Project.capstoneYear ASC, Project.capstoneSemester ASC" : ""};`;
+          ${filterFields.SortBy[0] === null ? "Project.capstoneYear ASC, Project.capstoneSemester ASC" : ""};
+          `;
+
+
         const projects = (await executeSQLstatement(sql))[0]//.catch(err => console.log("The following error generated:\n" + err));
         if (projects.length === 0) {
-            
             throw new Error("There were no projects found" + error);
         }
         return res.status(200).setHeader("Content-Type", "application/json").send(projects);
@@ -206,7 +224,7 @@ projectRouter.post('/FormAddProject', express.json(), async (req, res) => { //
         const reqBodyFromClient = req.body;
 
         //PROJECT TABLE
-        const projectFields = (await ProjectTableFields())[0];
+        const projectFields = (await TableFieldName('Project'))[0];
         let fieldNames = [];
         let fieldValues = [];
         projectFields.forEach(field => myFunction(field));
@@ -502,7 +520,7 @@ projectRouter.put('/UpdateProject', express.json(), async (req, res) => { //work
         updateProjectDetails.capstoneSemester = 1;
 
         const sqlArray = [];
-        const projectFields = (await ProjectTableFields())[0];
+        const projectFields = (await TableFieldName('Project'))[0];
         projectFields.forEach(field => myFunction(field));
         function myFunction(field) {
             if (updateProjectDetails[`${field}`]) {
