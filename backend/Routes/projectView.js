@@ -280,7 +280,6 @@ projectViewRouter.get("/likedProjects", async (req, res) => {
 
 
 projectViewRouter.get("/ProjectsLiked", async (req, res) => { 
-    if(currentUserId===null){ return res.status(404).send("Only logged in Users can get likes");}
     try {
         const projectID = req.query.id;
         const sql = `SELECT * 
