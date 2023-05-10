@@ -49,42 +49,44 @@ const LikeButton2 = (props) => {
 
     const checkLikes = async () => {
 
-        const response = await fetch('/projects/ProjectsLiked?id=' + props.likenumber);
+        fetch('/projects/ProjectsLiked?id=' + props.likenumber)
+            .then(response => {
+                if (response.status === 404) {
+                    return response.text().then(errorBody => {
+                        if (errorBody === 'Only logged in Users can get likes') {
+                            console.log("test");
+                            navigate("/login");
+                        }
+                    });
+                } else {
+                    return response.json().then(responseData => {
+                        console.log(responseData)
 
+                        if (responseData.length == 0) {
+                            newlike()
+                            setLiked(true)
+                            setClicked(true)
+                        }
+                        else if (responseData.length > 0 && responseData[responseData.length - 1].hasLiked == '0') {
 
-        if (!response.ok) {
-            console.log("test");
-            navigate("/login");
-        }
+                            newlike()
+                            setLiked(true)
+                            setClicked(true)
 
-        else {
+                        }
 
-            const responseData = await response.json();
-            console.log(responseData)
+                        else if (responseData.length > 0 && responseData[responseData.length - 1].hasLiked == '1') {
+                            removeLike()
+                            setLiked(false)
+                            setClicked(false)
+                        };
+                    })
+                }
+            })
 
-            if (responseData.length == 0) {
-                newlike()
-                setLiked(true)
-                setClicked(true)
-            }
-            else if (responseData.length > 0 && responseData[responseData.length - 1].hasLiked == '0') {
-
-                newlike()
-                setLiked(true)
-                setClicked(true)
-
-            }
-
-            else if (responseData.length > 0 && responseData[responseData.length - 1].hasLiked == '1') {
-                removeLike()
-                setLiked(false)
-                setClicked(false)
-            };
-
-
-        };
-
-
+            .catch(error => {
+                console.error('Error:', error);
+            });
 
 
     };

@@ -2,6 +2,7 @@ import { Link, useMatch, useResolvedPath } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
 import React, { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Cookies from 'js-cookie';
 
 export default function Navbar() {
     const { user, setUser } = useContext(AuthContext);
@@ -18,6 +19,8 @@ export default function Navbar() {
             const response = await fetch("http://localhost:3000/auth/logout");
             if (response.ok) {
                 const data = await response.json();
+                Cookies.remove('connect.sid', { path: '/' });
+                console.log(Cookies.get('connect.sid'))
                 setUser(null);
                 setIsAuthenticated(false);
                 navigate("/");
@@ -37,7 +40,7 @@ export default function Navbar() {
             <Link to="/" className="site-title">
                 <div className="logo">
                     <img
-                        src={require("./images/capfolio-logo-white.png")}
+                        src={require("./images/capfoliov2.png")}
                         alt="Logo"
                     />
                 </div>
@@ -45,19 +48,19 @@ export default function Navbar() {
             <ul className="nav-desktop">
                 {!isAuthenticated ? (
                     <>
-                        <CustomLink to="/login" className="button2">
+                        <CustomLink to="/login" className="login">
                             Log in
                         </CustomLink>
-                        <CustomLink to="/sign-up" className="button2">
-                            Sign Up
+                        <CustomLink to="/sign-up" className="signup">
+                            Sign up
                         </CustomLink>
                     </>
                 ) : (
                     <>
-                        <CustomLink to="/profile" className="button2">
+                        <CustomLink to="/profile" className="login">
                             Profile
                         </CustomLink>
-                        <CustomLink to="/"className="button2" onClick={handleLogout}>
+                        <CustomLink to="/"className="signup" onClick={handleLogout}>
                             Logout
                         </CustomLink>
                     </>

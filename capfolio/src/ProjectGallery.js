@@ -89,18 +89,21 @@ const ProjectGallery = () => {
     return (
         <div className="project-gallery">
             <Search onApplySearch={handleApplySearch} />
-            <Sidebar onApplyFilter={handleApplyFilter} />
+            
 
             {/*checks to see if the filter returned anything - if it does not it will show the message other genreate the cards like normal*/}
             {isNoResults && (
                 <div className="no-results-message">
+                    <Sidebar onApplyFilter={handleApplyFilter} />
                     <h2>No results found.</h2>
                 </div>
             )}
 
             {!isNoResults && (
+              <div className='gallery-wrapper'>
+                <Sidebar onApplyFilter={handleApplyFilter} />
                 <div className="project-list">
-                    <CRow xs={{ cols: 1, gutter: 4 }} sm={{ cols: 2 }} md={{ cols: 2 }} lg={{ cols: 3 }} xl={{ cols: 3 }} xxl={{ cols: 4 }}>
+                    <CRow xs={{ cols: 1, gutter: 4 }} sm={{ cols: 2 }} md={{ cols: 2 }} lg={{ cols: 2 }} xl={{ cols: 3 }} xxl={{ cols: 3 }}>
                       {displayedProjects.map((project) => (
 
                             <CCol xs>
@@ -138,14 +141,34 @@ const ProjectGallery = () => {
                             </CCol>
                         ))}
                     </CRow>
+                    <div className='pagination-wrapper'>
                       <Pagination
                       count={Math.ceil((isFiltered ? filteredProjects.length : projects.length) / projectsPerPage)}
                       page={page}
                       onChange={handleChangePage}
                       color="primary"
-                      sx={{ marginTop: '20px' }}
-                  />
+                      sx={{
+                        marginTop: '20px',
+                        '& .MuiPaginationItem-root': {
+                          backgroundColor: 'transparent',
+                          '&:hover': {
+                            backgroundColor: 'transparent',
+                          },
+                        },
+                        '& .MuiPaginationItem-page.Mui-selected': {
+                          backgroundColor: '#72a0e9',
+                          '&:hover': {
+                            backgroundColor: '#72a0e9',
+                          },
+                        },
+                        '& .MuiPaginationItem-page.Mui-selected.Mui-focusVisible': {
+                          backgroundColor: '#72a0e9',
+                        },
+                      }}
+                    />
+                  </div>
                 </div>
+              </div>
             )}
         </div>
     );
