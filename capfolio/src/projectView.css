@@ -591,3 +591,22 @@ textarea {
     color: black;
     background-color: white;
 }
+.icon-trash {
+    fill: #000;
+    /* display: inline-block; */
+    /* float: right; */
+    height: 40px;
+    width: 43px;
+    /* z-index: 1; */
+    margin-left: 100%;
+    /* padding-left: 10px; */
+}
+
+.trash-lid {
+    transform-origin: right bottom;
+    transition: transform 200ms cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.icon-trash:hover .trash-lid {
+    transform: translateY(-2px) rotate(30deg);
+}
