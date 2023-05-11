@@ -1,7 +1,7 @@
 import { CButton } from "@coreui/react";
 import { MDBTextArea } from "mdb-react-ui-kit";
 import React, { useEffect, useState, useContext, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Slide } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css";
 import LikeButton from "./components/likeButton";
@@ -25,6 +25,8 @@ const s3 = new AWS.S3({
 });
 
 const ProjectView = () => {
+  const navigate = useNavigate();
+
   const [data, setData] = useState([]);
   const [responses, setResponses] = useState([]);
   const params = useParams();
@@ -120,9 +122,14 @@ const ProjectView = () => {
       body: JSON.stringify({
         CommentDesc: CommentDesc,
       }),
-    }).then(() => {
-      console.log("comment Added");
-      getComments();
+    }).then((response) => {
+      return response.text().then((responseBody) => {
+        if (responseBody == '"Only logged in Users can comment"') {
+          navigate("/login");
+        } else {
+          getComments()
+        }
+      });
     });
     document.getElementById("comment").value = "";
   };
@@ -190,8 +197,12 @@ const ProjectView = () => {
         <h2>Confirmation</h2>
         <p>Are you sure you want to proceed?</p>
         <div class="popup-buttons">
-        <button className="btn-yes" onClick={onYesClick}>Yes</button>
-        <button className="btn-no" onClick={onNoClick}>No</button>
+          <button className="btn-yes" onClick={onYesClick}>
+            Yes
+          </button>
+          <button className="btn-no" onClick={onNoClick}>
+            No
+          </button>
         </div>
       </div>
     );
@@ -239,15 +250,6 @@ const ProjectView = () => {
     );
   };
 
-  //Used to set bluebox height to size according to right column
-  // const rightColumnRef = useRef();
-  // const blueBoxRef = useRef();
-
-  // useEffect(() => {
-  //     const marginTop = parseFloat(window.getComputedStyle(rightColumnRef.current).marginTop);
-  //     const rightColumnHeight = rightColumnRef.current.offsetHeight + marginTop + 20;
-  //     blueBoxRef.current.style.setProperty('--right-column-height', `${rightColumnHeight}px`);
-  // }, []);
   const rightColumnCallbackRef = (node) => {
     if (node) {
       const marginTop = parseFloat(window.getComputedStyle(node).marginTop);
