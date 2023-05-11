@@ -179,7 +179,7 @@ projectViewRouter.post('/postComment', express.json(), async (req, res) => {
 async function newLike(likeBody){
     let message = "Error in defining a new like";
     if(currentUserId===null){
-        message = "Only loggeed in users can like"
+        message = "Only logged in users can like"
         return message;
     }
     const sql = `Insert into likes(UserID_FK, ProjectID_FK) VALUES (${currentUserId}, ${likeBody.projectId});`;
