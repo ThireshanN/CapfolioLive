@@ -9,7 +9,7 @@
     float: left;
     margin-top: 0px;
     padding-top: 0px;
-   
+
 }
 
 .right-column-container {
@@ -20,7 +20,7 @@
     padding-top: 50px;
     margin-top: 0px;
     width: 50%;
-    height: auto;    
+    height: auto;
     display: inline-block;
     padding-left: 50px
 }
@@ -30,7 +30,7 @@
     margin-left: 5%;
 }
 
-.headerright{
+.headerright {
     width: 30%;
     margin-right: 5%;
     margin-left: 50px;
@@ -39,7 +39,7 @@
 .right {
     margin-top: 30px;
     width: 50%;
-    
+
 }
 
 /* Clear floats after the columns */
@@ -56,14 +56,14 @@
 }
 
 
-.rowcontent{
-    margin-top:140px;
+.rowcontent {
+    margin-top: 140px;
 }
 
 .bluebox {
     width: 100%;
     /* background-color: #00467f; */
-    
+
 }
 
 .bluebox-top {
@@ -88,12 +88,12 @@
     margin-top: 50px;
 }
 
-.mainprojectImg{
+.mainprojectImg {
     min-width: 100px;
-    margin-left:50px;
+    margin-left: 50px;
     width: 90%;
     height: auto;
-    
+
 }
 
 .projecttitle {
@@ -118,24 +118,25 @@
     border-radius: 4px;
 }
 
-    .tech p {
-        font-size: 1em;
-        padding: 5px;
-        color: #00467F;
-        margin: 0;
-        padding: 5px;
-        
-    }
+.tech p {
+    font-size: 1em;
+    padding: 5px;
+    color: #00467F;
+    margin: 0;
+    padding: 5px;
+
+}
 
 .techUsed {
     margin-top: 0px;
-    margin-left:40px; 
+    margin-left: 40px;
 
- 
+
 }
+
 .teammembers {
     width: 100%;
-    
+
 }
 
 .companyname {
@@ -152,30 +153,30 @@
     display: inline-block;
     vertical-align: top;
     overflow: hidden;
-    color:white;
+    color: white;
 }
 
-    .name p {
-        margin: 0;
-        padding: 0;
-        font-size: 1vw;
-    }
+.name p {
+    margin: 0;
+    padding: 0;
+    font-size: 1vw;
+}
 
 .names {
     margin-left: 50px;
 }
 
-.projectInformation{
+.projectInformation {
     margin-left: 50px;
     margin-right: 80px;
 }
 
-    .projectInformation h2 {
-        color: #00467F;
-        font-size: 160%;
-        margin-left:0px;
-        padding-left:0px;
-    }
+.projectInformation h2 {
+    color: #00467F;
+    font-size: 160%;
+    margin-left: 0px;
+    padding-left: 0px;
+}
 
 .commentbox {
     height: 100%;
@@ -193,24 +194,25 @@
     max-width: 300px;
     text-align: center;
     margin: 0 auto;
-    margin-top: 30px;   
+    margin-top: 30px;
     color: #0080a7;
 }
+
 .likebutton {
     width: 25%;
     height: 25%;
     padding-top: 10px;
     transition: all 0.3s ease-in-out;
-    opacity: 60%;   
+    opacity: 60%;
 
 }
 
-    .likebutton:hover {
-        transform: scale(1.1,1.1);
-        opacity: 100%;
-    }
+.likebutton:hover {
+    transform: scale(1.1, 1.1);
+    opacity: 100%;
+}
 
-    
+
 
 .likepost {
     padding-top: 50px;
@@ -218,8 +220,8 @@
     justify-content: center;
 }
 
-.likecount{
-    
+.likecount {
+
     font-size: 200%;
     color: #0080a7
 }
@@ -254,19 +256,20 @@ textarea {
     width: 100%;
 }
 
-.submitcomment{
+.submitcomment {
     position: relative;
     float: right;
     margin: 0 15% 2% 0;
-    width:30px;
+    width: 30px;
 }
 
-.showcomments{
+.showcomments {
     margin-top: 100px;
 }
 
-.comment{
-    margin: 0px 50px 40px 95px; /*Top right bottom left*/
+.comment {
+    margin: 0px 50px 40px 95px;
+    /*Top right bottom left*/
     width: 50%;
     margin-left: 25%;
     background-color: white;
@@ -274,30 +277,31 @@ textarea {
     font-family: 'Figtree', sans-serif;
     border-radius: 5px;
 }
+
 .commenttext {
     margin-bottom: 0px;
-}    
+}
 
-.comment p{
+.comment p {
     color: #0080a7;
     padding-left: 20px;
 }
 
-.commentname{
+.commentname {
     margin-bottom: 0px;
     font-weight: 600;
     transform: translateY(0px);
 }
 
 
-.each-slide-effect > div {
+.each-slide-effect>div {
     display: flex;
     align-items: center;
     justify-content: center;
     background-size: cover;
     height: 30vw;
     width: 50vw;
-    
+
 }
 
 .each-slide-effect span {
@@ -307,7 +311,7 @@ textarea {
     text-align: center;
 }
 
-.slide{
+.slide {
     padding-right: 0px;
 }
 
@@ -320,71 +324,72 @@ textarea {
 }
 
 
-.image{
+.image {
     padding-top: 10px;
 }
 
 
-.pv-likeButton{
-    margin-left:50px; 
-    margin-top:10px; 
+.pv-likeButton {
+    margin-left: 50px;
+    margin-top: 10px;
 }
 
 .pv-likeButton .like-button-wrapper::before {
     background-color: #008CBA;
 }
 
-.projectInformation-wrapper{
+.projectInformation-wrapper {
     margin: 5% 20%;
-    width:60%;
+    width: 60%;
     font-family: 'Figtree', sans-serif;
-    
+
 }
 
-.react-slideshow-container{
+.react-slideshow-container {
     width: 90%;
     margin-left: 10%;
 
 }
 
-.comment-avatar{
-    width:45px;
+.comment-avatar {
+    width: 45px;
     float: left;
     margin: 10px;
     margin-top: 0px;
     transform: translateY(0px);
 
 }
-.commentdate{
+
+.commentdate {
     text-align: right;
     margin: 0;
     transform: translateY(0px);
 }
 
-.commentUsertype{
+.commentUsertype {
     margin-bottom: 0px;
     font-weight: 200;
     transform: translateY(0px);
-    width:50%;
+    width: 50%;
     float: left;
     margin-left: 0;
     padding: 0px !important;
 }
 
-.commentDetails{
+.commentDetails {
     margin-bottom: 20px;
 }
 
-.pv-buttons .btn a{
+.pv-buttons .btn a {
     color: #fff !important;
     font-family: 'Fira Sans', sans-serif;
     font-weight: 500;
     cursor: pointer;
     text-decoration: none;
     padding-left: 6px;
-  }
+}
 
-  .pv-buttons .btn {
+.pv-buttons .btn {
     margin-left: 0%;
     --bs-btn-bg: #3e80b6 !important;
     color: #fff !important;
@@ -400,28 +405,28 @@ textarea {
     transition: all 0.25s ease;
     cursor: pointer;
     text-decoration: none;
-  
-  }
 
-  .btn img{
+}
+
+.btn img {
     width: 25px !important;
     height: 25px !important;
     margin-right: 5px;
-  }
+}
 
-  .pv-buttons{
+.pv-buttons {
     margin-left: 50px;
     margin-top: 30px;
     min-height: 50px;
     width: 100%;
-  }
+}
 
 
-  @media screen and (max-width: 992px) {
+@media screen and (max-width: 992px) {
 
     .bluebox {
         height: auto;
-       
+
     }
 
     .column.headerright {
@@ -430,8 +435,9 @@ textarea {
 
     .pv-likeButton {
         margin: 0 0;
-        
+
     }
+
     .projectInformation-wrapper {
         margin: 10% 10%;
         width: 80%;
@@ -458,7 +464,7 @@ textarea {
         padding-bottom: 20px;
     }
 
-    .pv-buttons{
+    .pv-buttons {
         display: flex;
         margin: 5px 5px;
         padding: 5px 5px;
@@ -468,15 +474,14 @@ textarea {
 
     }
 
-    .pv-buttons .btn{
+    .pv-buttons .btn {
         margin: 0 0;
         margin-right: 3%;
         transform: translateY(-1px);
     }
 
-    .projecttitle
-    {
-        margin-left:0px;
+    .projecttitle {
+        margin-left: 0px;
         margin-top: 0px;
         padding-left: 0px;
         align-self: center;
@@ -484,6 +489,7 @@ textarea {
         line-height: 5rem;
         margin-bottom: 10px;
     }
+
     .column {
         width: 100%;
     }
@@ -496,8 +502,9 @@ textarea {
     .left {
         padding-top: 0px;
     }
-    .techusedcontainer{
-        width:100%;
+
+    .techusedcontainer {
+        width: 100%;
         padding-top: 0px;
     }
 
@@ -513,12 +520,12 @@ textarea {
         flex-direction: row;
     }
 
-    .tech p{
+    .tech p {
         font-size: 1em;
     }
 
-    .names{
-        width: 50%;    
+    .names {
+        width: 50%;
         margin-left: 0;
     }
 
@@ -529,11 +536,12 @@ textarea {
         margin-right: 0px;
         padding-right: 0px;
     }
-    .names p{
+
+    .names p {
         font-size: 1em;
-        
+
     }
-    
+
 
     .headerleft {
         width: 100%;
@@ -547,22 +555,21 @@ textarea {
         margin-right: 25%
     }
 
-    .comment{
+    .comment {
         width: 90%;
         margin: 5% 5%;
         padding: 20px 20px;
     }
 
-    .commentdate{
+    .commentdate {
         font-size: 12px;
-        
+
     }
 }
 
 @media screen and (max-width: 500px) {
-    .projecttitle
-    {
-        margin-left:0px;
+    .projecttitle {
+        margin-left: 0px;
         margin-top: 0px;
         padding-left: 0px;
         align-self: center;
@@ -583,24 +590,25 @@ textarea {
     padding-top: 10px;
 }
 
-.textAreaExample{
+.textAreaExample {
     color: white;
 }
 
-#comment{
+#comment {
     color: black;
     background-color: white;
 }
+
+.deletecommentContainer{
+    float: right;
+}
+
 .icon-trash {
     fill: #000;
-    /* display: inline-block; */
-    /* float: right; */
     height: 40px;
     width: 43px;
-    /* z-index: 1; */
-    margin-left: 100%;
-    /* padding-left: 10px; */
 }
+
 
 .trash-lid {
     transform-origin: right bottom;
@@ -610,3 +618,67 @@ textarea {
 .icon-trash:hover .trash-lid {
     transform: translateY(-2px) rotate(30deg);
 }
+
+  
+  .popup {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    left: 50%;
+    padding: 20px;
+    position: absolute;
+    top: 50%;
+    -webkit-transform: translate(-50%,-50%);
+    transform: translate(-50%,-50%);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+  }
+  
+  .popup h2 {
+    font-size: 24px;
+    margin-top: 0;
+    margin: auto;
+  }
+  
+  .popup p {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+  
+  .popup-buttons {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .btn-no, .btn-yes {
+    padding: 10px 20px;
+    margin: 0 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .btn-no {
+    background-color: #dcdcdc;
+  }
+  
+  .btn-yes {
+    background-color: #4caf50;
+    color: #fff;
+  }
+  
+  .btn-no:hover, .btn-yes:hover {
+    opacity: 0.8;
+  }
+  
+
+  .overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+    height: 100%;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 9998;
+  }
