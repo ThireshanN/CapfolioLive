@@ -95,6 +95,33 @@ projectViewRouter.get("/comment", async (req, res) => {
     }
 });
 
+//http://localhost:3000/projects/deletecomment
+//http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/projects/project?id=2
+
+async function deleteComnt(delBody){
+    if(currentUserId===null){return "Only logged in Users can delete comments"}
+    const sql = `DELETE From Comment WHERE UserID_FK =${currentUserId} and ProjectID_FK = ${delBody.ProjectID}`;
+    //console.log(currentUserId);
+    const dislikes = (await executeSQLstatement(sql));
+    let message = 'Error in deleting a comment';
+    if (dislikes.length!==0) {
+      message = 'comment deleted successfully\n';
+    }
+  
+    return {message};
+  }
+
+
+projectViewRouter.delete('/deletecomment', express.json(), async (req, res) => {
+
+    try {
+        //console.log(req.body.CommentDesc);
+        res.json(await deleteComnt(req.body));
+    } catch (err) {
+      console.error(`Error while deleting comment`, err.message);
+    }
+});
+
 
 //http://localhost:3000/projects/teamname?id=2
 //the id here is the same ProjectId as http://localhost:3000/projects/teamname?id=2
