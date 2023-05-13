@@ -79,7 +79,7 @@ projectViewRouter.get("/award", async (req, res) => {
 projectViewRouter.get("/comment", async (req, res) => { 
     const projectId = req.query.id;
     try {
-        const sql = `SELECT CommentDesc, FirstName, lastName, SUBSTRING(createdTime, 1, 10) AS createdTime, ProjectName, UserType FROM Comment INNER JOIN Users ON Comment.UserID_FK = Users.UserID  INNER JOIN Project ON Comment.ProjectID_FK = Project.ProjectID INNER JOIN UserType ON Users.UserTypeID = UserType.UserTypeID  WHERE ProjectID = ${projectId} ORDER BY CommentID DESC;`;
+        const sql = `SELECT UserID_FK as User, CommentDesc, FirstName, lastName, SUBSTRING(createdTime, 1, 10) AS createdTime, ProjectName, UserType FROM Comment INNER JOIN Users ON Comment.UserID_FK = Users.UserID  INNER JOIN Project ON Comment.ProjectID_FK = Project.ProjectID INNER JOIN UserType ON Users.UserTypeID = UserType.UserTypeID  WHERE ProjectID = ${projectId} ORDER BY CommentID DESC;`;
         const selectedProject = (await executeSQLstatement(sql))[0]//.catch(err => console.log("The following error generated:\n" + err));
         if(selectedProject.length===0){
             res.status(200).send("No comments yet!"); //return 404 if project not found
@@ -179,7 +179,7 @@ projectViewRouter.post('/postComment', express.json(), async (req, res) => {
 async function newLike(likeBody){
     let message = "Error in defining a new like";
     if(currentUserId===null){
-        message = "Only loggeed in users can like"
+        message = "Only logged in users can like"
         return message;
     }
     const sql = `Insert into likes(UserID_FK, ProjectID_FK) VALUES (${currentUserId}, ${likeBody.projectId});`;

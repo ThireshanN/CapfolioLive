@@ -7,7 +7,6 @@ import { Router } from 'express';
 import mysql from 'mysql2/promise';
 import { config } from '../sqlconfig.js';
 import bcrypt from 'bcrypt';
-const { OAuth2Client } = import('google-auth-library');
 
 
 export let currentUserId = null;
@@ -187,6 +186,9 @@ router.get('/user', async (req, res) => {
         res.status(400).send({ error: 'Failed to fetch user data' });
     }
 });
+
+
+
 
 authRouter.get('/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
     // Store user data in the session
