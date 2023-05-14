@@ -33,7 +33,6 @@
 .headerright {
     width: 30%;
     margin-right: 5%;
-    margin-left: 50px;
 }
 
 .right {
@@ -68,7 +67,7 @@
 
 .bluebox-top {
     width: 100%;
-    background-color: #00467f;
+    background-color: #00467f00;
     height: 60px;
     margin-top: 40px;
 }
@@ -78,14 +77,14 @@
     position: absolute;
     left: 0;
     right: 0;
-    background-color: #00467F;
+    background-color: #00467f00;
     z-index: -1;
     height: var(--right-column-height) !important;
 
 }
 
 .column.headerright {
-    margin-top: 50px;
+    /* margin-top: 50px; */
 }
 
 .mainprojectImg {
@@ -102,10 +101,12 @@
     display: inline-block;
     align-items: center;
     margin-left: 50px;
-    font-size: 5rem;
-    color: white;
-    margin-bottom: 20px;
-    line-height: 6rem;
+    font-size: 1.8rem;
+    color: #2d4986 ;
+    margin-bottom: 10px;
+    line-height: 2rem;
+    width: 75%;
+    padding-top: 10px;
 }
 
 .tech {
@@ -143,7 +144,7 @@
     display: inline-block;
     vertical-align: top;
     font-size: 1rem;
-    color: white;
+    color: #2d4986;
     margin: 0;
     padding: 0;
 }
@@ -153,7 +154,7 @@
     display: inline-block;
     vertical-align: top;
     overflow: hidden;
-    color: white;
+    color: #2d4986;
 }
 
 .name p {
@@ -169,6 +170,8 @@
 .projectInformation {
     margin-left: 50px;
     margin-right: 80px;
+    margin-top: 80px;
+    margin-bottom: 100px;
 }
 
 .projectInformation h2 {
@@ -180,7 +183,6 @@
 
 .commentbox {
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.1);
     float: right;
     padding-bottom: 5%;
     width: 100%;
@@ -242,7 +244,7 @@ form {
 textarea {
     position: relative;
     width: 100%;
-    height: 150px;
+    height: 100px;
     padding: 12px 20px;
     box-sizing: border-box;
     border: 2px solid rgba(204, 204, 204, 0);
@@ -268,14 +270,13 @@ textarea {
 }
 
 .comment {
-    margin: 0px 50px 40px 95px;
-    /*Top right bottom left*/
-    width: 50%;
-    margin-left: 25%;
-    background-color: white;
-    padding: 30px 70px 30px 70px;
-    font-family: 'Figtree', sans-serif;
+    background-color: #fff;
     border-radius: 5px;
+    font-family: Figtree,sans-serif;
+    /* margin: 0 50px 40px 25%; */
+    padding: 30px 70px;
+    width: 75%;
+    margin: 10px 0px 10px 15%;
 }
 
 .commenttext {
@@ -324,9 +325,9 @@ textarea {
 }
 
 
-.image {
+/* .image {
     padding-top: 10px;
-}
+} */
 
 
 .pv-likeButton {
@@ -339,8 +340,8 @@ textarea {
 }
 
 .projectInformation-wrapper {
-    margin: 5% 20%;
-    width: 60%;
+    margin: 5% 10%;
+    /* width: 90%; */
     font-family: 'Figtree', sans-serif;
 
 }
@@ -440,7 +441,7 @@ textarea {
 
     .projectInformation-wrapper {
         margin: 10% 10%;
-        width: 80%;
+        width: 100%;
     }
 
     .projectInformation {
@@ -681,4 +682,59 @@ textarea {
     top: 0;
     width: 100%;
     z-index: 9998;
+  }
+
+  .titlePanel{
+    background-color: #ededed;
+    border-radius: 0px 10px 10px 0px;
+    padding: 10% 0%;
+    /* height:400px; */
+  }
+
+  .proj-desc{
+    margin-bottom: 1rem;
+    margin-top: 0;
+    width: 75%;
+    margin-left: 50px;
+    font-size: 14px;
+}
+  
+.p-row {
+    align-items: flex-start;
+    display: flex;
+    justify-content: center;
+    margin-top: 5%;
+}
+
+.titlePanel .semesterTag{
+    margin-left: 50px;
+}
+
+.sidePanel{
+    background-color: #ededed;
+    border-radius: 0px 10px 10px 0px;
+    padding: 10% 0%;
+    /* height:400px; */
+    margin-bottom: 10%;
+    min-height: 400px;
+    padding-right: 10px;
+  }
+
+  .sidePanel .project-stats {
+    display: flex;
+    padding: 20px 10px;
+    margin-left: 40px;
+    float: none;
+  }
+  
+  .sidePanel .project-stats p {
+    margin-bottom: 0px;
+    margin-right: 30px;
+    font-size: 18px;
+    color: #72a0e9;
+  }
+
+  .sidePanel .project-stats svg {
+    width: 24px;
+    height: 24px;
   }
