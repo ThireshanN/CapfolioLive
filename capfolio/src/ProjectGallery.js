@@ -149,6 +149,7 @@ const ProjectGallery = () => {
                       color="primary"
                       sx={{
                         marginTop: '20px',
+                        marginLeft: '20%',
                         '& .MuiPaginationItem-root': {
                           backgroundColor: 'transparent',
                           '&:hover': {
