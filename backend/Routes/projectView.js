@@ -18,20 +18,14 @@ async function executeSQLstatement(sql) {
 
 //http://localhost:3000/projects/project?id=2
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/projects/project?id=2
-/*
-async function updateViewCount(delBody){
-    const sql = `update Project
-    set viewCount=2
-    where ProjectID=1;`;
-    //console.log(currentUserId);
-    const dislikes = (await executeSQLstatement(sql));
-    let message = 'Error in deleting a comment';
-    if (dislikes.length!==0) {
-      message = 'comment deleted successfully\n';
-    }
-  
-    return {message};
-  }*/
+
+async function updateViewCount(id){
+    const getViewCount = `Select viewCount from Project where ProjectID=${id};`;
+    const viewCount = (await executeSQLstatement(getViewCount))[0];
+    let count = viewCount[0].viewCount+=1;
+    const updateCount = `update Project set viewCount=${count} where ProjectID=${id};`;
+    await executeSQLstatement(updateCount)[0];
+  }
 
 projectViewRouter.get("/project", async (req, res) => { 
     const id = req.query.id;
@@ -48,7 +42,7 @@ projectViewRouter.get("/project", async (req, res) => {
             res.status(404).send("Project not found"); //return 404 if project not found
         }
         else{
-
+            updateViewCount(id);
             return res.status(200).setHeader("Content-Type", "application/json").send(selectedProject);
         }
     }
