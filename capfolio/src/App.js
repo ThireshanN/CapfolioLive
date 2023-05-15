@@ -9,6 +9,8 @@ import ScrollToTop from "./ScrollToTop";
 import { AuthProvider } from "./AuthContext";
 import Profile from "./pages/Profile";
 import ProjectSubmit from "./projectSubmit";
+import CodeConfirmation from "./pages/CodeConfirmation";
+import ResetPassword from "./pages/ResetPassword";
 
 
 function App() {
@@ -26,6 +28,8 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/project-view/:id" element={<ProjectView />} />
           <Route path="/project-submit" element={<ProjectSubmit />} />
+          <Route path="/Code-Confirmation" element={<CodeConfirmation />} />
+          <Route path="/Rest-Password" element={<ResetPassword />} />
         </Routes>
         </ScrollToTop>
         {/* </div>

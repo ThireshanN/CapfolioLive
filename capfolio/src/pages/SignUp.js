@@ -117,9 +117,10 @@ const SignUp = () => {
                 />
               </div>
               <div className="d-grid">
+              <Link to="/Code-Confirmation">
                 <button type="submit" className="btn btn-primary">
                   Sign Up
-                </button>
+                </button></Link>
               </div>
               <p className="forgot-password text-right">
                 Already registered <Link to="/login">Sign In?</Link>
