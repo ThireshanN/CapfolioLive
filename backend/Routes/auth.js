@@ -123,7 +123,7 @@ passport.use(new GoogleStrategy({
 
 
 
-
+    profile.photo = profile._json.picture;
     //Insert into Admins(UserID) values (40);
 
     return cb(null, profile);
@@ -140,7 +140,7 @@ passport.deserializeUser((obj, cb) => {
 authRouter.use(passport.initialize());
 authRouter.use(passport.session());
 
-authRouter.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+authRouter.get('/google', passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email'] }));
 
 router.get('/user', async (req, res) => {
     try {
@@ -152,25 +152,42 @@ router.get('/user', async (req, res) => {
         let email;
         let isGoogleOAuth;
         let photo;
-
+        console.log("T1")
         if (req.session.user) {
             user = req.session.user;
+            console.log("user:", user )
             email = user.email;
-            isGoogleOAuth = false;
-            photo = '/images/icon.png';
+            console.log("T2")
+            if (user.isFormLogin) {
+                isGoogleOAuth = false;
+                console.log("T3a")
+                photo = '/images/icon.png';
+                console.log("T4a")
+
+            } else {
+                isGoogleOAuth = true;
+                console.log("T3b")
+                photo = user.photo; // Store photo in session during Google OAuth login
+                console.log("T4b")
+            }
         } else {
             user = req.user;
+            console.log("T2b")
             email = user.emails[0].value;
+            console.log("T2b1")
             isGoogleOAuth = true;
-            photo = user.photos[0].value;
+            console.log("T2b2")
+            photo = user.photo;
+            console.log("T2b3")
         }
+        console.log("T5")
 
         //const sql = `SELECT u.FirstName, u.LastName, u.UserTypeID FROM Users u WHERE u.Email = ?;`;
         const sql = `SELECT u.UserID, u.FirstName, u.LastName, u.UserTypeID FROM Users u WHERE u.Email = ?;`;
         const [rows] = await executeSQLstatement(sql, [email]);
         const userData = rows[0];
         console.log("Picture URL:", photo);
-
+        console.log("T6")
         currentUserId = userData.UserID;
 
         res.send({
@@ -182,7 +199,9 @@ router.get('/user', async (req, res) => {
             Photo: photo,
             OAuth: isGoogleOAuth,
         });
+        console.log("T7")
     } catch (error) {
+        console.log("T8")
         res.status(400).send({ error: 'Failed to fetch user data' });
     }
 });
@@ -195,7 +214,8 @@ authRouter.get('/google/callback', passport.authenticate('google', { failureRedi
     req.session.user = {
         id: req.user.id,
         displayName: req.user.displayName,
-        email: req.user.emails[0].value
+        email: req.user.emails[0].value,
+        photo: req.user.photo
     };
 
     // Successful authentication, redirect to the desired page.
@@ -206,8 +226,9 @@ router.get('/logout', (req, res) => {
     req.logout(() => {
         req.session.destroy(() => {
             res.clearCookie('connect.sid');
-            res.json({ message: 'Logged out successfully' });
             currentUserId = null;
+            res.json({ message: 'Logged out successfully' });
+
         });
     });
 });
@@ -265,6 +286,7 @@ router.post('/login', async (req, res) => {
         lastName: userData.LastName,
         email: userData.Email,
         userType: userData.Type,
+        isFormLogin: true,
     };
 
     res.status(200).send({ message: 'Logged in successfully' });
