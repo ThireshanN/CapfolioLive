@@ -6,6 +6,7 @@ import { PutObjectCommand, S3, GetObjectCommand, ListObjectsV2Command } from "@a
 import fs from 'fs';
 import path from 'path';
 import { error } from 'console';
+import { currentUserId } from './auth.js';
 
 
 export class ProjectDetails {
@@ -220,7 +221,7 @@ projectRouter.post('/FilteredProjectData', async (req, res) => { //working 28/04
 projectRouter.get('/projectTeamId', async (req, res) => {
     try {
         const sql = `SELECT GROUP_CONCAT(TeamId) AS AllTeamIds FROM Capfolio.Project;`;
-        const {AllTeamIds} = (await executeSQLstatement(sql))[0][0];
+        const { AllTeamIds } = (await executeSQLstatement(sql))[0][0];
         const AllTeamIdsArray = AllTeamIds.split(',');
         return res.status(200).send(AllTeamIdsArray);
     }
@@ -229,6 +230,44 @@ projectRouter.get('/projectTeamId', async (req, res) => {
     }
 })
 
+//http://localhost:3000/project/addTeamMembers
+//http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/addTeamMembers
+projectRouter.put('/addTeamMembers', async (req, res) => {
+    try {
+        const memberUPIs = req.body.memberUPIs; //['kcou558', 'kcou559'];
+        const projectID = req.body.projectID; //7;
+        const {TeamLeader, ProjectName} = (await executeSQLstatement(`SELECT TeamLeader, ProjectName FROM Capfolio.Project WHERE ProjectID = ${projectID}`))[0][0];
+        const currentLoggedInUser = currentUserId;
+
+        if (!TeamLeader) {
+            throw new Error(`no assigned team leader for ${ProjectName}`)
+        }
+        if (currentLoggedInUser != TeamLeader || !currentLoggedInUser) {
+            throw new Error("Sorry you must be the team leader to make changes.")
+        }
+
+        //upi exists in student table (has signed in with uni email at least once)
+        let sqlQueries = ['SET SQL_SAFE_UPDATES = 0;', '', 'SET SQL_SAFE_UPDATES = 1;'];
+        sqlQueries[1] = `UPDATE Capfolio.Student SET projectID = ${projectID} WHERE StudentUPI IN ('${memberUPIs.join('\', \'')}')`;
+        const updatedStudents = (await executeMultipleSQLstatement(sqlQueries))[0];
+
+        //if upi does not exist in student table, then they have not signed in as a student
+        //return the invalid upi so the team leader knows
+        const sql2 = `SELECT group_concat(DISTINCT StudentUPI) AS studentUPIs FROM Capfolio.Student;`;
+        const {studentUPIs} = (await executeSQLstatement(sql2))[0][0];
+        const studentUPIsArray = studentUPIs.split(',');
+        const MissingUPI = [];
+        //console.log(studentUPIsArray);
+        memberUPIs.forEach(member => {
+            studentUPIsArray.includes(member)? '': MissingUPI.push(member);
+        });
+        //console.log(MissingUPI);
+
+        res.status(200).send(`Successfully updated ${ProjectName}. However the following students have not logged in with their uni email: ` + MissingUPI);
+    } catch (err) {
+        return res.status(400).send(err.message);
+    }
+});
 
 //http://localhost:3000/project/FormAddProject
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/FormAddProject
