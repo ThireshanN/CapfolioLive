@@ -19,10 +19,18 @@ async function executeSQLstatement(sql) {
 //http://localhost:3000/projects/project?id=2
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/projects/project?id=2
 
+async function updateViewCount(id){
+    const getViewCount = `Select viewCount from Project where ProjectID=${id};`;
+    const viewCount = (await executeSQLstatement(getViewCount))[0];
+    let count = viewCount[0].viewCount+=1;
+    const updateCount = `update Project set viewCount=${count} where ProjectID=${id};`;
+    await executeSQLstatement(updateCount)[0];
+  }
+
 projectViewRouter.get("/project", async (req, res) => { 
     const id = req.query.id;
     try {
-        const sql = `SELECT ProjectID, Project.ProjectName,IsApproved, projectDec, Project.capstoneYear, Project.capstoneSemester, githubLink, VideoLink, TeamName, ProjectIntro, Project_Approach, GROUP_CONCAT(technologiesUsed.technologyName) AS 'technologies'
+        const sql = `SELECT ProjectID, Project.ProjectName,IsApproved, projectDec, Project.capstoneYear, Project.capstoneSemester, githubLink, VideoLink, TeamName, ProjectIntro, Project_Approach, viewCount, GROUP_CONCAT(technologiesUsed.technologyName) AS 'technologies'
         FROM Capfolio.Project
         INNER JOIN ProjectTech ON Project.ProjectID = ProjectTech.ProjectID_FK 
         INNER JOIN technologiesUsed ON ProjectTech.techID_FK = technologiesUsed.techID
@@ -34,11 +42,11 @@ projectViewRouter.get("/project", async (req, res) => {
             res.status(404).send("Project not found"); //return 404 if project not found
         }
         else{
+            updateViewCount(id);
             return res.status(200).setHeader("Content-Type", "application/json").send(selectedProject);
         }
     }
     catch (err) {
-        console.log(err.message);
         return res.status(400).setHeader("Content-Type", "text/plain").send("failed to fetch project data because of " + err);
     }
 });
@@ -92,6 +100,33 @@ projectViewRouter.get("/comment", async (req, res) => {
         console.log(err.message);
         res.status(400).setHeader("Content-Type", "text/plain").send("failed to fetch project data because of " + err);
         return
+    }
+});
+
+//http://localhost:3000/projects/deletecomment
+//http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/projects/project?id=2
+
+async function deleteComnt(delBody){
+    if(currentUserId===null){return "Only logged in Users can delete comments"}
+    const sql = `DELETE From Comment WHERE UserID_FK =${currentUserId} and ProjectID_FK = ${delBody.ProjectID}`;
+    //console.log(currentUserId);
+    const dislikes = (await executeSQLstatement(sql));
+    let message = 'Error in deleting a comment';
+    if (dislikes.length!==0) {
+      message = 'comment deleted successfully\n';
+    }
+  
+    return {message};
+  }
+
+
+projectViewRouter.delete('/deletecomment', express.json(), async (req, res) => {
+
+    try {
+        //console.log(req.body.CommentDesc);
+        res.json(await deleteComnt(req.body));
+    } catch (err) {
+      console.error(`Error while deleting comment`, err.message);
     }
 });
 

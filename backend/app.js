@@ -94,7 +94,7 @@ app.get('/*', (req, res) => { //http:localhost:3000/
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => { 
-    console.log(`App listening on port ${port}\nGo to http://localhost:${port} (testing locally)\nGo to http://${dnsAWS}:${port} (testing on AWS)`); 
+    console.log(`App listening on port ${port}\nGo to http://localhost:${port} (testing locally)\nGo to http://ec2-54-79-153-66.ap-southeast-2.compute.amazonaws.com:${port} (testing on AWS)`); 
 });
 //http.createServer(app).listen(80); 
 //https.createServer({}, app).listen(443);

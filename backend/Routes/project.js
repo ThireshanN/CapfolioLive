@@ -215,6 +215,20 @@ projectRouter.post('/FilteredProjectData', async (req, res) => { //working 28/04
     }
 });
 
+//http://localhost:3000/project/projectTeamId
+//http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/projectTeamId
+projectRouter.get('/projectTeamId', async (req, res) => {
+    try {
+        const sql = `SELECT GROUP_CONCAT(TeamId) AS AllTeamIds FROM Capfolio.Project;`;
+        const {AllTeamIds} = (await executeSQLstatement(sql))[0][0];
+        const AllTeamIdsArray = AllTeamIds.split(',');
+        return res.status(200).send(AllTeamIdsArray);
+    }
+    catch (err) {
+        return res.status(400).send(err.message);
+    }
+})
+
 
 //http://localhost:3000/project/FormAddProject
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/FormAddProject
