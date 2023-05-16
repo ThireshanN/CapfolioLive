@@ -1,33 +1,12 @@
-import {
-  MDBBtn,
-  MDBCol,
-  MDBInput,
-  MDBRow,
-  MDBTextArea,
-} from "mdb-react-ui-kit";
+import AWS from "aws-sdk";
+import { MDBBtn, MDBInput, MDBTextArea } from "mdb-react-ui-kit";
 import React, { useState } from "react";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import CreatableSelect from "react-select/creatable";
 import "./projectSubmit.css";
-import { Buffer } from "buffer";
-import S3FileUpload from "react-s3";
-import AWS from "aws-sdk";
-import {
-  Collapse,
-  CButton,
-  CCollapse,
-  CListGroup,
-  CListGroupItem,
-  CCard,
-  CCardBody,
-  CRow,
-  CCol,
-  CCardImage,
-  CCardTitle,
-  CCardText,
-  CCardFooter,
-} from "@coreui/react";
+
+import { CCol, CRow } from "@coreui/react";
 
 const bucketName = "capfoliostorage";
 const bucketRegion = "ap-southeast-2";
@@ -84,6 +63,26 @@ export default function ProjectSubmit() {
   }
 
   const animatedComponents = makeAnimated();
+
+  const [users, setUsers] = useState([
+    { upi: "", firstName: "", lastName: "" },
+  ]);
+
+  const handleUserChange = (index, field, value) => {
+    const updatedUsers = [...users];
+    updatedUsers[index] = { ...updatedUsers[index], [field]: value };
+    setUsers(updatedUsers);
+  };
+
+  const handleAddUser = () => {
+    setUsers([...users, { upi: "", firstName: "", lastName: "" }]);
+  };
+
+  const handleRemoveUser = (index) => {
+    const updatedUsers = [...users];
+    updatedUsers.splice(index, 1);
+    setUsers(updatedUsers);
+  };
 
   //Has all the set states
   const [selectedYears, setSelectedYears] = useState([]);
@@ -213,7 +212,7 @@ export default function ProjectSubmit() {
         ProjectIntro: "'" + ProjectIntro + "'",
         Project_Approach: "'" + Project_Approach + "'",
         Technologies: arrayTech,
-        Users: usersArray,
+        Users: users,
       }),
     }).then(() => {
       const promises = images.map(async (image) => {
@@ -259,15 +258,15 @@ export default function ProjectSubmit() {
           xxl={{ cols: 2 }}
         >
           <CCol xs>
-            <MDBInput id="company" label="Company Name" />
+            <MDBInput required id="company" label="Company Name" />
           </CCol>
           <CCol>
-            <MDBInput id="projectName" label="Project Title" />
+            <MDBInput required id="projectName" label="Project Title" />
           </CCol>
         </CRow>
 
         <CRow
-          xs={{ cols: 1, gutter: 4 }}
+          xs={{ cols: 1, gutter: 1 }}
           sm={{ cols: 1 }}
           md={{ cols: 1 }}
           lg={{ cols: 2 }}
@@ -276,6 +275,7 @@ export default function ProjectSubmit() {
         >
           <CCol xs>
             <Select
+              required
               id="year"
               className="basic-single"
               classNamePrefix="select"
@@ -291,6 +291,7 @@ export default function ProjectSubmit() {
           <CCol>
             <Select
               id="semester"
+              required
               className="basic-single"
               classNamePrefix="select"
               isClearable
@@ -306,6 +307,7 @@ export default function ProjectSubmit() {
 
         <MDBTextArea
           label="Project introduction"
+          required
           id="intro"
           className="textAreaExample"
           rows={2}
@@ -318,6 +320,7 @@ export default function ProjectSubmit() {
 
         <MDBTextArea
           label="Tell us about your project"
+          required
           id="about"
           className="textAreaExample"
           rows={4}
@@ -330,6 +333,7 @@ export default function ProjectSubmit() {
 
         <MDBTextArea
           label="Tell us about your project approach"
+          required
           id="approach"
           className="textAreaExample"
           rows={4}
@@ -341,6 +345,7 @@ export default function ProjectSubmit() {
         </div>
 
         <CreatableSelect
+        required
           className="formLinks"
           id="tech"
           isMulti
@@ -349,18 +354,64 @@ export default function ProjectSubmit() {
           onChange={handleChangeTechnologies}
           placeholder="Select from the drop down or type the technologies you used in the project"
         />
-        <CreatableSelect
-          className="formLinks"
-          id="teamMembers"
-          components={animatedComponents}
-          isMulti
-          onChange={handleChangeTeam}
-          placeholder="Type UPI's of students involved in this project - Please ensure all members are signed up with their UoA login"
-        />
+
+        {users.map((user, index) => (
+          <div key={index}>
+            <CRow
+              xs={{ cols: 1, gutter: 1 }}
+              sm={{ cols: 1 }}
+              md={{ cols: 4 }}
+              lg={{ cols: 4 }}
+              xl={{ cols: 4 }}
+              xxl={{ cols: 4 }}
+            >
+              <CCol>
+                <MDBInput
+                  label="UPI"
+                  required
+                  value={user.upi}
+                  onChange={(e) =>
+                    handleUserChange(index, "upi", e.target.value)
+                  }
+                />
+              </CCol>
+              <CCol>
+                <MDBInput
+                  required
+                  label="First Name"
+                  value={user.firstName}
+                  onChange={(e) =>
+                    handleUserChange(index, "firstName", e.target.value)
+                  }
+                />
+              </CCol>
+              <CCol>
+                <MDBInput
+                  required
+                  label="Last Name"
+                  value={user.lastName}
+                  onChange={(e) =>
+                    handleUserChange(index, "lastName", e.target.value)
+                  }
+                />
+              </CCol>
+              <CCol>
+                <MDBBtn className="me-1" color='secondary' block onClick={() => handleRemoveUser(index)}>
+                  Remove User
+                </MDBBtn>
+              </CCol>
+            </CRow>
+          </div>
+        ))}
+
+        <MDBBtn className="mb-4" onClick={handleAddUser}>
+          Add team member!
+        </MDBBtn>
 
         <MDBInput
           className="formLinks"
           label="Github Link"
+          required
           id="github"
           type="url"
         />
