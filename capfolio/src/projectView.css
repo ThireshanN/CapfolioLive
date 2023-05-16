@@ -422,8 +422,24 @@ textarea {
     width: 100%;
 }
 
+.side-panel-mobile{
+    display: none;
+}
+
 
 @media screen and (max-width: 992px) {
+
+    .side-panel-mobile{
+        display: block;
+    }
+
+    .sidePanel{
+        display: none;
+    }
+
+    .sidepanel-div{
+        display: none;
+    }
 
     .bluebox {
         height: auto;
@@ -460,7 +476,6 @@ textarea {
         align-content: center;
         justify-content: center;
         align-items: center;
-        background-color: #00467F;
         margin-bottom: 20px;
         padding-bottom: 20px;
     }
@@ -486,7 +501,7 @@ textarea {
         margin-top: 0px;
         padding-left: 0px;
         align-self: center;
-        font-size: 4rem;
+        font-size: 3rem;
         line-height: 5rem;
         margin-bottom: 10px;
     }
@@ -551,9 +566,19 @@ textarea {
     }
 
     .image {
-        width: 50%;
-        margin-left: 25%;
-        margin-right: 25%
+        margin-left: 10%;
+        margin-right: 10%;
+        width: 80%;
+    }
+
+    .each-slide-effect>div {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-size: cover;
+        height: 50vw;
+        width: 50vw;
+    
     }
 
     .comment {
@@ -565,6 +590,18 @@ textarea {
     .commentdate {
         font-size: 12px;
 
+    }
+
+    .p-row{
+        flex-direction: column;
+    }
+
+    .titlePanel {
+        background-color: #ededed;
+        border-radius: 0px 0px 10px 10px;
+        padding: 10% 0;
+        margin-left: 10%;
+        width: 80%;
     }
 }
 
