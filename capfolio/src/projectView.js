@@ -340,7 +340,7 @@ const ProjectView = () => {
 
       <div className="projectInformation-wrapper">
       <div style={{ display: 'flex'}}>
-        <div style={{ width: '75%' }}>
+        <div className="projectTabs" style={{ width: '75%' }}>
           <ProjectTabs projects={projects} comments={comments} user={user} getComments={getComments} />
         </div>
         <div className="sidepanel-div" style={{ width: '25%', }}>

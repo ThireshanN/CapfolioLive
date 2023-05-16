@@ -446,10 +446,18 @@ textarea {
 
 .slick-prev:before,
 .slick-next:before {
-  color: #72a0e9;
+  color: #72a0e9 !important;
 }
 
 @media screen and (max-width: 992px) {
+
+    .projectTabs{
+        width: 80% !important;
+    }
+
+    .projectInformation h2{
+        max-width: 100% !important;
+    }
 
     .sidePanel-mobile{
         display: block;
@@ -479,7 +487,7 @@ textarea {
 
     .projectInformation-wrapper {
         margin: 10% 10%;
-        width: 100%;
+        width: 80%;
     }
 
     .projectInformation {
@@ -627,14 +635,14 @@ textarea {
     }
 
     .titlePanel .semesterTag {
-        margin-left: 0px;
+        margin-left: 0px !important;
     }
 
     
     .proj-desc {
         font-size: 14px;
         margin-bottom: 1rem;
-        margin-left: 0px;
+        margin-left: 0px !important;
         margin-top: 0;
         width: 75%;
     }
