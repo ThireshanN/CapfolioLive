@@ -3,6 +3,8 @@ import { AuthContext } from "./AuthContext";
 import React, { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
+import { Drawer, IconButton, List, ListItem, ListItemText } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
 
 export default function Navbar() {
     const { user, setUser } = useContext(AuthContext);
@@ -66,34 +68,46 @@ export default function Navbar() {
                     </>
                 )}
             </ul>
-            <div className="menu-icon" onClick={toggleMenu}>
-        <span className="menu-line"></span>
-        <span className="menu-line"></span>
-        <span className="menu-line"></span>
-      </div> 
-      <ul className={`nav-mobile ${menuOpen ? 'open' : ''}`}>
-      <div className='mobile-nav-btns'>
-                {!isAuthenticated ? (
-                    <>
-                        <CustomLink to="/login" className="button2">
-                            Log in
-                        </CustomLink>
-                        <CustomLink to="/sign-up" className="button2">
-                            Sign Up
-                        </CustomLink>
-                    </>
-                ) : (
-                    <>
-                        <CustomLink to="/profile" className="button2">
-                            Profile
-                        </CustomLink>
-                        <CustomLink to="/"className="button2" onClick={handleLogout}>
-                            Logout
-                        </CustomLink>
-                    </>
-                )}
-                </div>
-            </ul>
+            <div className="nav-mobile">
+                <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleMenu} sx={{ bgcolor: '#ebf1f4', margin: "40px 0px 0px -12px", }}>
+                    <MenuIcon />
+                </IconButton>
+                <Drawer
+                anchor="left"
+                open={menuOpen}
+                onClose={toggleMenu}
+                sx={{
+                    '& .MuiDrawer-paper': {
+                        width: '200px',
+                        '@media (min-width: 500px)': {
+                            width: '400px',
+                        },
+                    },
+                }}
+            >
+                    <List>
+                        {!isAuthenticated ? (
+                            <>
+                                <ListItem button component={Link} to="/login" onClick={toggleMenu}>
+                                    <ListItemText primary="Log in" />
+                                </ListItem>
+                                <ListItem button component={Link} to="/sign-up" onClick={toggleMenu}>
+                                    <ListItemText primary="Sign up" />
+                                </ListItem>
+                            </>
+                        ) : (
+                            <>
+                                <ListItem button component={Link} to="/profile" onClick={toggleMenu}>
+                                    <ListItemText primary="Profile" />
+                                </ListItem>
+                                <ListItem button component={Link} to="/" onClick={handleLogout}>
+                                    <ListItemText primary="Logout" />
+                                </ListItem>
+                            </>
+                        )}
+                    </List>
+                </Drawer>
+            </div>
         </nav>
     );
 }
