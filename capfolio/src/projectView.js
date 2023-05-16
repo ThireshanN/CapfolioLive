@@ -100,10 +100,9 @@ const ProjectView = () => {
   const [showPopUp, setShowPopUp] = useState(false);
 
   const handleYesClick = async () => {
-    // Make your HTTP request here
-    // ...
-    // Close the pop-up
-    //setShowPopUp(false);
+    await fetch('/projects/deletecomment').then(() => {
+      setShowPopUp(false);
+    }) 
   };
 
   const handleNoClick = () => {

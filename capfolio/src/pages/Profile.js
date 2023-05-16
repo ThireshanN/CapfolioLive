@@ -27,7 +27,7 @@ function Profile() {
 
                 const userData = await response.json();
                 setName(`${userData.FirstName} ${userData.LastName}`);
-                setPicture(icon)
+                setPicture(userData.Photo)
 
                 //setPicture(userData.Photo === 'red-heart' ? redHeartImage : userData.Photo);
             } catch (error) {
