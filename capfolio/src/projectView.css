@@ -422,14 +422,36 @@ textarea {
     width: 100%;
 }
 
-.side-panel-mobile{
+.sidePanel-mobile{
     display: none;
 }
 
+.slick-slide {
+    margin: 0;
+    padding: 0;
+    border: none;
+    outline: none;
+  }
+
+.slick-slide,
+.slick-slide img {
+  height: auto;
+  max-height: 100%;
+}
+
+.slick-slide * {
+    vertical-align: middle;
+    line-height: 1;
+  }
+
+.slick-prev:before,
+.slick-next:before {
+  color: #72a0e9;
+}
 
 @media screen and (max-width: 992px) {
 
-    .side-panel-mobile{
+    .sidePanel-mobile{
         display: block;
     }
 
@@ -476,8 +498,8 @@ textarea {
         align-content: center;
         justify-content: center;
         align-items: center;
-        margin-bottom: 20px;
-        padding-bottom: 20px;
+        /* margin-bottom: 20px;
+        padding-bottom: 20px; */
     }
 
     .pv-buttons {
@@ -598,10 +620,23 @@ textarea {
 
     .titlePanel {
         background-color: #ededed;
-        border-radius: 0px 0px 10px 10px;
+        border-radius: 0px 0px 10px 10px !important;
         padding: 10% 0;
         margin-left: 10%;
         width: 80%;
+    }
+
+    .titlePanel .semesterTag {
+        margin-left: 0px;
+    }
+
+    
+    .proj-desc {
+        font-size: 14px;
+        margin-bottom: 1rem;
+        margin-left: 0px;
+        margin-top: 0;
+        width: 75%;
     }
 }
 

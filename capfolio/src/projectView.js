@@ -256,6 +256,30 @@ const ProjectView = () => {
             </div>
           </div>
         </div>
+        <div className="sidePanel-mobile">
+              <div className="centerTitle">
+                <div className='project-stats'>
+                  <p> <Heart/> {params.id} </p> 
+                  <p> <Views/> {project.viewCount} </p> 
+                </div>
+                <div className="names">
+
+                  {/*{project.authors.map((name, i) =>*/}
+                  {/*    <div classname='name'>*/}
+                  {/*        <p key={`key${i}`}>{name},&nbsp;</p>*/}
+                  {/*    </div>*/}
+                  {/*)}*/}
+                </div>
+              </div>
+              <div className="techUsed">
+                {tech &&
+                  tech.map((tech, i) => (
+                    <div className="tech">
+                      <p key={`Key${i}`}>{tech}</p>
+                    </div>
+                  ))}
+              </div>
+            </div>
       </div>
     );
   };
@@ -309,33 +333,7 @@ const ProjectView = () => {
                   <Header key={project.id} project={project} />
                 ))}
             </div>
-            <div className="sidePanel">
-            <div className="side-panel-mobile">
-              <div className='project-stats'>
-                <p> <Heart/> {params.id} </p> 
-                <p> <Views/> {project.viewCount} </p> 
-              </div>
-              <div className="names">
 
-                {/*{project.authors.map((name, i) =>*/}
-                {/*    <div classname='name'>*/}
-                {/*        <p key={`key${i}`}>{name},&nbsp;</p>*/}
-                {/*    </div>*/}
-                {/*)}*/}
-              </div>
-              
-
-          </div>
-              <div className="techUsed">
-                {tech &&
-                  tech.map((tech, i) => (
-                    <div className="tech">
-                      <p key={`Key${i}`}>{tech}</p>
-                    </div>
-                  ))}
-              </div>
-
-            </div>
           </div>
         </div>
       </div>
