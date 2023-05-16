@@ -59,6 +59,12 @@ async function emailExists(email) {
     return rows[0].count > 0;
 }
 
+async function codeExists(code) {
+    const sql = `SELECT COUNT(*) as count FROM Users WHERE Verfified = ?;`;
+    const [rows] = await executeSQLstatement(sql, [code]);
+    return rows[0].count > 0;
+}
+
 async function next_id() {
     const sql = `SELECT UserID FROM Users ORDER BY UserID DESC LIMIT 1;`;
     const var1 = (await executeSQLstatement(sql));
@@ -76,11 +82,21 @@ async function generatePasswordHash(password) {
 
 async function fetchUserData(email) {
     const sql = `
-        SELECT Users.UserID, Users.FirstName, Users.LastName, Users.Email, Users.Password, Users.UserTypeID as Type
+        SELECT Users.UserID, Users.FirstName, Users.LastName, Users.Email, Users.Password, Users.Verfified, Users.UserTypeID as Type
         FROM Users
         WHERE Users.Email = ?;
     `;
     const [rows] = await executeSQLstatement(sql, [email]);
+    return rows[0];
+}
+
+async function fetchUserDataByCode(code) {
+    const sql = `
+        SELECT Users.UserID
+        FROM Users
+        WHERE Users.Verfified = ?;
+    `;
+    const [rows] = await executeSQLstatement(sql, [code]);
     return rows[0];
 }
 
@@ -330,6 +346,8 @@ router.post('/login', async (req, res) => {
         return res.status(400).send({ error: 'Invalid email or password' });
     }
 
+    console.log(userData.Verfified);
+
     if (userData.Verfified != 1) {
         const sql = `DELETE FROM Users WHERE UserID = ?;`;
         await executeSQLstatement(sql, [userData.UserID]);
@@ -348,4 +366,33 @@ router.post('/login', async (req, res) => {
 
     res.status(200).send({ message: 'Logged in successfully' });
     console.log('Logged in successfully');
+});
+
+
+
+
+router.post('/emailVerify', async (req, res) => {
+    const { code } = req.body;
+
+    if (!code) {
+        return res.status(400).send({ error: 'No code entered' });
+    }
+
+    const exists = await codeExists(code)
+    console.log("exists: ", exists);
+    if (exists) {
+        const userData = await fetchUserDataByCode(code);
+        console.log("userdata: ", userData);
+        const id = userData.UserID;
+        const value = 1
+        const sql2 = `UPDATE Users SET Verfified = ? WHERE UserID = ?;`;
+        await executeSQLstatement(sql2, [value, id]);
+        console.log('YesSir');
+        return res.status(200).send({ message: 'Verified' });
+    } else {
+        return res.status(400).send({ error: 'Invalid Verification code' });
+    }
+
+    return res.status(400).send({ error: 'Invalid Verification code' });
+
 });
