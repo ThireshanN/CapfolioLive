@@ -46,7 +46,8 @@ const Login = () => {
       // Redirect to the home page
       window.location.href = '/';
     } else {
-      alert('Failed to log in');
+      const errorData = await response.json();
+      alert(errorData.error);
     }
   };
 

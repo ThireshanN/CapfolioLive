@@ -7,9 +7,44 @@ import { Router } from 'express';
 import mysql from 'mysql2/promise';
 import { config } from '../sqlconfig.js';
 import bcrypt from 'bcrypt';
+import nodemailer from 'nodemailer';
 
 
 export let currentUserId = null;
+
+async function sendEmail(firstname, email) {
+    const code = Math.floor(Math.random()*90000) + 10000;
+    const sql = `UPDATE Users SET Verfified = ? WHERE Email = ?;`;
+    await executeSQLstatement(sql, [code, email]);
+
+
+    const html = `
+        <h1> Welcome to Capfolio ${firstname} </h1>
+        <p> Your verification code is: <h3> ${code} </h3> </p>
+    `;
+
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'noreplycapfolio@gmail.com',
+            pass: 'okuuldsavlqwnzdn'
+        }
+    });
+
+    transporter
+        .sendMail({
+            from: 'noreplycapfolio@gmail.com',
+            to: email,
+            subject: 'Verify your Capfolio Account',
+            html: html,
+        })
+        .then((info) => {
+            console.log('Message Sent:' + info.message);
+        })
+        .catch((error) => {
+            console.error('Failed to send email:', error);
+        });
+}
 
 async function executeSQLstatement(sql, values) {
     const connection = await mysql.createConnection(config.db);
@@ -152,42 +187,42 @@ router.get('/user', async (req, res) => {
         let email;
         let isGoogleOAuth;
         let photo;
-        console.log("T1")
+        //console.log("T1")
         if (req.session.user) {
             user = req.session.user;
             console.log("user:", user )
             email = user.email;
-            console.log("T2")
+            //console.log("T2")
             if (user.isFormLogin) {
                 isGoogleOAuth = false;
-                console.log("T3a")
+                //console.log("T3a")
                 photo = '/images/icon.png';
-                console.log("T4a")
+                //console.log("T4a")
 
             } else {
                 isGoogleOAuth = true;
-                console.log("T3b")
+                //console.log("T3b")
                 photo = user.photo; // Store photo in session during Google OAuth login
-                console.log("T4b")
+                //console.log("T4b")
             }
         } else {
             user = req.user;
-            console.log("T2b")
+            //console.log("T2b")
             email = user.emails[0].value;
-            console.log("T2b1")
+            //console.log("T2b1")
             isGoogleOAuth = true;
-            console.log("T2b2")
+            //console.log("T2b2")
             photo = user.photo;
-            console.log("T2b3")
+            //console.log("T2b3")
         }
-        console.log("T5")
+        //console.log("T5")
 
         //const sql = `SELECT u.FirstName, u.LastName, u.UserTypeID FROM Users u WHERE u.Email = ?;`;
         const sql = `SELECT u.UserID, u.FirstName, u.LastName, u.UserTypeID FROM Users u WHERE u.Email = ?;`;
         const [rows] = await executeSQLstatement(sql, [email]);
         const userData = rows[0];
         console.log("Picture URL:", photo);
-        console.log("T6")
+        //console.log("T6")
         currentUserId = userData.UserID;
 
         res.send({
@@ -199,9 +234,9 @@ router.get('/user', async (req, res) => {
             Photo: photo,
             OAuth: isGoogleOAuth,
         });
-        console.log("T7")
+        //console.log("T7")
     } catch (error) {
-        console.log("T8")
+        //console.log("T8")
         res.status(400).send({ error: 'Failed to fetch user data' });
     }
 });
@@ -236,6 +271,7 @@ router.get('/logout', (req, res) => {
 
 
 router.post('/signup', async (req, res) => {
+    console.log("A1")
     const { firstName, lastName, email, password } = req.body;
 
     if (!firstName || !lastName || !email || !password) {
@@ -251,14 +287,29 @@ router.post('/signup', async (req, res) => {
     const passwordHash = await generatePasswordHash(password);
     const userTypeID = 4;
     const userID = await next_id();
+    const verified = 0;
 
-    const sql = `INSERT INTO Users (UserID, UserTypeID, FirstName, lastName, Email, password) VALUES (?, ?, ?, ?, ?, ?);`;
+    const sql = `INSERT INTO Users (UserID, UserTypeID, FirstName, lastName, Email, password, Verfified) VALUES (?, ?, ?, ?, ?, ?, ?);`;
     const sql2 = `Insert into Visitor(UserID, UserTypeID) values (userID, userTypeID);`;
     //await executeSQLstatement(sql2);
-    await executeSQLstatement(sql, [userID, userTypeID, firstName, lastName, email, passwordHash]);
-
-    res.status(200).send({ message: 'User successfully registered' });
+    await executeSQLstatement(sql, [userID, userTypeID, firstName, lastName, email, passwordHash, verified]);
+    console.log("A2")
+    try {
+        sendEmail(firstName, email);
+        res.status(200).send({ message: 'User successfully registered' });
+    } catch (error) {
+        console.error('Error sending verification email:', error);
+        res.status(500).send({ error: 'Failed to send verification email' });
+    }
+    console.log("A3")
+    //res.status(200).send({ message: 'User successfully registered' });
 });
+
+
+
+
+
+
 
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
@@ -277,6 +328,12 @@ router.post('/login', async (req, res) => {
 
     if (!isPasswordValid) {
         return res.status(400).send({ error: 'Invalid email or password' });
+    }
+
+    if (userData.Verfified != 1) {
+        const sql = `DELETE FROM Users WHERE UserID = ?;`;
+        await executeSQLstatement(sql, [userData.UserID]);
+        return res.status(400).send({ error: 'Account not verified. Pls Sign up again and a new verification link will be sent' });
     }
 
     // Create a session and redirect the user to the home page with a different navbar
