@@ -1,6 +1,6 @@
 import AWS from "aws-sdk";
 import { MDBBtn, MDBInput, MDBTextArea } from "mdb-react-ui-kit";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import CreatableSelect from "react-select/creatable";
@@ -20,13 +20,6 @@ const s3 = new AWS.S3({
 });
 
 export default function ProjectSubmit() {
-  const technologies = [
-    { value: "blues", label: "React" },
-    { value: "rock", label: "Javascript" },
-    { value: "jazz", label: "HTML" },
-    { value: "orchestra", label: "C#" },
-  ];
-
   const years = [
     { value: "2017", label: "2017" },
     { value: "2018", label: "2018" },
@@ -63,6 +56,7 @@ export default function ProjectSubmit() {
   }
 
   const animatedComponents = makeAnimated();
+  //-------------------Handles the users being added--------------------//
 
   const [users, setUsers] = useState([
     { upi: "", firstName: "", lastName: "" },
@@ -83,6 +77,23 @@ export default function ProjectSubmit() {
     updatedUsers.splice(index, 1);
     setUsers(updatedUsers);
   };
+
+  //---------------------------------------------------------------------//
+
+  const [technologies, setTechnologies] = useState([]);
+
+  useEffect(() => {
+    // Fetch the technologies from the database and update state
+    fetch("/project/technologyNames")
+      .then((response) => response.json())
+      .then((data) => setTechnologies(data))
+      .catch((error) => console.error(error));
+  }, []);
+
+  const techOptions = technologies.map((tech) => ({
+    value: tech,
+    label: tech,
+  }));
 
   //Has all the set states
   const [selectedYears, setSelectedYears] = useState([]);
@@ -345,12 +356,13 @@ export default function ProjectSubmit() {
         </div>
 
         <CreatableSelect
-        required
+          required
           className="formLinks"
           id="tech"
           isMulti
           components={animatedComponents}
-          options={technologies}
+          options={techOptions}
+          maxMenuHeight={250}
           onChange={handleChangeTechnologies}
           placeholder="Select from the drop down or type the technologies you used in the project"
         />
@@ -396,7 +408,12 @@ export default function ProjectSubmit() {
                 />
               </CCol>
               <CCol>
-                <MDBBtn className="me-1" color='secondary' block onClick={() => handleRemoveUser(index)}>
+                <MDBBtn
+                  className="me-1"
+                  color="secondary"
+                  block
+                  onClick={() => handleRemoveUser(index)}
+                >
                   Remove User
                 </MDBBtn>
               </CCol>
