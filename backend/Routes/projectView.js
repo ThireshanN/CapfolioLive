@@ -42,8 +42,9 @@ projectViewRouter.get("/project", async (req, res) => {
             res.status(404).send("Project not found"); //return 404 if project not found
         }
         else{
+            const outputData = res.status(200).setHeader("Content-Type", "application/json").send(selectedProject);
             updateViewCount(id);
-            return res.status(200).setHeader("Content-Type", "application/json").send(selectedProject);
+            return outputData;
         }
     }
     catch (err) {
@@ -108,7 +109,8 @@ projectViewRouter.get("/comment", async (req, res) => {
 
 async function deleteComnt(delBody){
     if(currentUserId===null){return "Only logged in Users can delete comments"}
-    const sql = `DELETE From Comment WHERE UserID_FK =${currentUserId} and ProjectID_FK = ${delBody.ProjectID}`;
+    if(currentUserId!==delBody.UserID){return "Only the owner of the comment can delete the comment!"}
+    const sql = `DELETE From Comment WHERE CommentID=${delBody.CommentID}`;
     //console.log(currentUserId);
     const dislikes = (await executeSQLstatement(sql));
     let message = 'Error in deleting a comment';
