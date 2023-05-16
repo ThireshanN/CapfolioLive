@@ -277,7 +277,7 @@ export default function ProjectSubmit() {
         </CRow>
 
         <CRow
-          xs={{ cols: 1, gutter: 1 }}
+          xs={{ cols: 1, gutter: 4 }}
           sm={{ cols: 1 }}
           md={{ cols: 1 }}
           lg={{ cols: 2 }}
