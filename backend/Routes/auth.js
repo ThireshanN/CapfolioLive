@@ -137,9 +137,11 @@ passport.use(new GoogleStrategy({
 }, async (accessToken, refreshToken, profile, cb) => {
 
     //const sql = `Insert into Visitors(UserID, UserTypeID, FirstName, lastName) values (40, 4, "Paul", "Pogba")`;
-
+    //console.log(profile)
     const emailToCheck = profile.emails[0].value;
     const name = profile.displayName;
+    let pic_logo = profile._json.picture;
+    console.log("PICTURE URL: ", pic_logo);
     const sep_name = name.split(" ");
     const first_name = sep_name[0];
     const last_name = sep_name[1];
@@ -155,21 +157,25 @@ passport.use(new GoogleStrategy({
         const id = await next_id();
         if (emailToCheck === 'admin@aucklanduni.ac.nz') {
             type = 3;
+            //FINISH ADMIN SHIT
         } else if (emailToCheck.endsWith('@aucklanduni.ac.nz')) {
             type = 1;
-            sql = `Insert into Users(UserID, UserTypeID, FirstName, lastName, Email) values (${id}, ${type}, "${first_name}", "${last_name}", "${emailToCheck}");`;
+            sql = `Insert into Users(UserID, UserTypeID, FirstName, lastName, Email, Picture) values (${id}, ${type}, "${first_name}", "${last_name}", "${emailToCheck}", "${pic_logo}");`;
             sql2 = `Insert into Student(UserID, UserTypeID,  StudentUPI) values (${id}, 1, "${emailToCheck.substring(0, 7)}");`;
             const var1 = (await executeSQLstatement(sql));
             const var2 = (await executeSQLstatement(sql2));
         } else {
             type = 4;
-            sql = `Insert into Users(UserID, UserTypeID, FirstName, lastName, Email) values (${id}, ${type}, "${first_name}", "${last_name}", "${emailToCheck}");`;
+            sql = `Insert into Users(UserID, UserTypeID, FirstName, lastName, Email, Picture) values (${id}, ${type}, "${first_name}", "${last_name}", "${emailToCheck}", "${pic_logo}");`;
             sql2 = `Insert into Visitor(UserID, UserTypeID) values (${id}, 4);`;
             const var1 = (await executeSQLstatement(sql));
             const var2 = (await executeSQLstatement(sql2));
         }
 
 
+    } else {
+        const sql2 = `UPDATE Users SET Picture = ? WHERE Email = ?;`;
+        await executeSQLstatement(sql2, [pic_logo, emailToCheck]);
     }
 
 
@@ -304,11 +310,12 @@ router.post('/signup', async (req, res) => {
     const userTypeID = 4;
     const userID = await next_id();
     const verified = 0;
+    const pic = '/images/icon.png';
 
-    const sql = `INSERT INTO Users (UserID, UserTypeID, FirstName, lastName, Email, password, Verfified) VALUES (?, ?, ?, ?, ?, ?, ?);`;
+    const sql = `INSERT INTO Users (UserID, UserTypeID, FirstName, lastName, Email, password, Verfified, Picture) VALUES (?, ?, ?, ?, ?, ?, ?, ?);`;
     const sql2 = `Insert into Visitor(UserID, UserTypeID) values (userID, userTypeID);`;
     //await executeSQLstatement(sql2);
-    await executeSQLstatement(sql, [userID, userTypeID, firstName, lastName, email, passwordHash, verified]);
+    await executeSQLstatement(sql, [userID, userTypeID, firstName, lastName, email, passwordHash, verified, pic]);
     console.log("A2")
     try {
         sendEmail(firstName, email);
