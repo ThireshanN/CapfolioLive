@@ -452,7 +452,7 @@ textarea {
 @media screen and (max-width: 992px) {
 
     .projectTabs{
-        width: 80% !important;
+        width: 100% !important;
     }
 
     .projectInformation h2{
@@ -593,6 +593,7 @@ textarea {
         width: 100%;
         margin-left: 0px;
         align-content: center;
+        margin-top: 5% !important;
     }
 
     .image {
@@ -654,9 +655,20 @@ textarea {
         margin-top: 0px;
         padding-left: 0px;
         align-self: center;
-        font-size: 3rem;
+        font-size: 2rem;
         line-height: 3rem;
         margin-bottom: 10px;
+    }
+
+    .projectInformation h2 {
+        color: #00467f;
+        font-size: 130% !important;
+        margin-left: 0;
+        padding-left: 0;
+    }
+
+    .projectInformation {
+        margin: 10% 10px !important;
     }
 }
 
