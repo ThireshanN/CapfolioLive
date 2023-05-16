@@ -28,3 +28,6 @@ yarn-error.log*
 /backend/node_modules
 /capfolio/node_modules
 node_modules
+/capfolio/node_modules/@mui/material
+capfolio/node_modules/@mui/material
+node_modules/
