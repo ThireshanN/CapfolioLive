@@ -111,7 +111,6 @@ async function deleteComnt(delBody){
     if(currentUserId===null){return "Only logged in Users can delete comments"}
     if(currentUserId!==delBody.UserID){return "Only the owner of the comment can delete the comment!"}
     const sql = `DELETE From Comment WHERE CommentID=${delBody.CommentID}`;
-    //console.log(currentUserId);
     const dislikes = (await executeSQLstatement(sql));
     let message = 'Error in deleting a comment';
     if (dislikes.length!==0) {
