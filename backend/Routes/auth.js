@@ -313,9 +313,9 @@ router.post('/signup', async (req, res) => {
     const pic = '/images/icon.png';
 
     const sql = `INSERT INTO Users (UserID, UserTypeID, FirstName, lastName, Email, password, Verfified, Picture) VALUES (?, ?, ?, ?, ?, ?, ?, ?);`;
-    const sql2 = `Insert into Visitor(UserID, UserTypeID) values (userID, userTypeID);`;
-    //await executeSQLstatement(sql2);
+    const sql2 = `Insert into Visitor(UserID, UserTypeID) values (${userID}, ${userTypeID});`;
     await executeSQLstatement(sql, [userID, userTypeID, firstName, lastName, email, passwordHash, verified, pic]);
+    await executeSQLstatement(sql2);
     console.log("A2")
     try {
         sendEmail(firstName, email);
@@ -356,8 +356,10 @@ router.post('/login', async (req, res) => {
     console.log(userData.Verfified);
 
     if (userData.Verfified != 1) {
-        const sql = `DELETE FROM Users WHERE UserID = ?;`;
-        await executeSQLstatement(sql, [userData.UserID]);
+        const sql1 = `DELETE FROM Visitor WHERE UserID = ?;`;
+        const sql2 = `DELETE FROM Users WHERE UserID = ?;`;
+        await executeSQLstatement(sql1, [userData.UserID]);
+        await executeSQLstatement(sql2, [userData.UserID]);
         return res.status(400).send({ error: 'Account not verified. Pls Sign up again and a new verification link will be sent' });
     }
 
