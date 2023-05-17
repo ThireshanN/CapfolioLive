@@ -280,12 +280,14 @@ textarea {
 }
 
 .commenttext {
-    margin-bottom: 0px;
+    margin-bottom: 0;
+    display: flex;
+    word-wrap: break-word;
+    flex-direction: column;
 }
 
 .comment p {
     color: #0080a7;
-    padding-left: 20px;
 }
 
 .commentname {
@@ -377,9 +379,6 @@ textarea {
     padding: 0px !important;
 }
 
-.commentDetails {
-    margin-bottom: 20px;
-}
 
 .pv-buttons .btn a {
     color: #fff !important;
@@ -692,8 +691,9 @@ textarea {
     background-color: white;
 }
 
-.deletecommentContainer{
+.deletecommentContainer {
     float: right;
+    height: 25px;
 }
 
 .icon-trash {
