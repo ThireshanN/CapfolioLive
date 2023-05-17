@@ -11,6 +11,7 @@ import Profile from "./pages/Profile";
 import ProjectSubmit from "./projectSubmit";
 import CodeConfirmation from "./pages/CodeConfirmation";
 import ResetPassword from "./pages/ResetPassword";
+import PasswordResetCode from "./pages/PasswordResetCode";
 
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
           <Route path="/project-submit" element={<ProjectSubmit />} />
           <Route path="/Code-Confirmation" element={<CodeConfirmation />} />
           <Route path="/Rest-Password" element={<ResetPassword />} />
+          <Route path="/Email-Password" element={<PasswordResetCode />} />
         </Routes>
         </ScrollToTop>
         {/* </div>
