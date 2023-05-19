@@ -6,7 +6,7 @@
 
 /* Create two unequal columns that floats next to each other */
 .column {
-    float: left;
+    /* float: left; */
     margin-top: 0px;
     padding-top: 0px;
 
@@ -28,11 +28,17 @@
 .headerleft {
     width: 50%;
     margin-left: 5%;
+    background-color: #ededed;
+    border-radius: 0px 10px;
 }
 
 .headerright {
     width: 30%;
     margin-right: 5%;
+    flex-direction: column;
+    display: flex;
+    /* height: 100%; */
+    align-self: stretch;
 }
 
 .right {
@@ -42,7 +48,7 @@
 }
 
 /* Clear floats after the columns */
-.p-row:after {
+/* .p-row:after {
     content: "";
     display: table;
     clear: both;
@@ -52,16 +58,16 @@
     content: "";
     display: table;
     clear: both;
-}
+} */
 
 
 .rowcontent {
     margin-top: 140px;
 }
-
+/* 
 .bluebox {
     width: 100%;
-    /* background-color: #00467f; */
+    background-color: #00467f;
 
 }
 
@@ -81,10 +87,11 @@
     z-index: -1;
     height: var(--right-column-height) !important;
 
-}
+} */
 
 .column.headerright {
     /* margin-top: 50px; */
+    
 }
 
 .mainprojectImg {
@@ -137,6 +144,7 @@
 
 .teammembers {
     width: 100%;
+    flex: 1;
 
 }
 
@@ -448,7 +456,15 @@ textarea {
   color: #72a0e9 !important;
 }
 
-@media screen and (max-width: 992px) {
+@media screen and (max-width: 1200px) {
+
+    .headerleft {
+        width: 50%;
+        margin-left: 5%;
+        background-color: transparent;
+        border-radius: 0px 10px;
+    }
+    
 
     .projectTabs{
         width: 100% !important;
@@ -624,6 +640,10 @@ textarea {
 
     .p-row{
         flex-direction: column;
+        align-items: stretch;
+        display: flex;
+        justify-content: center;
+        margin-top: 5%;
     }
 
     .titlePanel {
@@ -781,6 +801,7 @@ textarea {
     border-radius: 0px 10px 10px 0px;
     padding: 10% 0%;
     /* height:400px; */
+    height: 100%;
   }
 
   .proj-desc{
@@ -791,8 +812,16 @@ textarea {
     font-size: 14px;
 }
   
-.p-row {
+/* .p-row {
     align-items: flex-start;
+    display: flex;
+    justify-content: center;
+    margin-top: 5%;
+} */
+
+.p-row{
+    /* flex-direction: column; */
+    align-items: stretch;
     display: flex;
     justify-content: center;
     margin-top: 5%;
