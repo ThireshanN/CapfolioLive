@@ -412,26 +412,26 @@ router.post('/emailVerify', async (req, res) => {
 });
 
 async function sendPasswordResetEmail(email) {
-    console.log("Sub1");
+    //console.log("Sub1");
 
     const code = Math.floor(Math.random()*90000) + 10000;
-    console.log("Sub2");
+    //console.log("Sub2");
     const unique_string = email + code;
-    console.log("Sub3");
+    //console.log("Sub3");
     const hash = await generatePasswordHash(unique_string);
-    console.log("Sub4");
+    //console.log("Sub4");
 
     const sql = `UPDATE Users SET PassReset = ? WHERE Email = ?;`;
-    console.log("Sub5");
+    //console.log("Sub5");
     await executeSQLstatement(sql, [hash, email]);
-    console.log("Sub6");
+    //console.log("Sub6");
 
 
     const html = `
         <h1> You forgot your password Dummy. </h1>
         <p> Your passowrd reset code is: <h3> ${hash} </h3> </p>
     `;
-    console.log("Sub7");
+    //console.log("Sub7");
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -439,7 +439,7 @@ async function sendPasswordResetEmail(email) {
             pass: 'okuuldsavlqwnzdn'
         }
     });
-    console.log("Sub8");
+    //console.log("Sub8");
 
     transporter
         .sendMail({
@@ -449,44 +449,95 @@ async function sendPasswordResetEmail(email) {
             html: html,
         })
         .then((info) => {
-            console.log('Message Sent:' + info.message);
+            //console.log('Message Sent:' + info.message);
         })
         .catch((error) => {
-            console.error('Failed to send email:', error);
+            //console.error('Failed to send email:', error);
         });
 }
 
 
 router.post('/resetPasswordEmail', async (req, res) => {
     const { email } = req.body;
-    console.log("RPE1");
-    console.log(email);
+    //console.log("RPE1");
+    //console.log(email);
     if (!email) {
         return res.status(400).send({ error: 'No code entered' });
     }
-    console.log("RPE2");
+    //console.log("RPE2");
     const exists = await emailExists(email)
     if (exists) {
         try {
-            console.log("RPE3");
+            //console.log("RPE3");
             sendPasswordResetEmail(email);
-            console.log("RPE4");
+            //console.log("RPE4");
             res.status(200).send({ message: 'Email Sent' });
-            console.log("RPE5");
+            //console.log("RPE5");
         } catch (error) {
-            console.error('Error sending email:', error);
-            console.log("RPE6");
+            //console.error('Error sending email:', error);
+            //console.log("RPE6");
             res.status(500).send({ error: 'Failed to send verification email' });
-            console.log("RPE7");
+            //console.log("RPE7");
         }
-        console.log("RPE8");
+        //console.log("RPE8");
         //return res.status(200).send({ message: 'Password reset code sent to your email' });
     } else {
-        console.log("RPE9");
+        //console.log("RPE9");
         return res.status(400).send({ error: 'Email dont exist bruhhhh' });
     }
 
-    console.log("RPE10");
+    //console.log("RPE10");
+    //return res.status(400).send({ error: 'Invalid Verification code' });
+
+});
+
+
+
+async function pcodeExists(code) {
+    const sql = `SELECT COUNT(*) as count FROM Users WHERE PassReset = ?;`;
+    const [rows] = await executeSQLstatement(sql, [code]);
+    return rows[0].count > 0;
+}
+
+async function fetchUserDataBypCode(code) {
+    const sql = `
+        SELECT Users.UserID
+        FROM Users
+        WHERE Users.PassReset = ?;
+    `;
+    const [rows] = await executeSQLstatement(sql, [code]);
+    return rows[0];
+}
+
+router.post('/reset-password', async (req, res) => {
+    const { code, password } = req.body;
+    console.log("RPE1");
+    console.log(code);
+    console.log(password);
+    if (!code) {
+        return res.status(400).send({ error: 'No code entered' });
+    }
+
+    if (!password) {
+        return res.status(400).send({ error: 'No Password entered' });
+    }
+
+    const exists = await pcodeExists(code);
+    if (exists) {
+        const userData = await fetchUserDataBypCode(code);
+        console.log("userdata: ", userData);
+        const id = userData.UserID;
+        const value = 0
+        const new_password = await generatePasswordHash(password);
+        const sql2 = `UPDATE Users SET PassReset = ? WHERE UserID = ?;`;
+        await executeSQLstatement(sql2, [value, id]);
+        const sql3 = `UPDATE Users SET password = ? WHERE UserID = ?;`;
+        await executeSQLstatement(sql3, [new_password, id]);
+        console.log('YesSir');
+        return res.status(200).send({ message: 'Password Updated' });
+    } else {
+        return res.status(400).send({ error: 'Invalid code' });
+    }
     //return res.status(400).send({ error: 'Invalid Verification code' });
 
 });
