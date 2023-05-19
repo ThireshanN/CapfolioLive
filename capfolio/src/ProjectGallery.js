@@ -110,7 +110,7 @@ const ProjectGallery = () => {
                               <Link to={`/project-view/${project.ProjectID}`}>
                                 <CCard className="project-card h-100">
                                     <AwardBanner key={project.TeamName} text={project.AwardName} />
-                                    <MainImage key={project.ProjectID} teamname={project.TeamName} />
+                                    <MainImage key={project.ProjectID} TeamId={project.TeamId} />
                                     <CCardBody>
                                         <CCardTitle>{project.ProjectName}</CCardTitle>
                                         <CCardText>

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import CreatableSelect from "react-select/creatable";
+import Resizer from "react-image-file-resizer";
 import "./projectSubmit.css";
 
 import { CCol, CRow } from "@coreui/react";
@@ -18,6 +19,22 @@ const s3 = new AWS.S3({
   accessKeyId: accessKeyId,
   secretAccessKey: secretAccessKey,
 });
+
+const resizeFile = (file) =>
+  new Promise((resolve) => {
+    Resizer.imageFileResizer(
+      file,
+      480,
+      360,
+      "JPEG",
+      50,
+      0,
+      (uri) => {
+        resolve(uri);
+      },
+      "file"
+    );
+  });
 
 export default function ProjectSubmit() {
   const years = [
@@ -60,6 +77,7 @@ export default function ProjectSubmit() {
   };
 
   const animatedComponents = makeAnimated();
+
   //-------------------Handles the users being added--------------------//
 
   const [users, setUsers] = useState([
@@ -252,6 +270,34 @@ export default function ProjectSubmit() {
         TeamLeader: user,
         TeamId: "'" + makeTeamID + "'",
       }),
+    }).then(() => {
+      const promises = images.map(async (image) => {
+        // Creates a low res version of each image   
+        const resizedImage = await resizeFile(image);
+
+        const filename = image.name;
+        const key = "" + makeTeamID + "/" + "lowres" +"/"+ filename;
+        const params = {
+          Bucket: bucketName,
+          Key: key,
+          Body: resizedImage,
+          ContentType: "image/*",
+        };
+
+        try {
+          const data = await s3.upload(params).promise();
+          return data;
+        } catch (err) {
+          console.error(err);
+        }
+      });
+
+      try {
+        const results = Promise.all(promises);
+        console.log(results);
+      } catch (err) {
+        console.error(err);
+      }
     }).then(() => {
       const promises = images.map(async (image) => {
         const filename = image.name;
