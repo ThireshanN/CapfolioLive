@@ -102,7 +102,7 @@ projectRouter.get('/executeSQLcommand', async (req, res) => {
 //http://localhost:3000/project/technologyNames
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/AllProjectData
 projectRouter.get('/technologyNames', async function (req, res) {
-    const sql = `SELECT GROUP_CONCAT(technologyName) as technology FROM Capfolio.technologiesUsed;`;
+    const sql = `SELECT GROUP_CONCAT(technologyName ORDER BY technologyName ASC) as technology FROM Capfolio.technologiesUsed;`;
     const resultArray = (await executeSQLstatement(sql))[0]//.catch(err => console.log("The following error generated:\n" + err));
     const technologyArray = resultArray[0].technology.split(',');
     return res.status(200).setHeader("Content-Type", "application/json").send(technologyArray);
