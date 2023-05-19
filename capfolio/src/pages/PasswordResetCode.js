@@ -12,7 +12,22 @@ const PasswordResetCode = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // TODO: Send password reset code to the user's email
+    const response = await fetch('http://localhost:3000/auth/resetPasswordEmail', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email })
+    });
+
+    if (response.status === 200) {
+      // Redirect to the ResetPassword page
+      // I hate Front end coding btw. So tedious. And also if ur reading this its a msg from the past.
+      window.location.href = '/Rest-Password';
+    } else {
+      const errorData = await response.json();
+      alert(errorData.error);
+    }
 
     // Display a success message to the user
     setMessage(`Password reset code sent to ${email}`);
@@ -36,11 +51,11 @@ const PasswordResetCode = () => {
               />
             </div>
             <div className="d-grid">
-            <Link to="/Rest-Password">
+
               <button type="submit" className="btn btn-primary">
               Send Reset Code
               </button>
-              </Link>
+
             </div>
             {message && (
               <div className="mt-3 alert alert-info" role="alert">

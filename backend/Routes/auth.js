@@ -46,6 +46,9 @@ async function sendEmail(firstname, email) {
         });
 }
 
+
+
+
 async function executeSQLstatement(sql, values) {
     const connection = await mysql.createConnection(config.db);
     const [rows, result] = await connection.execute(sql, values);
@@ -218,7 +221,8 @@ router.get('/user', async (req, res) => {
             if (user.isFormLogin) {
                 isGoogleOAuth = false;
                 //console.log("T3a")
-                photo = '/images/icon.png';
+                photo = 'https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg';
+                //photo = '/images/icon.png';
                 //console.log("T4a")
 
             } else {
@@ -310,7 +314,8 @@ router.post('/signup', async (req, res) => {
     const userTypeID = 4;
     const userID = await next_id();
     const verified = 0;
-    const pic = '/images/icon.png';
+    const pic = 'https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg';
+    //const pic = '/images/icon.png';
 
     const sql = `INSERT INTO Users (UserID, UserTypeID, FirstName, lastName, Email, password, Verfified, Picture) VALUES (?, ?, ?, ?, ?, ?, ?, ?);`;
     const sql2 = `Insert into Visitor(UserID, UserTypeID) values (${userID}, ${userTypeID});`;
@@ -403,5 +408,85 @@ router.post('/emailVerify', async (req, res) => {
     }
 
     return res.status(400).send({ error: 'Invalid Verification code' });
+
+});
+
+async function sendPasswordResetEmail(email) {
+    console.log("Sub1");
+
+    const code = Math.floor(Math.random()*90000) + 10000;
+    console.log("Sub2");
+    const unique_string = email + code;
+    console.log("Sub3");
+    const hash = await generatePasswordHash(unique_string);
+    console.log("Sub4");
+
+    const sql = `UPDATE Users SET PassReset = ? WHERE Email = ?;`;
+    console.log("Sub5");
+    await executeSQLstatement(sql, [hash, email]);
+    console.log("Sub6");
+
+
+    const html = `
+        <h1> You forgot your password Dummy. </h1>
+        <p> Your passowrd reset code is: <h3> ${hash} </h3> </p>
+    `;
+    console.log("Sub7");
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'noreplycapfolio@gmail.com',
+            pass: 'okuuldsavlqwnzdn'
+        }
+    });
+    console.log("Sub8");
+
+    transporter
+        .sendMail({
+            from: 'noreplycapfolio@gmail.com',
+            to: email,
+            subject: 'Password Reset Code',
+            html: html,
+        })
+        .then((info) => {
+            console.log('Message Sent:' + info.message);
+        })
+        .catch((error) => {
+            console.error('Failed to send email:', error);
+        });
+}
+
+
+router.post('/resetPasswordEmail', async (req, res) => {
+    const { email } = req.body;
+    console.log("RPE1");
+    console.log(email);
+    if (!email) {
+        return res.status(400).send({ error: 'No code entered' });
+    }
+    console.log("RPE2");
+    const exists = await emailExists(email)
+    if (exists) {
+        try {
+            console.log("RPE3");
+            sendPasswordResetEmail(email);
+            console.log("RPE4");
+            res.status(200).send({ message: 'Email Sent' });
+            console.log("RPE5");
+        } catch (error) {
+            console.error('Error sending email:', error);
+            console.log("RPE6");
+            res.status(500).send({ error: 'Failed to send verification email' });
+            console.log("RPE7");
+        }
+        console.log("RPE8");
+        //return res.status(200).send({ message: 'Password reset code sent to your email' });
+    } else {
+        console.log("RPE9");
+        return res.status(400).send({ error: 'Email dont exist bruhhhh' });
+    }
+
+    console.log("RPE10");
+    //return res.status(400).send({ error: 'Invalid Verification code' });
 
 });
