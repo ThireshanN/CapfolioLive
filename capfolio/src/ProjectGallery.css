@@ -223,4 +223,16 @@ p.card-text {
   width: 100%;
 }
 
+.cfilter{
+  display: none;
+}
 
+@media screen and (max-width: 992px) {
+  .cfilter{
+    display: block;
+  }
+
+  .filter{
+    display: none;
+  }
+}

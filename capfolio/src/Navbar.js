@@ -69,7 +69,7 @@ export default function Navbar() {
                 )}
             </ul>
             <div className="nav-mobile">
-                <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleMenu} sx={{ bgcolor: '#ebf1f4', margin: "40px 0px 0px -12px", }}>
+                <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleMenu} sx={{ bgcolor: '#72a0e9', margin: "40px 0px 0px -12px", }}>
                     <MenuIcon />
                 </IconButton>
                 <Drawer

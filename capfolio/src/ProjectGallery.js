@@ -5,6 +5,7 @@ import { Collapse, CButton, CCollapse, CListGroup, CListGroupItem, CCard, CCardB
 import LikeButton from "./components/likeButton";
 import AwardBanner from "./components/awardBanner.js";
 import Sidebar from './Sidebar';
+import CSidebar from './components/CSidebar';
 import MainImage from './components/getMainImage';
 import { ReactComponent as Heart } from "./images/heart.svg";
 import { ReactComponent as Views } from "./images/views.svg";
@@ -85,6 +86,7 @@ const ProjectGallery = () => {
     const handleApplySearch = body => {
         fetchSearchedProject(body)
     }
+    const [visible, setVisible] = useState(false);
 
     return (
         <div className="project-gallery">
@@ -101,7 +103,12 @@ const ProjectGallery = () => {
 
             {!isNoResults && (
               <div className='gallery-wrapper'>
-                <Sidebar onApplyFilter={handleApplyFilter} />
+                <div className='filter'>
+                    <Sidebar onApplyFilter={handleApplyFilter} />
+                </div>
+                <div className='cfilter'>
+                    <CSidebar onApplyFilter={handleApplyFilter} />
+                </div>
                 <div className="project-list">
                     <CRow xs={{ cols: 1, gutter: 4 }} sm={{ cols: 2 }} md={{ cols: 2 }} lg={{ cols: 2 }} xl={{ cols: 3 }} xxl={{ cols: 3 }}>
                       {displayedProjects.map((project) => (
@@ -165,7 +172,11 @@ const ProjectGallery = () => {
                         '& .MuiPaginationItem-page.Mui-selected.Mui-focusVisible': {
                           backgroundColor: '#72a0e9',
                         },
-                      }}
+                        
+                        '@media (max-width: 992px)': {
+                        marginLeft: 0,
+                        },
+                    }}
                     />
                   </div>
                 </div>
