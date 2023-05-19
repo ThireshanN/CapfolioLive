@@ -47,6 +47,8 @@ const Sidebar = ({ onApplyFilter }) => {
     { value: "Oldest to latest", label: "Oldest to latest" },
     { value: "Highest to lowest likes", label: "Highest to lowest likes" },
     { value: "Lowest to highest Likes", label: "Lowest to highest likes" },
+    { value: "Highest to lowest views", label: "Highest to lowest views" },
+    { value: "Lowest to highest views", label: "Lowest to highest views" },
     { value: "Alphabetical (A - Z)", label: "Alphabetical (A - Z)" },
     { value: "Alphabetical (Z - A)", label: "Alphabetical (Z - A)" },
   ];
