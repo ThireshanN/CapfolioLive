@@ -12,24 +12,24 @@ const MainImage = (props) => {
       const files = await fetch(`/project/listTeamFiles/${props.TeamId}`);
       const data = await files.json();
 
+      const filteredFiles = data.filter((file) => !file.endsWith("/"));
+      console.log(filteredFiles);
+      const url = "https://capfoliostorage.s3.ap-southeast-2.amazonaws.com/";
+
       if (data.length === 0) {
         setImage(Placeholder);
       } else {
-        const firstElement = data[0];
+        const firstElement = filteredFiles[0];
         const lastSlashIndex = firstElement.lastIndexOf("/");
+
         const folder = firstElement.substring(0, lastSlashIndex);
         const filename = firstElement.substring(lastSlashIndex);
 
-        const getLowRes = await fetch(
-          `/project/retrieveFile/${folder}/lowres${filename}`
-        );
-        const lowmainImg = await getLowRes.text();
-        setLowRes(lowmainImg);
+        const getLowRes = url + folder + filename;
+        setLowRes(getLowRes);
 
-        const response = await fetch(`/project/retrieveFile/${data[0]}`);
-        const mainImage = await response.text();
-        console.log(mainImage);
-        setImage(mainImage);
+        const getHighRes = url + filteredFiles[0];
+        setImage(getHighRes);
       }
     };
 

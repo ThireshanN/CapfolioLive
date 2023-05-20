@@ -24,10 +24,10 @@ const resizeFile = (file) =>
   new Promise((resolve) => {
     Resizer.imageFileResizer(
       file,
-      480,
-      360,
+      352,
+      240,
       "JPEG",
-      50,
+      10,
       0,
       (uri) => {
         resolve(uri);
@@ -104,7 +104,6 @@ export default function ProjectSubmit() {
 
   const [technologies, setTechnologies] = useState([]);
   const [fetchTeamIDs, setFetchTeamIDs] = useState([]);
-  const [makeTeamID, setMakeTeamID] = useState("");
   const [user, setUser] = useState("");
 
   useEffect(() => {
@@ -203,8 +202,6 @@ export default function ProjectSubmit() {
     while (checkIfStringExists(teamID)) {
       teamID = makeid(teamID);
     }
-    console.log(teamID)
-    setMakeTeamID(teamID);
 
     //------------------Format the data -----------------------------------------//
 
@@ -247,7 +244,64 @@ export default function ProjectSubmit() {
 
     //------------------------------------------------------------//
 
-    await fetch("/project/FormAddProject", {
+    
+
+    const promises = images.map(async (image) => {
+      // Creates a low res version of each image
+      const resizedImage = await resizeFile(image);
+      console.log(resizedImage);
+      const filename = image.name;
+      const key = "" + teamID + "/" + "lowres" + "/" + filename;
+      const params = {
+        Bucket: bucketName,
+        Key: key,
+        ACL:'public-read',
+        Body: resizedImage,
+        ContentType: "image/*",
+      };
+      console.log(params);
+      try {
+        const data = await s3.upload(params).promise();
+        return data;
+      } catch (err) {
+        console.error(err);
+      }
+    });
+
+    try {
+      const results = Promise.all(promises);
+      console.log(results);
+    } catch (err) {
+      console.error(err);
+    }
+
+    const highResPromises = images.map(async (image) => {
+      const filename = image.name;
+      const key = "" + teamID + "/" + filename;
+      const params = {
+        Bucket: bucketName,
+        Key: key,
+        ACL:'public-read',
+        Body: image,
+        ContentType: "image/*",
+      };
+
+      try {
+        const data = await s3.upload(params).promise();
+        return data;
+      } catch (err) {
+        console.error(err);
+      }
+    });
+
+    try {
+      const results = Promise.all(highResPromises);
+      console.log(results);
+    } catch (err) {
+      console.error(err);
+    }
+
+    fetch("/project/FormAddProject", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -268,62 +322,11 @@ export default function ProjectSubmit() {
         Technologies: arrayTech,
         Users: users,
         TeamLeader: user,
-        TeamId: "'" + makeTeamID + "'",
+        TeamId: "'" + teamID + "'",
       }),
-    }).then(() => {
-      const promises = images.map(async (image) => {
-        // Creates a low res version of each image   
-        const resizedImage = await resizeFile(image);
-
-        const filename = image.name;
-        const key = "" + makeTeamID + "/" + "lowres" +"/"+ filename;
-        const params = {
-          Bucket: bucketName,
-          Key: key,
-          Body: resizedImage,
-          ContentType: "image/*",
-        };
-
-        try {
-          const data = await s3.upload(params).promise();
-          return data;
-        } catch (err) {
-          console.error(err);
-        }
-      });
-
-      try {
-        const results = Promise.all(promises);
-        console.log(results);
-      } catch (err) {
-        console.error(err);
-      }
-    }).then(() => {
-      const promises = images.map(async (image) => {
-        const filename = image.name;
-        const key = "" + makeTeamID + "/" + filename;
-        const params = {
-          Bucket: bucketName,
-          Key: key,
-          Body: image,
-          ContentType: "image/*",
-        };
-
-        try {
-          const data = await s3.upload(params).promise();
-          return data;
-        } catch (err) {
-          console.error(err);
-        }
-      });
-
-      try {
-        const results = Promise.all(promises);
-        console.log(results);
-      } catch (err) {
-        console.error(err);
-      }
     });
+
+
   };
 
   return (
