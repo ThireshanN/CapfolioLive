@@ -45,6 +45,28 @@ async function executeSQLstatement(sql) { //working 23/04/2023
     return [rows, result];
 }
 
+async function executeSQLstatement2(sql, connection) { //working 23/04/2023
+    const [rows, result] = await connection.execute(sql);
+    return [rows, result];
+}
+
+
+async function sqlCommandsTransactionExample() {
+    const connection = await mysql.createConnection(config.db);
+    await connection.beginTransaction();
+    try {
+        let [rows, result] = await connection.execute(`UPDATE Project SET projectDec='Hello World!' WHERE ProjectID=154;`);
+        [rows, result] = await connection.execute(`UPDATE Project SET projectDec2='Hello!!!!!' WHERE ProjectID=154;`);
+        await connection.commit();
+        await connection.end();
+        return [rows, result];
+    } catch (err) {
+        console.log(err.message);
+        await connection.rollback();
+        await connection.end();
+    }
+}
+
 
 async function executeMultipleSQLstatement(sqlArray) { //working 23/04/2023
     const connection = await mysql.createConnection(config.db);
@@ -58,8 +80,18 @@ async function executeMultipleSQLstatement(sqlArray) { //working 23/04/2023
     return rowArray;
 }
 
+async function executeMultipleSQLstatement2(sqlArray, connection) { //working 23/04/2023
+    let rowArray = [];
+    sqlArray.forEach(async (element) => { await myFunction(element) });
+    async function myFunction(element) {
+        const [rows] = await connection.execute(element);
+        rowArray.push([rows]);
+    };
+    return rowArray;
+}
 
-async function TableFieldName(tableName = null) { //working 23/04/2023
+
+async function TableFieldNames(tableName = null) { //working 23/04/2023
     try {
         if (!tableName) {
             throw new Error('no tableName specified');
@@ -236,8 +268,9 @@ projectRouter.put('/addTeamMembers', async (req, res) => {
     try {
         const memberUPIs = req.body.memberUPIs; //['kcou558', 'kcou559'];
         const projectID = req.body.projectID; //7;
-        const {TeamLeader, ProjectName} = (await executeSQLstatement(`SELECT TeamLeader, ProjectName FROM Capfolio.Project WHERE ProjectID = ${projectID}`))[0][0];
+        const { TeamLeader, ProjectName } = (await executeSQLstatement(`SELECT TeamLeader, ProjectName FROM Capfolio.Project WHERE ProjectID = ${projectID}`))[0][0];
         const currentLoggedInUser = currentUserId;
+        let additionalMessage = '';
 
         if (!TeamLeader) {
             throw new Error(`no assigned team leader for ${ProjectName}`)
@@ -251,19 +284,21 @@ projectRouter.put('/addTeamMembers', async (req, res) => {
         sqlQueries[1] = `UPDATE Capfolio.Student SET projectID = ${projectID} WHERE StudentUPI IN ('${memberUPIs.join('\', \'')}')`;
         const updatedStudents = (await executeMultipleSQLstatement(sqlQueries))[0];
 
+
         //if upi does not exist in student table, then they have not signed in as a student
         //return the invalid upi so the team leader knows
         const sql2 = `SELECT group_concat(DISTINCT StudentUPI) AS studentUPIs FROM Capfolio.Student;`;
-        const {studentUPIs} = (await executeSQLstatement(sql2))[0][0];
+        const { studentUPIs } = (await executeSQLstatement(sql2))[0][0];
         const studentUPIsArray = studentUPIs.split(',');
         const MissingUPI = [];
-        //console.log(studentUPIsArray);
         memberUPIs.forEach(member => {
-            studentUPIsArray.includes(member)? '': MissingUPI.push(member);
+            studentUPIsArray.includes(member) ? '' : MissingUPI.push(member);
         });
-        //console.log(MissingUPI);
+        if (MissingUPI != []) {
+            additionalMessage = `However the following students have not logged in with their uni email: ${MissingUPI}`;
+        }
 
-        res.status(200).send(`Successfully updated ${ProjectName}. However the following students have not logged in with their uni email: ` + MissingUPI);
+        res.status(200).send(`Successfully updated ${ProjectName}. ${additionalMessage}`);
     } catch (err) {
         return res.status(400).send(err.message);
     }
@@ -272,12 +307,19 @@ projectRouter.put('/addTeamMembers', async (req, res) => {
 //http://localhost:3000/project/FormAddProject
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/FormAddProject
 projectRouter.post('/FormAddProject', express.json(), async (req, res) => { //
+    //START SQL CONNECTION and TRANSACTION
+    const connection = await mysql.createConnection(config.db);
+    await connection.beginTransaction();
+
     try {
         //CLIENT DATA FROM FRONTEND
         const reqBodyFromClient = req.body;
 
+        //###################################################################################################################
+        //###################################################################################################################
+
         //PROJECT TABLE
-        const projectFields = (await TableFieldName('Project'))[0];
+        const projectFields = (await TableFieldNames('Project'))[0];
         let fieldNames = [];
         let fieldValues = [];
         projectFields.forEach(field => myFunction(field));
@@ -289,59 +331,52 @@ projectRouter.post('/FormAddProject', express.json(), async (req, res) => { //
         }
         fieldNames = fieldNames.join(', ');
         fieldValues = fieldValues.join(', ');
-
-        const sql = `INSERT INTO Capfolio.Project (${fieldNames}) VALUES (${fieldValues})`;
-        const addedProject = (await executeSQLstatement(sql))[0];
+        //PROJECT TABLE SQL COMMANDS
+        const projectSql = `INSERT INTO Capfolio.Project (${fieldNames}) VALUES (${fieldValues})`;
+        const addedProject = (await executeSQLstatement2(projectSql, connection))[0];
         const insertId = addedProject["insertId"];
 
+        //###################################################################################################################
+        //###################################################################################################################
 
-        //TECHNOLOGIES TABLE
+        //ProjectTech TABLE
         const techArray = reqBodyFromClient.Technologies;
-        const newarr = techArray.map(tech => `technologyName=\'${tech}\'`);
-        const techStr = newarr.join(' OR ');
-        let sqlQueryTech = `SELECT techID, technologyName FROM Capfolio.technologiesUsed WHERE (${techStr})`;
-        const selectedTechs = (await executeSQLstatement(sqlQueryTech))[0];
+        const sqlQueryTech = `SELECT techID, technologyName FROM Capfolio.technologiesUsed WHERE technologiesUsed.technologyName IN (\'${techArray.join('\', \'')}\')`;
+        const selectedTechs = (await executeSQLstatement2(sqlQueryTech, connection))[0];
         let finalTechQueries = [];
         selectedTechs.forEach(row => {
             finalTechQueries.push(`INSERT INTO Capfolio.ProjectTech (techID_FK, ProjectID_FK) VALUES (${row.techID}, ${insertId})`)
         });
-        const addedProjectTech = await executeMultipleSQLstatement(finalTechQueries);
+        const addedProjectTech = await executeMultipleSQLstatement2(finalTechQueries, connection);
 
+        //###################################################################################################################
+        //###################################################################################################################
 
-        //USERS TABLE based on "Users": [ {"FirstName": "Daisy", "lastName": "SuperMarioFamily"} ]
-        // const users = reqBodyFromClient.Users; //actually the UPIs
-        // const whereConditionArr = users.map(user => {
-        //     return `(FirstName=\'${user.FirstName}\' AND lastName=\'${user.lastName}\')`;
-        // });
-        // const whereConditionstr = whereConditionArr.join(' OR ');
-        // const userIds = (await executeSQLstatement(`SELECT UserID FROM Capfolio.Users WHERE ${whereConditionstr}`))[0];
-        // const finalUserSQLQueries = []
-        // userIds.forEach(id => {
-        //     finalUserSQLQueries.push(`INSERT INTO Capfolio.Student (UserID, UserTypeID, projectID) VALUES (${id.UserID}, 1, ${insertId})`);
-        // });
-        // const addedStudents = await executeMultipleSQLstatement(finalUserSQLQueries);
-
-
-        //USERS TABLE based on Users: ['upi']
-        //get the userId based on the UPI's provided
-        //if UPI is not found in the database, create a new user and only populate the upi field? then when the user actually registers themselves, it check the database for that upi, and just populates the rest of the fields, rather than creating a duplicate record
-        const UPIs = reqBodyFromClient.Users; //actually the UPIs
+        //USERS TABLE 
+        //based on Users: ['upi']
+        //get the userId based on the UPI's provided. If UPI not found in database, create a new student and populate ProjectID and UserTypeID and StudentUPI, however the USERID field is automatiicaly set.
+        //When the user officially registers/signs up, auth.js will check the database
+        //and then get the USERID from student record and create a new user and set the user id to the USERID from student record
+        const UPIs = reqBodyFromClient.Users;
         const checkForMissingUPIarray = UPIs.map(upi => { return `SELECT \'${upi}\' AS MissingUPI`; });
         const checkForMissingUPIstring = checkForMissingUPIarray.join(' UNION ALL ');
-        const checkForMissingUPICommand = (await executeSQLstatement(`SELECT v.MissingUPI FROM (${checkForMissingUPIstring}) v WHERE v.MissingUPI NOT IN (SELECT StudentUPI FROM Capfolio.Student)`))[0];
+        const checkForMissingUPICommand = (await executeSQLstatement2(`SELECT v.MissingUPI FROM (${checkForMissingUPIstring}) v WHERE v.MissingUPI NOT IN (SELECT StudentUPI FROM Capfolio.Student)`, connection))[0];
         const noSuchUPI = checkForMissingUPICommand.map(element => element.MissingUPI);
         UPIs.forEach(async upi => {
             if (noSuchUPI.includes(upi)) {
-                //they have no userid, so just insert into student table, and populate ProjectID and UserTypeID and StudentUPI
-                const rows = (await executeSQLstatement(`INSERT INTO Capfolio.Student (projectID, UserTypeID, StudentUPI) VALUES (${insertId}, 1, \'${upi}\')`))[0];
+                //no upi found in student table (unregistered student)
+                const rows = (await executeSQLstatement2(`INSERT INTO Capfolio.Student (projectID, UserTypeID, StudentUPI, isRegistered) VALUES (${insertId}, 1, '${upi}', 0)`, connection))[0];
             } else {
-                //all valid upis, userid already exist for them?, insert into Student table and just populate ProjectID and UserTypeID
-                const rows = (await executeSQLstatement(`UPDATE Capfolio.Student SET projectID = ${insertId}, UserTypeID = 1 WHERE Capfolio.Student.StudentUPI = \'${upi}\'`))[0];
+                //all valid upis, userid already exist for them, insert into Student table and just populate ProjectID and UserTypeID
+                const rows = (await executeSQLstatement2(`UPDATE Capfolio.Student SET projectID = ${insertId}, UserTypeID = 1 WHERE Capfolio.Student.StudentUPI = \'${upi}\'`, connection))[0];
             }
         });
 
+        //###################################################################################################################
+        //###################################################################################################################
 
         //ADDING FILES
+
         //    const toAddFiles = reqBodyFromClient.Files;
         //    if (toAddFiles !== undefined || toAddFiles.length != 0) {
         //        toAddFiles.forEach(async (file) => await addFilesFunction(file, reqBodyFromClient.TeamName));
@@ -374,10 +409,18 @@ projectRouter.post('/FormAddProject', express.json(), async (req, res) => { //
         //        }
         //    }
 
-        //    return res.status(200).setHeader("Content-Type", "application/json").send({ id: insertId });
+        //###################################################################################################################
+        //###################################################################################################################
+        
+        //CLOSE CONNECTION and COMMIT TRANSACTION
+        await connection.commit();
+        await connection.end();
+        return res.status(200).setHeader("Content-Type", "application/json").send({ id: insertId, message: "successfully added the project but the following students have not registered: " + noSuchUPI});
     }
     catch (err) {
         //console.log(err.message);
+        await connection.rollback();
+        await connection.end();
         return res.status(400).setHeader("Content-Type", "text/plain").send("Sorry! " + err);
     }
 });
@@ -573,7 +616,7 @@ projectRouter.put('/UpdateProject', express.json(), async (req, res) => { //work
         updateProjectDetails.capstoneSemester = 1;
 
         const sqlArray = [];
-        const projectFields = (await TableFieldName('Project'))[0];
+        const projectFields = (await TableFieldNames('Project'))[0];
         projectFields.forEach(field => myFunction(field));
         function myFunction(field) {
             if (updateProjectDetails[`${field}`]) {
