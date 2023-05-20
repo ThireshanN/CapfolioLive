@@ -107,7 +107,7 @@ const ProjectGallery = () => {
                     <Sidebar onApplyFilter={handleApplyFilter} />
                 </div>
                 <div className='cfilter'>
-                    {/* <CSidebar onApplyFilter={handleApplyFilter} /> */}
+                    <CSidebar onApplyFilter={handleApplyFilter} />
                 </div>
                 <div className="project-list">
                     <CRow xs={{ cols: 1, gutter: 4 }} sm={{ cols: 2 }} md={{ cols: 2 }} lg={{ cols: 2 }} xl={{ cols: 3 }} xxl={{ cols: 3 }}>
