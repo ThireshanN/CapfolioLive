@@ -134,7 +134,7 @@ projectRouter.get('/executeSQLcommand', async (req, res) => {
 //http://localhost:3000/project/technologyNames
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/AllProjectData
 projectRouter.get('/technologyNames', async function (req, res) {
-    const sql = `SELECT GROUP_CONCAT(technologyName) as technology FROM Capfolio.technologiesUsed;`;
+    const sql = `SELECT GROUP_CONCAT(technologyName ORDER BY technologyName ASC) as technology FROM Capfolio.technologiesUsed;`;
     const resultArray = (await executeSQLstatement(sql))[0]//.catch(err => console.log("The following error generated:\n" + err));
     const technologyArray = resultArray[0].technology.split(',');
     return res.status(200).setHeader("Content-Type", "application/json").send(technologyArray);
@@ -153,7 +153,7 @@ projectRouter.get('/AllProjectData', async (req, res) => { //working 28/04/2023
         LEFT JOIN technologiesUsed ON technologiesUsed.techID = ProjectTech.techID_FK
         LEFT JOIN likes ON likes.ProjectID_FK = Project.ProjectID
         WHERE Project.IsApproved = 1
-        GROUP BY ProjectID ORDER BY ProjectID;
+        GROUP BY ProjectID ORDER BY viewCount;
         `;
         const allProjects = (await executeSQLstatement(sql))[0]//.catch(err => console.log("The following error generated:\n" + err));
         return res.status(200).setHeader("Content-Type", "application/json").send(allProjects);
@@ -232,6 +232,8 @@ projectRouter.post('/FilteredProjectData', async (req, res) => { //working 28/04
           ${filterFields.SortBy[0] === "Lowest to highest likes" ? "likes ASC" : ""}
           ${filterFields.SortBy[0] === "Alphabetical (A - Z)" ? "Project.ProjectName ASC" : ""}
           ${filterFields.SortBy[0] === "Alphabetical (Z - A)" ? "Project.ProjectName DESC" : ""}
+          ${filterFields.SortBy[0] === "Highest to lowest views" ? "Project.viewCount DESC" : ""}
+          ${filterFields.SortBy[0] === "Lowest to highest views" ? "Project.viewCount ASC" : ""}
           ${filterFields.SortBy[0] === null ? "Project.capstoneYear ASC, Project.capstoneSemester ASC" : ""};
           `;
 

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import CreatableSelect from "react-select/creatable";
+import Resizer from "react-image-file-resizer";
 import "./projectSubmit.css";
 
 import { CCol, CRow } from "@coreui/react";
@@ -18,6 +19,22 @@ const s3 = new AWS.S3({
   accessKeyId: accessKeyId,
   secretAccessKey: secretAccessKey,
 });
+
+const resizeFile = (file) =>
+  new Promise((resolve) => {
+    Resizer.imageFileResizer(
+      file,
+      352,
+      240,
+      "JPEG",
+      10,
+      0,
+      (uri) => {
+        resolve(uri);
+      },
+      "file"
+    );
+  });
 
 export default function ProjectSubmit() {
   const years = [
@@ -55,7 +72,12 @@ export default function ProjectSubmit() {
     return result;
   }
 
+  const checkIfStringExists = (str) => {
+    return fetchTeamIDs.includes(str);
+  };
+
   const animatedComponents = makeAnimated();
+
   //-------------------Handles the users being added--------------------//
 
   const [users, setUsers] = useState([
@@ -81,6 +103,8 @@ export default function ProjectSubmit() {
   //---------------------------------------------------------------------//
 
   const [technologies, setTechnologies] = useState([]);
+  const [fetchTeamIDs, setFetchTeamIDs] = useState([]);
+  const [user, setUser] = useState("");
 
   useEffect(() => {
     // Fetch the technologies from the database and update state
@@ -88,6 +112,18 @@ export default function ProjectSubmit() {
       .then((response) => response.json())
       .then((data) => setTechnologies(data))
       .catch((error) => console.error(error));
+
+    //Get the array of existing teamID's
+    fetch("/project/projectTeamId")
+      .then((response) => response.json())
+      .then((data) => setFetchTeamIDs(data))
+      .catch((error) => console.log(error));
+
+    // Get the ID of the current logged in user
+    fetch("/auth/user")
+      .then((response) => response.json())
+      .then((user) => setUser(user.UserID))
+      .catch((error) => console.log(error));
   }, []);
 
   const techOptions = technologies.map((tech) => ({
@@ -157,11 +193,15 @@ export default function ProjectSubmit() {
   const thumbnailClassName = (length) =>
     length < 1 ? "noDisplayThumbnail" : "AlldisplayThumbnail";
 
+  // Handles submitting the form
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const teamID = makeid(16);
 
-    //Need to check teamID is unique.
+    let teamID = makeid(16);
+
+    while (checkIfStringExists(teamID)) {
+      teamID = makeid(teamID);
+    }
 
     //------------------Format the data -----------------------------------------//
 
@@ -204,7 +244,64 @@ export default function ProjectSubmit() {
 
     //------------------------------------------------------------//
 
-    await fetch("/project/FormAddProject", {
+    
+
+    const promises = images.map(async (image) => {
+      // Creates a low res version of each image
+      const resizedImage = await resizeFile(image);
+      console.log(resizedImage);
+      const filename = image.name;
+      const key = "" + teamID + "/" + "lowres" + "/" + filename;
+      const params = {
+        Bucket: bucketName,
+        Key: key,
+        ACL:'public-read',
+        Body: resizedImage,
+        ContentType: "image/*",
+      };
+      console.log(params);
+      try {
+        const data = await s3.upload(params).promise();
+        return data;
+      } catch (err) {
+        console.error(err);
+      }
+    });
+
+    try {
+      const results = Promise.all(promises);
+      console.log(results);
+    } catch (err) {
+      console.error(err);
+    }
+
+    const highResPromises = images.map(async (image) => {
+      const filename = image.name;
+      const key = "" + teamID + "/" + filename;
+      const params = {
+        Bucket: bucketName,
+        Key: key,
+        ACL:'public-read',
+        Body: image,
+        ContentType: "image/*",
+      };
+
+      try {
+        const data = await s3.upload(params).promise();
+        return data;
+      } catch (err) {
+        console.error(err);
+      }
+    });
+
+    try {
+      const results = Promise.all(highResPromises);
+      console.log(results);
+    } catch (err) {
+      console.error(err);
+    }
+
+    fetch("/project/FormAddProject", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -224,33 +321,12 @@ export default function ProjectSubmit() {
         Project_Approach: "'" + Project_Approach + "'",
         Technologies: arrayTech,
         Users: users,
+        TeamLeader: user,
+        TeamId: "'" + teamID + "'",
       }),
-    }).then(() => {
-      const promises = images.map(async (image) => {
-        const filename = image.name;
-        const key = "" + TeamName + "/" + filename;
-        const params = {
-          Bucket: bucketName,
-          Key: key,
-          Body: image,
-          ContentType: "image/*",
-        };
-
-        try {
-          const data = await s3.upload(params).promise();
-          return data;
-        } catch (err) {
-          console.error(err);
-        }
-      });
-
-      try {
-        const results = Promise.all(promises);
-        console.log(results);
-      } catch (err) {
-        console.error(err);
-      }
     });
+
+
   };
 
   return (

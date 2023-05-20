@@ -1,4 +1,4 @@
-import "./Sidebar.css";
+import "../Sidebar.css";
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
@@ -7,7 +7,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import { Collapse, CButton, CCollapse, CCard, CCardBody } from "@coreui/react";
 import { all } from "axios";
 
-const Sidebar = ({ onApplyFilter }) => {
+const CSidebar = ({ onApplyFilter }) => {
   const [technologies, setTechnologies] = useState([]);
 
   useEffect(() => {
@@ -140,7 +140,7 @@ const Sidebar = ({ onApplyFilter }) => {
             Filter
           </CButton>
         </div>
-        {/* <CCollapse visible={visible}> */}
+        <CCollapse visible={visible}>
         <CCard className="mt-3">
           <CCardBody>
             <div class="filter-bg">
@@ -215,10 +215,10 @@ const Sidebar = ({ onApplyFilter }) => {
             </div>
           </CCardBody>
         </CCard>
-        {/* </CCollapse> */}
+        </CCollapse>
       </div>
     </div>
   );
 };
 
-export default Sidebar;
+export default CSidebar;
