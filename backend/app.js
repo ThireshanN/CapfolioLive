@@ -13,6 +13,7 @@ import { commentRouter } from './Routes/comment.js';
 import { projectRouter } from './Routes/project.js';
 import { projectViewRouter } from './Routes/projectView.js';
 import { adminRouter } from './Routes/admin.js';
+import { profileRouter } from './Routes/Profile.js';
 import { dnsAWS } from './addresses.js';
 import { fileURLToPath } from 'url';
 
@@ -74,6 +75,7 @@ app.use('/comment', commentRouter);
 app.use('/project', projectRouter);
 app.use('/projects', projectViewRouter);
 app.use('/admin', adminRouter);
+app.use('/profile',profileRouter);
 app.get('/test', (req, res) => {   
     //http://localhost:3000/test
     res.send(`Hello World!`);

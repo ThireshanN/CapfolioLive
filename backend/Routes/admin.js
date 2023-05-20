@@ -14,10 +14,10 @@ async function executeSQLstatement(sql) {
 
 //have to make the technologies input field mandatory
 
-//http://localhost:3000/admin/approve/projects
+//http://localhost:3000/admin/approved/projects
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/admin/projects
 
-adminRouter.get("/approve/projects", async (req, res) => { 
+adminRouter.get("/approved/projects", async (req, res) => { 
     const id = req.query.id;
     try {
         const sql = `SELECT ProjectID, Project.ProjectName,IsApproved, projectDec, Project.capstoneYear, Project.capstoneSemester, githubLink, VideoLink, TeamName, ProjectIntro, Project_Approach, GROUP_CONCAT(technologiesUsed.technologyName) AS 'technologies'
@@ -41,6 +41,32 @@ adminRouter.get("/approve/projects", async (req, res) => {
     catch (err) {
         console.log(err.message);
         return res.status(400).setHeader("Content-Type", "text/plain").send("failed to fetch project data because of " + err);
+    }
+});
+
+//http://localhost:3000/admin/approveProject
+//the id here is the same ProjectId as http://localhost:3000/admin/approveProject
+//http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/admin/approveProject
+
+async function newProject(project){
+    //if(currentUserId!==7){return "Only admin can award projects"}
+    const sql = `UPDATE Project SET IsApproved=1 WHERE ProjectId=${project.id};`;
+    const projectApprove = (await executeSQLstatement(sql));
+    let message = 'Error in approving a new project';
+    if (projectApprove.length!==0) {
+      message = 'New project approved successfully\n';
+    }
+  
+    return {message};
+  }
+
+  
+adminRouter.put('/approveProject', express.json(), async (req, res) => {
+    try {
+        //console.log(req.body);
+        res.json(await newProject(req.body));
+    } catch (err) {
+      console.error(`Error while approving a new project`, err.message);
     }
 });
 
