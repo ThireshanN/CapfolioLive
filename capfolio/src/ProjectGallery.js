@@ -5,7 +5,7 @@ import { Collapse, CButton, CCollapse, CListGroup, CListGroupItem, CCard, CCardB
 import LikeButton from "./components/likeButton";
 import AwardBanner from "./components/awardBanner.js";
 import Sidebar from './Sidebar';
-import CSidebar from './components/CSidebar';
+//import CSidebar from './components/CSidebar';
 import MainImage from './components/getMainImage';
 import { ReactComponent as Heart } from "./images/heart.svg";
 import { ReactComponent as Views } from "./images/views.svg";
@@ -107,7 +107,7 @@ const ProjectGallery = () => {
                     <Sidebar onApplyFilter={handleApplyFilter} />
                 </div>
                 <div className='cfilter'>
-                    <CSidebar onApplyFilter={handleApplyFilter} />
+                    {/* <CSidebar onApplyFilter={handleApplyFilter} /> */}
                 </div>
                 <div className="project-list">
                     <CRow xs={{ cols: 1, gutter: 4 }} sm={{ cols: 2 }} md={{ cols: 2 }} lg={{ cols: 2 }} xl={{ cols: 3 }} xxl={{ cols: 3 }}>
