@@ -30,7 +30,7 @@ async function updateViewCount(id){
 projectViewRouter.get("/project", async (req, res) => { 
     const id = req.query.id;
     try {
-        const sql = `SELECT ProjectID, Project.ProjectName,IsApproved, projectDec, Project.capstoneYear, Project.capstoneSemester, githubLink, VideoLink, TeamName, ProjectIntro, Project_Approach, viewCount, GROUP_CONCAT(technologiesUsed.technologyName) AS 'technologies'
+        const sql = `SELECT ProjectID, Project.ProjectName,IsApproved, projectDec, Project.capstoneYear, Project.capstoneSemester, githubLink, VideoLink, TeamName, ProjectIntro, Project_Approach, viewCount, TeamId, GROUP_CONCAT(technologiesUsed.technologyName) AS 'technologies'
         FROM Capfolio.Project
         INNER JOIN ProjectTech ON Project.ProjectID = ProjectTech.ProjectID_FK 
         INNER JOIN technologiesUsed ON ProjectTech.techID_FK = technologiesUsed.techID
