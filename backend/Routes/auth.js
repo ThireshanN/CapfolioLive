@@ -100,34 +100,18 @@ passport.use(new GoogleStrategy({
     let var2;
 
     const exists = await emailExists(emailToCheck);
+    const studentUpi = emailToCheck.slice(0, emailToCheck.indexOf("@"));
     //console.log("Email exists:", exists);
     if (!exists) {
         const id = await next_id();
         if (emailToCheck === 'admin@aucklanduni.ac.nz') {
             type = 3;
         } else if (emailToCheck.endsWith('@aucklanduni.ac.nz')) {
-
-            const studentUpi = emailToCheck.slice(0, emailToCheck.indexOf("@"));
-            const studentExists = (await executeSQLstatement(`SELECT COUNT(*) AS upiExists FROM Student WHERE StudentUPI = \'${studentUpi}\'`))[0][0].upiExists;
-            if (studentExists == 0) { //new student
-                type = 1;
-                sql = `Insert into Users(UserID, UserTypeID, FirstName, lastName, Email) values (${id}, ${type}, "${first_name}", "${last_name}", "${emailToCheck}");`;
-                sql2 = `Insert into Student(UserID, UserTypeID,  StudentUPI) values (${id}, 1, "${emailToCheck.substring(0, 7)}");`;
-                const var1 = (await executeSQLstatement(sql));
-                const var2 = (await executeSQLstatement(sql2));
-            }
-            else { //unregistered student
-                //if student upi exist in student table but they havent registered themselves officially, as a student
-                //then update the Student_table record and insert a new User record
-                type = 1;
-                sql = `SELECT UserID FROM Student WHERE StudentUPI = '${studentUpi}'`;
-                const userId = (await executeSQLstatement(sql))[0][0].UserID;
-                sql1 = `Insert into Users(UserID, UserTypeID, FirstName, lastName, Email) values (${userId}, ${type}, "${first_name}", "${last_name}", "${emailToCheck}");`;
-                await executeSQLstatement(sql1);
-                sql2 = `UPDATE Capfolio.Student SET isRegistered = 1 WHERE Capfolio.Student.StudentUPI = \'${studentUpi}\'`;
-                await executeSQLstatement(sql2);
-            }
-
+            type = 1;
+            sql1 = `Insert into Users(UserID, UserTypeID, FirstName, lastName, Email) values (${id}, ${type}, "${first_name}", "${last_name}", "${emailToCheck}");`;
+            sql2 = `Insert into Student(UserID, UserTypeID,  StudentUPI) values (${id}, 1, "${emailToCheck.substring(0, 7)}");`;
+            const var1 = (await executeSQLstatement(sql1));
+            const var2 = (await executeSQLstatement(sql2));
         } else {
             type = 4;
             sql = `Insert into Users(UserID, UserTypeID, FirstName, lastName, Email) values (${id}, ${type}, "${first_name}", "${last_name}", "${emailToCheck}");`;
@@ -135,11 +119,23 @@ passport.use(new GoogleStrategy({
             const var1 = (await executeSQLstatement(sql));
             const var2 = (await executeSQLstatement(sql2));
         }
-
-
+    } else {
+        //unregistered student
+        //they have a user and student record, but the field 'isRegistered' in Student table is SET to 0
+        //the above occurs from ./FormAddProject Route
+        //SO NOW SET 'isRegistered' to 1 (student table), and also set firstname and lastname (users table)
+        const isRegistered = (await executeSQLstatement(`SELECT isRegistered FROM Capfolio.Student WHERE StudentUPI = '${studentUpi}'`))[0][0].isRegistered;
+        if (isRegistered === 0) {
+            type = 1;
+            sql = `SELECT UserID FROM Users WHERE Email = '${emailToCheck}'`;
+            const aUserId = (await executeSQLstatement(sql))[0][0].UserID;
+            sql1 = `UPDATE Capfolio.Users SET FirstName = "${first_name}", lastName = "${last_name}" WHERE Capfolio.Users.UserID = ${aUserId}`;
+            sql2 = `UPDATE Capfolio.Student SET isRegistered = 1 WHERE Capfolio.Student.StudentUPI = '${studentUpi}'`;
+            await executeSQLstatement(sql1);
+            await executeSQLstatement(sql2);
+            console.log('unregistered student has logged in through google!')
+        }
     }
-
-
 
     profile.photo = profile._json.picture;
     //Insert into Admins(UserID) values (40);
@@ -170,42 +166,42 @@ router.get('/user', async (req, res) => {
         let email;
         let isGoogleOAuth;
         let photo;
-        console.log("T1")
+        //console.log("T1")
         if (req.session.user) {
             user = req.session.user;
-            console.log("user:", user)
+            //console.log("user:", user)
             email = user.email;
-            console.log("T2")
+            //console.log("T2")
             if (user.isFormLogin) {
                 isGoogleOAuth = false;
-                console.log("T3a")
+                //console.log("T3a")
                 photo = '/images/icon.png';
-                console.log("T4a")
+                //console.log("T4a")
 
             } else {
                 isGoogleOAuth = true;
-                console.log("T3b")
+                //console.log("T3b")
                 photo = user.photo; // Store photo in session during Google OAuth login
-                console.log("T4b")
+                //console.log("T4b")
             }
         } else {
             user = req.user;
-            console.log("T2b")
+            //console.log("T2b")
             email = user.emails[0].value;
-            console.log("T2b1")
+            //console.log("T2b1")
             isGoogleOAuth = true;
-            console.log("T2b2")
+            //console.log("T2b2")
             photo = user.photo;
-            console.log("T2b3")
+            //console.log("T2b3")
         }
-        console.log("T5")
+        //console.log("T5")
 
         //const sql = `SELECT u.FirstName, u.LastName, u.UserTypeID FROM Users u WHERE u.Email = ?;`;
         const sql = `SELECT u.UserID, u.FirstName, u.LastName, u.UserTypeID FROM Users u WHERE u.Email = ?;`;
         const [rows] = await executeSQLstatement(sql, [email]);
         const userData = rows[0];
-        console.log("Picture URL:", photo);
-        console.log("T6")
+        //console.log("Picture URL:", photo);
+        //console.log("T6")
         currentUserId = userData.UserID;
 
         res.send({
@@ -217,9 +213,9 @@ router.get('/user', async (req, res) => {
             Photo: photo,
             OAuth: isGoogleOAuth,
         });
-        console.log("T7")
+        //console.log("T7")
     } catch (error) {
-        console.log("T8")
+        //console.log("T8")
         res.status(400).send({ error: 'Failed to fetch user data' });
     }
 });
@@ -255,13 +251,11 @@ router.get('/logout', (req, res) => {
 
 router.post('/signup', async (req, res) => {
     const { firstName, lastName, email, password } = req.body;
-
     if (!firstName || !lastName || !email || !password) {
         return res.status(400).send({ error: 'All fields are required' });
     }
 
     const exists = await emailExists(email);
-
     if (exists) {
         return res.status(400).send({ error: 'Email already exists' });
     }
@@ -274,6 +268,7 @@ router.post('/signup', async (req, res) => {
     const sql2 = `Insert into Visitor(UserID, UserTypeID) values (userID, userTypeID);`;
     //await executeSQLstatement(sql2);
     await executeSQLstatement(sql, [userID, userTypeID, firstName, lastName, email, passwordHash]);
+
 
     res.status(200).send({ message: 'User successfully registered' });
 });

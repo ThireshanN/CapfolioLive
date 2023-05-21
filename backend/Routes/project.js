@@ -336,7 +336,8 @@ projectRouter.post('/FormAddProject', express.json(), async (req, res) => { //
         //PROJECT TABLE SQL COMMANDS
         const projectSql = `INSERT INTO Capfolio.Project (${fieldNames}) VALUES (${fieldValues})`;
         const addedProject = (await executeSQLstatement2(projectSql, connection))[0];
-        const insertId = addedProject["insertId"];
+        const projectInsertId = addedProject["insertId"];
+        console.log("successfully added project")
 
         //###################################################################################################################
         //###################################################################################################################
@@ -347,33 +348,37 @@ projectRouter.post('/FormAddProject', express.json(), async (req, res) => { //
         const selectedTechs = (await executeSQLstatement2(sqlQueryTech, connection))[0];
         let finalTechQueries = [];
         selectedTechs.forEach(row => {
-            finalTechQueries.push(`INSERT INTO Capfolio.ProjectTech (techID_FK, ProjectID_FK) VALUES (${row.techID}, ${insertId})`)
+            finalTechQueries.push(`INSERT INTO Capfolio.ProjectTech (techID_FK, ProjectID_FK) VALUES (${row.techID}, ${projectInsertId})`)
         });
         const addedProjectTech = await executeMultipleSQLstatement2(finalTechQueries, connection);
+        console.log("successfully added technologies");
 
         //###################################################################################################################
         //###################################################################################################################
 
         //USERS TABLE 
-        //based on Users: ['upi']
+        //based on Users: [{upi: 'kcou558', firstname: 'kristen', lastname: 'coupe'}, {upi: 'kcou551', firstname: 'krisone', lastname: 'coupe'}];
         //get the userId based on the UPI's provided. If UPI not found in database, create a new student and populate ProjectID and UserTypeID and StudentUPI, however the USERID field is automatiicaly set.
         //When the user officially registers/signs up, auth.js will check the database
         //and then get the USERID from student record and create a new user and set the user id to the USERID from student record
-        const UPIs = reqBodyFromClient.Users;
-        const checkForMissingUPIarray = UPIs.map(upi => { return `SELECT \'${upi}\' AS MissingUPI`; });
-        const checkForMissingUPIstring = checkForMissingUPIarray.join(' UNION ALL ');
-        const checkForMissingUPICommand = (await executeSQLstatement2(`SELECT v.MissingUPI FROM (${checkForMissingUPIstring}) v WHERE v.MissingUPI NOT IN (SELECT StudentUPI FROM Capfolio.Student)`, connection))[0];
-        const noSuchUPI = checkForMissingUPICommand.map(element => element.MissingUPI);
-        UPIs.forEach(async upi => {
-            if (noSuchUPI.includes(upi)) {
+        const users = reqBodyFromClient.Users;
+        const sqlSelect = users.map(user => { return `SELECT \'${user.upi}\' AS MissingUPI`; });
+        const missingUPICommand = (await executeSQLstatement2(`SELECT v.MissingUPI FROM (${sqlSelect.join(' UNION ALL ')}) v WHERE v.MissingUPI NOT IN (SELECT StudentUPI FROM Capfolio.Student)`, connection))[0];
+        const unRegUsers = missingUPICommand.map(element => element.MissingUPI);
+        users.forEach(async user => {
+            let upi = user.upi.trim();
+            if (unRegUsers.includes(upi)) {
                 //no upi found in student table (unregistered student)
-                const rows = (await executeSQLstatement2(`INSERT INTO Capfolio.Student (projectID, UserTypeID, StudentUPI, isRegistered) VALUES (${insertId}, 1, '${upi}', 0)`, connection))[0];
+                const addedUser = (await executeSQLstatement2(`INSERT INTO Capfolio.Users (UserTypeID, FirstName, lastName, Email) VALUES (1, '${user.firstName}', '${user.lastName}', '${upi}@aucklanduni.ac.nz')`, connection))[0];
+                const userInsertId = addedUser["insertId"];
+                const rows = (await executeSQLstatement2(`INSERT INTO Capfolio.Student (UserID, projectID, UserTypeID, StudentUPI, isRegistered) VALUES (${userInsertId}, ${projectInsertId}, 1, '${upi}', 0)`, connection))[0];
+                
             } else {
                 //all valid upis, userid already exist for them, insert into Student table and just populate ProjectID and UserTypeID
-                const rows = (await executeSQLstatement2(`UPDATE Capfolio.Student SET projectID = ${insertId}, UserTypeID = 1 WHERE Capfolio.Student.StudentUPI = \'${upi}\'`, connection))[0];
+                const rows = (await executeSQLstatement2(`UPDATE Capfolio.Student SET projectID = ${projectInsertId}, UserTypeID = 1 WHERE Capfolio.Student.StudentUPI = \'${upi}\'`, connection))[0];
             }
         });
-
+        console.log("successfully added users")
         //###################################################################################################################
         //###################################################################################################################
 
@@ -413,11 +418,13 @@ projectRouter.post('/FormAddProject', express.json(), async (req, res) => { //
 
         //###################################################################################################################
         //###################################################################################################################
-        
+
         //CLOSE CONNECTION and COMMIT TRANSACTION
+        const message = unRegUsers.length===0? '': 'but the following students have not registered!: ' + unRegUsers;
+        const returnData = { id: projectInsertId, message: 'successfully added the project! ' + message};
         await connection.commit();
         await connection.end();
-        return res.status(200).setHeader("Content-Type", "application/json").send({ id: insertId, message: "successfully added the project but the following students have not registered: " + noSuchUPI});
+        return res.status(200).setHeader("Content-Type", "application/json").send(returnData);
     }
     catch (err) {
         //console.log(err.message);
