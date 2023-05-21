@@ -1,4 +1,4 @@
-import {Collapse, CButton } from "@coreui/react";
+import { Collapse, CButton } from "@coreui/react";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Slider from "react-slick";
@@ -12,19 +12,6 @@ import { ReactComponent as Heart } from "./images/heart.svg";
 import { ReactComponent as Views } from "./images/views.svg";
 import "./projectView.css";
 
-import AWS from "aws-sdk";
-
-const bucketName = "capfoliostorage";
-const bucketRegion = "ap-southeast-2";
-const accessKeyId = "AKIAUDUQU75VEF3VDCEL";
-const secretAccessKey = "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";
-
-const s3 = new AWS.S3({
-  region: bucketRegion,
-  accessKeyId: accessKeyId,
-  secretAccessKey: secretAccessKey,
-});
-
 const ProjectView = () => {
   const navigate = useNavigate();
 
@@ -35,6 +22,8 @@ const ProjectView = () => {
   const [projects, setProject] = useState("");
   const [tech, setTech] = useState("");
   const [user, setUser] = useState("");
+  const [img, setImage] = useState([]);
+  const [lowRes, setLowRes] = useState();
   // const blueBoxRef = useRef();
 
   const getProject = async () => {
@@ -42,42 +31,33 @@ const ProjectView = () => {
       (response) => response.json()
     );
 
-    fetch("/project/listTeamFiles/" + response[0].TeamName)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log(data);
-        setData(data);
-      })
-      .catch((error) => {
-        console.error("There was a problem fetching the data:", error);
-      });
+    const files = await fetch(`/project/listTeamFiles/${response[0].TeamId}`);
+    const data = await files.json();
 
+    // Get all the images for the slideshow//
+    const filteredFiles = data.filter((file) => !file.endsWith("/"));
+    console.log(filteredFiles);
+    const url = "https://capfoliostorage.s3.ap-southeast-2.amazonaws.com/";
+
+    const firstElement = filteredFiles[0];
+    const lastSlashIndex = firstElement.lastIndexOf("/");
+
+    const folder = firstElement.substring(0, lastSlashIndex);
+    const filename = firstElement.substring(lastSlashIndex);
+
+    const reposnceArray = [];
+    for (let i = 0; i < filteredFiles.length ; i++) {
+      let getHighRes = ''
+      getHighRes = url + filteredFiles[i];
+      reposnceArray.push(getHighRes);
+    }
+    console.log(reposnceArray);
+    setImage(reposnceArray);
+    //=====================================//
     let string = response[0].technologies.split(",");
     setProject(response);
-
     setTech(string);
   };
-
-  useEffect(() => {
-    const fetchResponses = async () => {
-      const responseArray = [];
-
-      for (const element of data) {
-        const response = await fetch(`/project/retrieveFile/${element}`);
-        const data = await response.text();
-        responseArray.push(data);
-      }
-      console.log(responseArray);
-      setResponses(responseArray);
-    };
-
-    fetchResponses();
-  }, [data]);
 
   // Function to collect data
   const getComments = async () => {
@@ -93,7 +73,6 @@ const ProjectView = () => {
     console.log(response);
   };
 
-  
   //-----------------------------------------------------------------//
 
   useEffect(() => {
@@ -148,23 +127,24 @@ const ProjectView = () => {
     };
     return (
       <Slider className="slideshow" {...settings}>
-        {responses.map((response, index) => (
+        {console.log(img)}
+        {img.map((response, index) => (
           <div className="each-slide-effect" key={index}>
             <div
               style={{
-                backgroundImage: `url(${response})`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 width: "100%",
               }}
-            ></div>
+            >
+              <img src={response} alt={`Slide ${index + 1}`} />
+            
+            </div>
           </div>
         ))}
       </Slider>
     );
   };
-
-  
 
   const Header = ({ project }) => {
     return (
