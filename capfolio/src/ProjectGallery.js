@@ -5,7 +5,7 @@ import { Collapse, CButton, CCollapse, CListGroup, CListGroupItem, CCard, CCardB
 import LikeButton from "./components/likeButton";
 import AwardBanner from "./components/awardBanner.js";
 import Sidebar from './Sidebar';
-//import CSidebar from './components/CSidebar';
+import CSidebar from './components/CSidebar';
 import MainImage from './components/getMainImage';
 import { ReactComponent as Heart } from "./images/heart.svg";
 import { ReactComponent as Views } from "./images/views.svg";
