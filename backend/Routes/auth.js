@@ -94,6 +94,7 @@ passport.use(new GoogleStrategy({
     const last_name = sep_name[1];
     let type;
     let sql;
+    let sql1;
     let sql2;
     let var1;
     let var2;
@@ -105,11 +106,28 @@ passport.use(new GoogleStrategy({
         if (emailToCheck === 'admin@aucklanduni.ac.nz') {
             type = 3;
         } else if (emailToCheck.endsWith('@aucklanduni.ac.nz')) {
-            type = 1;
-            sql = `Insert into Users(UserID, UserTypeID, FirstName, lastName, Email) values (${id}, ${type}, "${first_name}", "${last_name}", "${emailToCheck}");`;
-            sql2 = `Insert into Student(UserID, UserTypeID,  StudentUPI) values (${id}, 1, "${emailToCheck.substring(0, 7)}");`;
-            const var1 = (await executeSQLstatement(sql));
-            const var2 = (await executeSQLstatement(sql2));
+
+            const studentUpi = emailToCheck.slice(0, emailToCheck.indexOf("@"));
+            const studentExists = (await executeSQLstatement(`SELECT COUNT(*) AS upiExists FROM Student WHERE StudentUPI = \'${studentUpi}\'`))[0][0].upiExists;
+            if (studentExists == 0) { //new student
+                type = 1;
+                sql = `Insert into Users(UserID, UserTypeID, FirstName, lastName, Email) values (${id}, ${type}, "${first_name}", "${last_name}", "${emailToCheck}");`;
+                sql2 = `Insert into Student(UserID, UserTypeID,  StudentUPI) values (${id}, 1, "${emailToCheck.substring(0, 7)}");`;
+                const var1 = (await executeSQLstatement(sql));
+                const var2 = (await executeSQLstatement(sql2));
+            }
+            else { //unregistered student
+                //if student upi exist in student table but they havent registered themselves officially, as a student
+                //then update the Student_table record and insert a new User record
+                type = 1;
+                sql = `SELECT UserID FROM Student WHERE StudentUPI = '${studentUpi}'`;
+                const userId = (await executeSQLstatement(sql))[0][0].UserID;
+                sql1 = `Insert into Users(UserID, UserTypeID, FirstName, lastName, Email) values (${userId}, ${type}, "${first_name}", "${last_name}", "${emailToCheck}");`;
+                await executeSQLstatement(sql1);
+                sql2 = `UPDATE Capfolio.Student SET isRegistered = 1 WHERE Capfolio.Student.StudentUPI = \'${studentUpi}\'`;
+                await executeSQLstatement(sql2);
+            }
+
         } else {
             type = 4;
             sql = `Insert into Users(UserID, UserTypeID, FirstName, lastName, Email) values (${id}, ${type}, "${first_name}", "${last_name}", "${emailToCheck}");`;
@@ -155,7 +173,7 @@ router.get('/user', async (req, res) => {
         console.log("T1")
         if (req.session.user) {
             user = req.session.user;
-            console.log("user:", user )
+            console.log("user:", user)
             email = user.email;
             console.log("T2")
             if (user.isFormLogin) {
