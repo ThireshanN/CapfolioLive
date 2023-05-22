@@ -365,19 +365,39 @@ projectRouter.post('/FormAddProject', express.json(), async (req, res) => { //
         const sqlSelect = users.map(user => { return `SELECT \'${user.upi}\' AS MissingUPI`; });
         const missingUPICommand = (await executeSQLstatement2(`SELECT v.MissingUPI FROM (${sqlSelect.join(' UNION ALL ')}) v WHERE v.MissingUPI NOT IN (SELECT StudentUPI FROM Capfolio.Student)`, connection))[0];
         const unRegUsers = missingUPICommand.map(element => element.MissingUPI);
-        users.forEach(async user => {
+        for (let user of users) {
+            await updateUsersandStudents(user);
+        }
+        async function updateUsersandStudents(user) {
             let upi = user.upi.trim();
-            if (unRegUsers.includes(upi)) {
-                //no upi found in student table (unregistered student)
-                const addedUser = (await executeSQLstatement2(`INSERT INTO Capfolio.Users (UserTypeID, FirstName, lastName, Email) VALUES (1, '${user.firstName}', '${user.lastName}', '${upi}@aucklanduni.ac.nz')`, connection))[0];
+            let FirstName = user.FirstName.trim();
+            let lastName = user.lastName.trim();
+            let studentSql = '';
+            const userExists = (await executeSQLstatement2(`SELECT COUNT(*) AS userExists FROM Users WHERE Email = '${upi}@aucklanduni.ac.nz';`, connection))[0][0].userExists;
+            const studentIsUnregistered = unRegUsers.includes(upi);
+
+            if (userExists) { //user record found
+                const getUserId = (await executeSQLstatement2(`SELECT UserID FROM Capfolio.Users WHERE Email = '${upi}@aucklanduni.ac.nz';`, connection))[0][0].UserID;
+                console.log('userExists and id is ' + getUserId);
+                studentSql = `UPDATE Capfolio.Student SET UserID = ${getUserId}, projectID = ${projectInsertId}, UserTypeID = 1 WHERE Capfolio.Student.StudentUPI = \'${upi}\'`; //Found student record
+                if (studentIsUnregistered) { //student record NOT found
+                    console.log('studentIsUnregistered');
+                    studentSql = `INSERT INTO Capfolio.Student (UserID, projectID, UserTypeID, StudentUPI, isRegistered) VALUES (${getUserId}, ${projectInsertId}, 1, '${upi}', 0)`;
+                }
+                await executeSQLstatement2(studentSql, connection);
+            } else { //no user record
+                const addedUser = (await executeSQLstatement2(`INSERT INTO Capfolio.Users (UserTypeID, FirstName, lastName, Email) VALUES (1, '${FirstName}', '${lastName}', '${upi}@aucklanduni.ac.nz')`, connection))[0];
                 const userInsertId = addedUser["insertId"];
-                const rows = (await executeSQLstatement2(`INSERT INTO Capfolio.Student (UserID, projectID, UserTypeID, StudentUPI, isRegistered) VALUES (${userInsertId}, ${projectInsertId}, 1, '${upi}', 0)`, connection))[0];
-                
-            } else {
-                //all valid upis, userid already exist for them, insert into Student table and just populate ProjectID and UserTypeID
-                const rows = (await executeSQLstatement2(`UPDATE Capfolio.Student SET projectID = ${projectInsertId}, UserTypeID = 1 WHERE Capfolio.Student.StudentUPI = \'${upi}\'`, connection))[0];
+                console.log('no user found but inserted id is ' + userInsertId);
+                studentSql = `UPDATE Capfolio.Student SET UserID = ${userInsertId}, projectID = ${projectInsertId}, UserTypeID = 1 WHERE Capfolio.Student.StudentUPI = \'${upi}\'`; //nfound student record
+                if (studentIsUnregistered) { //student record NOT found
+                    console.log('studentIsUnregistered');
+                    studentSql = `INSERT INTO Capfolio.Student (UserID, projectID, UserTypeID, StudentUPI, isRegistered) VALUES (${userInsertId}, ${projectInsertId}, 1, '${upi}', 0)`;
+                }
+                await executeSQLstatement2(studentSql, connection);
+                //however is student exists but user doesnt, inconsistent data
             }
-        });
+        };
         console.log("successfully added users")
         //###################################################################################################################
         //###################################################################################################################
@@ -420,8 +440,8 @@ projectRouter.post('/FormAddProject', express.json(), async (req, res) => { //
         //###################################################################################################################
 
         //CLOSE CONNECTION and COMMIT TRANSACTION
-        const message = unRegUsers.length===0? '': 'but the following students have not registered!: ' + unRegUsers;
-        const returnData = { id: projectInsertId, message: 'successfully added the project! ' + message};
+        const message = unRegUsers.length === 0 ? '' : 'but the following students have not registered!: ' + unRegUsers;
+        const returnData = { id: projectInsertId, message: 'successfully added the project! ' + message };
         await connection.commit();
         await connection.end();
         return res.status(200).setHeader("Content-Type", "application/json").send(returnData);
