@@ -24,6 +24,8 @@ const ProjectView = () => {
   const [user, setUser] = useState("");
   const [img, setImage] = useState([]);
   const [lowRes, setLowRes] = useState();
+  const [students, setStudents] = useState([]);
+
   // const blueBoxRef = useRef();
 
   const getProject = async () => {
@@ -33,6 +35,18 @@ const ProjectView = () => {
 
     const files = await fetch(`/project/listTeamFiles/${response[0].TeamId}`);
     const data = await files.json();
+    setProject(response);
+
+    let string = response[0].technologies.split(",");
+    setTech(string);
+
+    // Assuming you have the data stored in a variable called 'responseData'
+    const processedUsers = response.map((item) => ({
+      name: item.studentNames.split(","),
+      upi: item.studentUPIs.split(","),
+    }));
+    console.log(processedUsers);
+    setStudents(processedUsers);
 
     // Get all the images for the slideshow//
     const filteredFiles = data.filter((file) => !file.endsWith("/"));
@@ -46,17 +60,14 @@ const ProjectView = () => {
     const filename = firstElement.substring(lastSlashIndex);
 
     const reposnceArray = [];
-    for (let i = 0; i < filteredFiles.length ; i++) {
-      let getHighRes = ''
+    for (let i = 0; i < filteredFiles.length; i++) {
+      let getHighRes = "";
       getHighRes = url + filteredFiles[i];
       reposnceArray.push(getHighRes);
     }
     console.log(reposnceArray);
     setImage(reposnceArray);
     //=====================================//
-    let string = response[0].technologies.split(",");
-    setProject(response);
-    setTech(string);
   };
 
   // Function to collect data
@@ -138,7 +149,6 @@ const ProjectView = () => {
               }}
             >
               <img src={response} alt={`Slide ${index + 1}`} />
-            
             </div>
           </div>
         ))}
@@ -162,6 +172,13 @@ const ProjectView = () => {
             {/*        <p key={`key${i}`}>{name},&nbsp;</p>*/}
             {/*    </div>*/}
             {/*)}*/}
+
+            {students.map((user, index) => (
+              //user.upi
+              <div className="name" key={index}>
+                <p>{user.name.join(", ")}</p>
+              </div>
+            ))}
           </div>
           <p className="proj-desc">{project.ProjectIntro}</p>
         </div>
