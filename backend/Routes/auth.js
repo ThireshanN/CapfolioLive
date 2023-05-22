@@ -124,16 +124,18 @@ passport.use(new GoogleStrategy({
         //they have a user and student record, but the field 'isRegistered' in Student table is SET to 0
         //the above occurs from ./FormAddProject Route
         //SO NOW SET 'isRegistered' to 1 (student table), and also set firstname and lastname (users table)
-        const isRegistered = (await executeSQLstatement(`SELECT isRegistered FROM Capfolio.Student WHERE StudentUPI = '${studentUpi}'`))[0][0].isRegistered;
-        if (isRegistered === 0) {
-            type = 1;
-            sql = `SELECT UserID FROM Users WHERE Email = '${emailToCheck}'`;
-            const aUserId = (await executeSQLstatement(sql))[0][0].UserID;
-            sql1 = `UPDATE Capfolio.Users SET FirstName = "${first_name}", lastName = "${last_name}" WHERE Capfolio.Users.UserID = ${aUserId}`;
-            sql2 = `UPDATE Capfolio.Student SET isRegistered = 1 WHERE Capfolio.Student.StudentUPI = '${studentUpi}'`;
-            await executeSQLstatement(sql1);
-            await executeSQLstatement(sql2);
-            console.log('unregistered student has logged in through google!')
+        if (emailToCheck.endsWith('@aucklanduni.ac.nz')) {
+            const isRegistered = (await executeSQLstatement(`SELECT isRegistered FROM Capfolio.Student WHERE StudentUPI = '${studentUpi}'`))[0][0].isRegistered;
+            if (isRegistered === 0) {
+                type = 1;
+                sql = `SELECT UserID FROM Users WHERE Email = '${emailToCheck}'`;
+                const aUserId = (await executeSQLstatement(sql))[0][0].UserID;
+                sql1 = `UPDATE Capfolio.Users SET FirstName = "${first_name}", lastName = "${last_name}" WHERE Capfolio.Users.UserID = ${aUserId}`;
+                sql2 = `UPDATE Capfolio.Student SET isRegistered = 1 WHERE Capfolio.Student.StudentUPI = '${studentUpi}'`;
+                await executeSQLstatement(sql1);
+                await executeSQLstatement(sql2);
+                //console.log('unregistered student has logged in through google!')
+            }
         }
     }
 
