@@ -70,3 +70,9 @@
     height: 20px;
     width: auto;
 }
+
+
+.fileUploadOptions{
+    display: flex;
+    flex-direction: column
+}
