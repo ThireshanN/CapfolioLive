@@ -15,6 +15,7 @@ async function executeSQLstatement(sql) {
 //http://localhost:3000/profile/likedProjects
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/profile/likedProjects
 profileRouter.get('/likedProjects', async (req, res) => { 
+    
     try {
         const sql = `
         SELECT Project.*, count(DISTINCT likeID) AS likes, GROUP_CONCAT(DISTINCT technologiesUsed.technologyName) AS Technologies, AwardName, AwardDesc
@@ -27,7 +28,7 @@ profileRouter.get('/likedProjects', async (req, res) => {
         GROUP BY ProjectID 
         HAVING ProjectID in (SELECT ProjectID_FK
        FROM likes
-       WHERE UserID_FK=${req.body.userID})
+       WHERE UserID_FK=${req.query.id})
         ORDER BY viewCount;
         `;
         const likedProjects = (await executeSQLstatement(sql))[0]//.catch(err => console.log("The following error generated:\n" + err));
@@ -56,7 +57,7 @@ profileRouter.get('/userProject', async (req, res) => {
         GROUP BY ProjectID 
         HAVING ProjectID in (SELECT projectID
             FROM Student
-            WHERE UserID=${req.body.userID});
+            WHERE UserID=${req.query.id});
         `;
         const ownProject = (await executeSQLstatement(sql))[0]//.catch(err => console.log("The following error generated:\n" + err));
         return res.status(200).setHeader("Content-Type", "application/json").send(ownProject);
