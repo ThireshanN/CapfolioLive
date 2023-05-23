@@ -47,7 +47,7 @@ const AdminPage = () => {
             <CCol xs key={project.ProjectID}>
               <Link to={`/Admin-project-view/${project.ProjectID}`}>
                 <CCard className="project-card h-100">
-                  <MainImage key={project.ProjectID} teamname={project.TeamName} />
+                <MainImage key={project.ProjectID} TeamId={project.TeamId} />
                   <CCardBody>
                     <CCardTitle>{project.ProjectName}</CCardTitle>
                     <CCardText>{project.TeamName}</CCardText>
