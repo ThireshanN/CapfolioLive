@@ -548,12 +548,18 @@ projectRouter.post('/uploadMultipleFiles', async (req, res) => {
 
 //http://localhost:3000/project/deleteFiles/DeleteME3
 projectRouter.delete('/deleteFiles/:TeamId', async (req, res) => {
-    const TeamId = req.params.TeamId;
-    const files =  req.body.files;   //["autumn.jpg", "zeus.png"];
+    const TeamId = req.params.TeamId + "/";
+    const files = req.body.files;   //["autumn.jpg", "zeus.png"];
     const filesToDelete = [];        // = [{ Key: `${TeamId}/autumn.jpg` }, { Key: `${TeamId}/zeus.png` }];
-    for (let filename of files) {
-        filesToDelete.push({ Key: `${TeamId}/${filename}`});
-      }
+    for (let filename of files) { 
+        console.log(filename + " " + TeamId);
+        if (filename == TeamId) { //delete folder DeleteME3
+            filesToDelete.push({ Key: `${TeamId}` }); 
+        } 
+        else { 
+            filesToDelete.push({ Key: `${TeamId}${filename}` }); 
+        }
+    }
 
     const REGION = "ap-southeast-2";
     const s3ServiceObject = new S3({
