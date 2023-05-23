@@ -118,7 +118,7 @@ profileRouter.put('/updateUser', express.json(), async (req, res) => {
             res.status(400).setHeader("Content-Type", "application/json").send("Error when running the SQL statement");
         }
         else{
-            res.json(await updateUser(req.body));
+            res.json(response);
         }
     } catch (err) {
       console.error(`Error while updating the user`, err.message);
