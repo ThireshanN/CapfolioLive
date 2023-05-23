@@ -69,13 +69,6 @@ function AdminProjectTabs({ projects }) {
           ) : (
             <p className="projectApproach">{projectApproach}</p>
           )}
-          <iframe
-            width="100%"
-            height="400"
-            allowFullScreen
-            src={projects && projects.map((project) => project.VideoLink)}
-            title="Project Video"
-          ></iframe>
           {isEditing ? (
             <button onClick={handleSave} className="btn btn-primary">Save</button>
           ) : (

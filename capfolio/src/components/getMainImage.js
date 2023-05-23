@@ -13,7 +13,7 @@ const MainImage = (props) => {
       const data = await files.json();
 
       const filteredFiles = data.filter((file) => !file.endsWith("/"));
-      console.log(filteredFiles);
+      console.log("The filtered files for ", props.TeamId, " are: ", filteredFiles);
       const url = "https://capfoliostorage.s3.ap-southeast-2.amazonaws.com/";
 
       if (data.length === 0) {
