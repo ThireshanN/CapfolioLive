@@ -11,6 +11,7 @@ import gitHubLogo from "./images/github-mark-white.png";
 import { ReactComponent as Heart } from "./images/heart.svg";
 import { ReactComponent as Views } from "./images/views.svg";
 import "./projectView.css";
+import YouTubeIcon from '@mui/icons-material/YouTube';
 
 import AWS from "aws-sdk";
 
@@ -145,7 +146,8 @@ const AdminProjectView = () => {
     const [capstoneSemester, setCapstoneSemester] = useState('');
     const [ProjectName, setProjectName] = useState(''); 
     const [TeamName, setTeamName] = useState('');
-    const [githubLink, setGithubLink] = useState('');
+    const [githubLink, setgithubLink] = useState('');
+    const [VideoLink, setVideoLink] = useState('');
     const [isEditing, setIsEditing] = useState(false);
 
     useEffect(() => {
@@ -153,6 +155,8 @@ const AdminProjectView = () => {
         setTeamName(projects && projects.map((project) => project.TeamName).join(' '));
         setCapstoneYear(projects && projects.map((project) => project.capstoneYear).join(' '));
         setCapstoneSemester(projects && projects.map((project) => project.capstoneSemester).join(' '));
+        setVideoLink(projects && projects.map((project) => project.VideoLink).join(' '));
+        setgithubLink(projects && projects.map((project) => project.githubLink).join(' '));
       }, [projects]);
 
     
@@ -223,6 +227,36 @@ const AdminProjectView = () => {
             </p>
           </div>
           <p className="proj-desc">{project.ProjectIntro}</p>
+          <div className="pv-buttons">
+          {" "}
+          {isEditing ? (
+            <input
+              type="text"
+              value={project.githubLink}
+              onChange={(e) => setgithubLink(e.target.value)}
+            />
+          ) : (
+            <CButton>
+            <a href={project.githubLink} target="_blank" rel="noreferrer">
+              <img src={gitHubLogo} alt="GitHub Logo" /> GitHub
+            </a>
+            </CButton>
+          )}
+          {" "}
+          {isEditing ? (
+            <input
+              type="text"
+              value={project.VideoLink}
+              onChange={(e) => setVideoLink(e.target.value)}
+            />
+          ) : (
+            <CButton>
+            <a href={project.VideoLink} target="_blank" rel="noreferrer">
+              <YouTubeIcon /> YouTube
+            </a>
+            </CButton>
+          )}
+        </div>
         </div>
   
         <div className="pv-buttons">

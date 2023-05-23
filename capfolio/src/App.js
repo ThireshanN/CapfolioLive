@@ -11,15 +11,15 @@ import Profile from "./pages/Profile";
 import ProjectSubmit from "./projectSubmit";
 import CodeConfirmation from "./pages/CodeConfirmation";
 import ResetPassword from "./pages/ResetPassword";
+import Admin from "./Admin";
+import AdminProjectView from "./AdminProjectView";
 
 
 function App() {
   return (
     <AuthProvider>
       <Navbar />
-      {/* <div className="container">
-      <div className="auth-wrapper">
-        <div className="auth-inner"> */}
+    
         <ScrollToTop>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -30,6 +30,8 @@ function App() {
           <Route path="/project-submit" element={<ProjectSubmit />} />
           <Route path="/Code-Confirmation" element={<CodeConfirmation />} />
           <Route path="/Rest-Password" element={<ResetPassword />} />
+          <Route path="/Admin-Page" element={<Admin />} />
+          <Route path="/Admin-project-view/:id" element={<AdminProjectView />} />
         </Routes>
         </ScrollToTop>
         {/* </div>

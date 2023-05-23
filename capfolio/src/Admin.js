@@ -45,7 +45,7 @@ const AdminPage = () => {
         <CRow xs={{ cols: 1, gutter: 4 }} sm={{ cols: 2 }} md={{ cols: 2 }} lg={{ cols: 2 }} xl={{ cols: 3 }} xxl={{ cols: 3 }}>
           {displayedProjects.map((project) => (
             <CCol xs key={project.ProjectID}>
-              <Link to={`/project-view/${project.ProjectID}`}>
+              <Link to={`/Admin-project-view/${project.ProjectID}`}>
                 <CCard className="project-card h-100">
                   <MainImage key={project.ProjectID} teamname={project.TeamName} />
                   <CCardBody>
