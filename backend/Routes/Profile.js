@@ -12,6 +12,12 @@ async function executeSQLstatement(sql) {
     return [rows, result];
 }
 
+/*
+{
+    "userID": "42"
+}
+*/
+
 //http://localhost:3000/profile/likedProjects
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/profile/likedProjects
 profileRouter.get('/likedProjects', async (req, res) => { 
@@ -35,11 +41,15 @@ profileRouter.get('/likedProjects', async (req, res) => {
     }
     catch (err) {
         //console.log(err.message);
-        return res.status(400).setHeader("Content-Type", "text/plain").send("failed to fetch project data because of " + err);
+        return res.status(400).setHeader("Content-Type", "application/json").send("failed to fetch project data because of " + err);
     }
 });
 
-
+/*
+{
+    "userID": "28"
+}
+*/
 
 //http://localhost:3000/profile/userProject
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/profile/userProject
@@ -63,7 +73,7 @@ profileRouter.get('/userProject', async (req, res) => {
     }
     catch (err) {
         //console.log(err.message);
-        return res.status(400).setHeader("Content-Type", "text/plain").send("failed to fetch project data because of " + err);
+        return res.status(400).setHeader("Content-Type", "application/json").send("failed to fetch project data because of " + err);
     }
 });
 
@@ -102,7 +112,7 @@ profileRouter.put('/updateUser', express.json(), async (req, res) => {
         //res.json(await updateUser(req.body));
         let response = await updateUser(req.body);
         if(response==="login"){
-            res.status(400).setHeader("Content-Type", "application/json").send("Log in to view the profile page");
+            res.status(400).setHeader("Content-Type", "application/json").send("Log in to update the profile page");
         }
         else if (response==="Error"){
             res.status(400).setHeader("Content-Type", "application/json").send("Error when running the SQL statement");
