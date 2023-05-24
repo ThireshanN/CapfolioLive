@@ -51,7 +51,7 @@ export default function Navbar() {
             <ul className="nav-desktop">
                 {!isAuthenticated ? (
                     <>
-                        <CustomLink to="/Admin-Page" className="login">
+                        <CustomLink to="/login" className="login">
                             Log in
                         </CustomLink>
                         <CustomLink to="/sign-up" className="signup">
