@@ -59,9 +59,12 @@ const AdminProjectView = () => {
       .catch((error) => {
         console.error("There was a problem fetching the data:", error);
       });
+
     let string = response[0].technologies.split(",");
     setProject(response);
   };
+
+
 
   useEffect(() => {
     const fetchResponses = async () => {
@@ -151,6 +154,7 @@ const AdminProjectView = () => {
     const [githubLink, setgithubLink] = useState('');
     const [VideoLink, setVideoLink] = useState('');
     const [isEditing, setIsEditing] = useState(false);
+
     useEffect(() => {
         setProjectName(projects && projects.map((project) => project.ProjectName).join(' '));
         setTeamName(projects && projects.map((project) => project.TeamName).join(' '));

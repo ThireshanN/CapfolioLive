@@ -105,16 +105,6 @@ passport.use(
       //console.log("Email exists:", exists);
       if (!exists) {
         const id = await next_id();
-<<<<<<< HEAD
-        if (emailToCheck === 'mdes954@aucklanduni.ac.nz') {
-            type = 3;
-        } else if (emailToCheck.endsWith('@aucklanduni.ac.nz')) {
-            type = 1;
-            sql1 = `Insert into Users(UserID, UserTypeID, FirstName, lastName, Email) values (${id}, ${type}, "${first_name}", "${last_name}", "${emailToCheck}");`;
-            sql2 = `Insert into Student(UserID, UserTypeID,  StudentUPI) values (${id}, 1, "${emailToCheck.substring(0, 7)}");`;
-            const var1 = (await executeSQLstatement(sql1));
-            const var2 = (await executeSQLstatement(sql2));
-=======
         if (emailToCheck === "admin@aucklanduni.ac.nz") {
           type = 3;
         } else if (emailToCheck.endsWith("@aucklanduni.ac.nz")) {
@@ -126,7 +116,6 @@ passport.use(
           )}");`;
           const var1 = await executeSQLstatement(sql1);
           const var2 = await executeSQLstatement(sql2);
->>>>>>> 206691865d31b6485a56b7e47f450303fdfb4e3d
         } else {
           type = 4;
           sql = `Insert into Users(UserID, UserTypeID, FirstName, lastName, Email) values (${id}, ${type}, "${first_name}", "${last_name}", "${emailToCheck}");`;
