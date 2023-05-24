@@ -44,6 +44,7 @@ const Profile = () => {
   const [picture, setPicture] = useState("");
   const [projects, setProjects] = useState([]);
   const [userProject, setUserProject] = useState([]);
+  const [isStudent, setStudent] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -56,8 +57,12 @@ const Profile = () => {
         userData = await response.json();
         setName(`${userData.FirstName} ${userData.LastName}`);
         setPicture(userData.Photo);
-        setProfession(userData.Type)
-        setDescription(userData.userDescription)
+        setProfession(userData.Type);
+        setDescription(userData.userDescription);
+        if (userData.UserType === 1) {
+          setStudent(true);
+        }
+
         console.log(userData.UserID);
       } catch (error) {
         console.error("Error fetching user data:", error.message);
@@ -157,14 +162,16 @@ const Profile = () => {
                 />
                 {isEditing ? (
                   <div>
-                    <input value={name} onChange={handleNameChange} />
+                    <input value={name} onChange={handleNameChange} placeholder="Name" />
                     <input
                       value={profession}
                       onChange={handleProfessionChange}
+                      placeholder='Occupation'
                     />
                     <textarea
                       value={description}
                       onChange={handleDescriptionChange}
+                      placeholder="Tell us about yourself"
                     />
                   </div>
                 ) : (
@@ -175,16 +182,36 @@ const Profile = () => {
                   </div>
                 )}
                 <div className="d-flex justify-content-center mb-2">
-                  {isEditing ? (
-                    <MDBBtn onClick={handleSaveProfile}>Save Profile</MDBBtn>
+                  {isStudent ? (
+                    <div>
+                      {isEditing ? (
+                        <MDBBtn onClick={handleSaveProfile}>
+                          Save Profile
+                        </MDBBtn>
+                      ) : (
+                        <MDBBtn onClick={handleEditProfile}>
+                          Edit Profile
+                        </MDBBtn>
+                      )}
+                      <Link to="/project-submit">
+                        <MDBBtn outline className="ms-1">
+                          Submit Project
+                        </MDBBtn>
+                      </Link>
+                    </div>
                   ) : (
-                    <MDBBtn onClick={handleEditProfile}>Edit Profile</MDBBtn>
+                    <div>
+                    {isEditing ? (
+                      <MDBBtn onClick={handleSaveProfile}>
+                        Save Profile
+                      </MDBBtn>
+                    ) : (
+                      <MDBBtn onClick={handleEditProfile}>
+                        Edit Profile
+                      </MDBBtn>
+                    )}
+                    </div>
                   )}
-                  <Link to="/project-submit">
-                    <MDBBtn outline className="ms-1">
-                      Submit Project
-                    </MDBBtn>
-                  </Link>
                 </div>
               </MDBCardBody>
             </MDBCard>
