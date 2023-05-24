@@ -35,7 +35,7 @@ import "./Profile.css";
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState("");
-  const [profession, setProfession] = useState("Software Engineer");
+  const [profession, setProfession] = useState("");
   const [github, setGithub] = useState("https://github.com");
   const [linkedin, setLinkedin] = useState("https://linkedin.com");
   const [description, setDescription] = useState(
@@ -56,6 +56,8 @@ const Profile = () => {
         userData = await response.json();
         setName(`${userData.FirstName} ${userData.LastName}`);
         setPicture(userData.Photo);
+        setProfession(userData.Type)
+        setDescription(userData.userDescription)
         console.log(userData.UserID);
       } catch (error) {
         console.error("Error fetching user data:", error.message);
@@ -104,6 +106,24 @@ const Profile = () => {
       linkedin: linkedin,
       description: description,
       picture: picture,
+    });
+
+    const [firstName, lastName] = name.split(" ");
+
+    fetch("/profile/updateUser", {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        firstName: firstName,
+        lastName: lastName,
+        linkedin: linkedin,
+        github: github,
+        userDesc: description,
+        profession: profession,
+      }),
     });
 
     setIsEditing(false);
@@ -160,9 +180,11 @@ const Profile = () => {
                   ) : (
                     <MDBBtn onClick={handleEditProfile}>Edit Profile</MDBBtn>
                   )}
-                  <MDBBtn outline className="ms-1">
-                    Submit Project
-                  </MDBBtn>
+                  <Link to="/project-submit">
+                    <MDBBtn outline className="ms-1">
+                      Submit Project
+                    </MDBBtn>
+                  </Link>
                 </div>
               </MDBCardBody>
             </MDBCard>
@@ -298,5 +320,5 @@ const Profile = () => {
       </MDBContainer>
     </section>
   );
-}
+};
 export default Profile;
