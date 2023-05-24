@@ -18,7 +18,7 @@ const AdminPage = () => {
   }, []);
 
   const fetchAllProjects = async () => {
-    const response = await fetch('/project/AllProjectData').then((response) => response.json());
+    const response = await fetch('/admin/approved/projects').then((response) => response.json());
     setProjects(response);
   };
 

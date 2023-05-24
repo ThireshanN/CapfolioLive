@@ -104,7 +104,7 @@ passport.use(new GoogleStrategy({
     //console.log("Email exists:", exists);
     if (!exists) {
         const id = await next_id();
-        if (emailToCheck === 'admin@aucklanduni.ac.nz') {
+        if (emailToCheck === 'mdes954@aucklanduni.ac.nz') {
             type = 3;
         } else if (emailToCheck.endsWith('@aucklanduni.ac.nz')) {
             type = 1;
