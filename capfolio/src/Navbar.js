@@ -11,6 +11,7 @@ export default function Navbar() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const navigate = useNavigate();
     const [menuOpen, setMenuOpen] = useState(false);
+    
 
     useEffect(() => {
         setIsAuthenticated(user !== null);

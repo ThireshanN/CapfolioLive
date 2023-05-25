@@ -2,7 +2,7 @@ import express from 'express';
 export const projectRouter = express.Router();
 import mysql from 'mysql2/promise';
 import { config } from '../sqlconfig.js';
-import { PutObjectCommand, S3, GetObjectCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";
+import { PutObjectCommand, S3, GetObjectCommand, ListObjectsV2Command, DeleteObjectsCommand } from "@aws-sdk/client-s3";
 import fs from 'fs';
 import path from 'path';
 import { error } from 'console';
@@ -546,6 +546,48 @@ projectRouter.post('/uploadMultipleFiles', async (req, res) => {
     }
 });
 
+//http://localhost:3000/project/deleteFiles/DeleteME3
+projectRouter.delete('/deleteFiles/:TeamId', async (req, res) => {
+    const TeamId = req.params.TeamId + "/";
+    const files = req.body.files;   //["autumn.jpg", "zeus.png"];
+    const filesToDelete = [];        // = [{ Key: `${TeamId}/autumn.jpg` }, { Key: `${TeamId}/zeus.png` }];
+    for (let filename of files) { 
+        console.log(filename + " " + TeamId);
+        if (filename == TeamId) { //delete folder DeleteME3
+            filesToDelete.push({ Key: `${TeamId}` }); 
+        } 
+        else { 
+            filesToDelete.push({ Key: `${TeamId}${filename}` }); 
+        }
+    }
+
+    const REGION = "ap-southeast-2";
+    const s3ServiceObject = new S3({
+        region: REGION,
+        credentials: {
+            accessKeyId: 'AKIAUDUQU75VEF3VDCEL',
+            secretAccessKey: '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'
+        }
+    });
+    const command = new DeleteObjectsCommand({
+        Bucket: "capfoliostorage",
+        Delete: {
+            Objects: filesToDelete, //[{ Key: "object1.txt" }, { Key: "object2.txt" }], // Objects: filesToDelete,
+        },
+    });
+
+    try {
+        const { Deleted } = await s3ServiceObject.send(command);
+        console.log(
+            `Successfully deleted ${Deleted.length} objects from S3 bucket. Deleted objects:`
+        );
+        console.log(Deleted.map((d) => ` • ${d.Key}`).join("\n"));
+        return res.status(200).send("successfully deleted the files");
+    } catch (err) {
+        console.error(err);
+        return res.status(400).setHeader("Content-Type", "text/plain").send("failed to delete files because of " + err);
+    }
+});
 
 
 //http://localhost:3000/project/retrieveFile/Meowland3/tree.jpg
@@ -595,9 +637,9 @@ projectRouter.get('/retrieveFile/:File([\\w\\S]+)', async (req, res) => { //WORK
 
 //http://localhost:3000/project/listTeamFiles/DeleteME
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/project/listTeamFiles/DeleteME
-projectRouter.get('/listTeamFiles/:TeamName', async (req, res) => { //WORKS 29/04/2023
+projectRouter.get('/listTeamFiles/:TeamId', async (req, res) => { //WORKS 29/04/2023
     try {
-        //"TeamName": "Meowland"
+        //"TeamId": "Meowland"
         const REGION = "ap-southeast-2";
         const s3ServiceObject = new S3({
             region: REGION,
@@ -609,7 +651,7 @@ projectRouter.get('/listTeamFiles/:TeamName', async (req, res) => { //WORKS 29/0
 
         const params = {
             Bucket: "capfoliostorage",
-            Prefix: req.params.TeamName + "/" //omit this, to list all files in capfoliostorage
+            Prefix: req.params.TeamId + "/" //omit this prefix, to list all files in capfoliostorage
         };
 
         const command = new ListObjectsV2Command(params);

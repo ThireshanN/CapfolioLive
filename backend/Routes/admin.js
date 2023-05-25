@@ -70,6 +70,52 @@ adminRouter.put('/approveProject', express.json(), async (req, res) => {
     }
 });
 
+/*
+{
+    "id": "231",
+    "Name": "test",
+    "Description": "this is a project",
+    "Year": "2023",
+    "Semester": "1",
+    "github": "https://www.github.com",
+    "TeamName": "Snoop",
+    "video": "https://www.youtube.com",
+    "Intro": "this is the intro",
+    "approach": "this is the approach"
+}
+*/
+
+//http://localhost:3000/admin/updateProject
+//http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/admin/updateProject
+async function updateProject(project){
+    const sql = `UPDATE Project 
+    SET ProjectName="${project.Name}", projectDec="${project.Description}",capstoneYear="${project.Year}",capstoneSemester="${project.Semester}",
+    githubLink="${project.github}", TeamName = "${project.TeamName}", VideoLink="${project.video}",ProjectIntro="${project.Intro}", 
+    Project_Approach = "${project.approach}"
+    WHERE ProjectID=${project.id};`;
+    const userupdate = (await executeSQLstatement(sql));
+    let message = 'Error';
+    if (userupdate.length!==0) {
+      message = 'Project updated successfully\n';
+    }
+    return {message};
+  }
+
+  
+adminRouter.put('/updateProject', express.json(), async (req, res) => {
+    try {
+        let response = await updateProject(req.body);
+        if (response==="Error"){
+            res.status(400).setHeader("Content-Type", "application/json").send("Error when running the SQL statement");
+        }
+        else{
+            res.json(response);
+        }
+    } catch (err) {
+      console.error(`Error while updating the project`, err.message);
+    }
+});
+
 
 //http://localhost:3000/admin/postAward
 //the id here is the same ProjectId as http://localhost:3000/projects/postAward?id=2

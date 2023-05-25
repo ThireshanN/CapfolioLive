@@ -81,7 +81,7 @@ export default function ProjectSubmit() {
   //-------------------Handles the users being added--------------------//
 
   const [users, setUsers] = useState([
-    { upi: "", firstName: "", lastName: "" },
+    { upi: "", FirstName: "", lastName: "" },
   ]);
 
   const handleUserChange = (index, field, value) => {
@@ -91,7 +91,7 @@ export default function ProjectSubmit() {
   };
 
   const handleAddUser = () => {
-    setUsers([...users, { upi: "", firstName: "", lastName: "" }]);
+    setUsers([...users, { upi: "", FirstName: "", lastName: "" }]);
   };
 
   const handleRemoveUser = (index) => {
@@ -161,6 +161,12 @@ export default function ProjectSubmit() {
     const newImages = [...images];
     newImages.splice(index, 1);
     setImages(newImages);
+  };
+
+  const [pdf, setPDF] = useState([]);
+  const handlePDFUpload = (event) => {
+    const selectdPDF = Array.from(event.target.files);
+    setPDF(selectdPDF);
   };
 
   const [text1, setText1] = useState("");
@@ -244,8 +250,6 @@ export default function ProjectSubmit() {
 
     //------------------------------------------------------------//
 
-    
-
     const promises = images.map(async (image) => {
       // Creates a low res version of each image
       const resizedImage = await resizeFile(image);
@@ -255,7 +259,7 @@ export default function ProjectSubmit() {
       const params = {
         Bucket: bucketName,
         Key: key,
-        ACL:'public-read',
+        ACL: "public-read",
         Body: resizedImage,
         ContentType: "image/*",
       };
@@ -281,7 +285,7 @@ export default function ProjectSubmit() {
       const params = {
         Bucket: bucketName,
         Key: key,
-        ACL:'public-read',
+        ACL: "public-read",
         Body: image,
         ContentType: "image/*",
       };
@@ -296,6 +300,32 @@ export default function ProjectSubmit() {
 
     try {
       const results = Promise.all(highResPromises);
+      console.log(results);
+    } catch (err) {
+      console.error(err);
+    }
+
+    const pdfPromoise = pdf.map(async (pdf) => {
+      const filename = pdf.name;
+      const key = "" + teamID + "/projectPoster/" + filename;
+      const params = {
+        Bucket: bucketName,
+        Key: key,
+        ACL: "public-read",
+        Body: pdf,
+        ContentType: "application/pdf",
+      };
+
+      try {
+        const data = await s3.upload(params).promise();
+        return data;
+      } catch (err) {
+        console.error(err);
+      }
+    });
+
+    try {
+      const results = Promise.all(pdfPromoise);
       console.log(results);
     } catch (err) {
       console.error(err);
@@ -325,8 +355,6 @@ export default function ProjectSubmit() {
         TeamId: "'" + teamID + "'",
       }),
     });
-
-
   };
 
   return (
@@ -514,15 +542,32 @@ export default function ProjectSubmit() {
           id="yt"
           type="url"
         />
-        <input
-          className="formLinks"
-          type="file"
-          id="image-upload"
-          name="image-upload"
-          onChange={handleImageChange}
-          multiple
-        />
+        <div className="fileUploadOptions">
+          <label for="pdf-upload">
+            Upload your project poster
+          </label>
+          <input
+            className="formLinks"
+            type="file"
+            id="pdf-upload"
+            name="pdf-upload"
+            accept="application/pdf"
+            onChange={handlePDFUpload}
+          />
+          <label for="image-upload">
+            Upload pictures of your project
+          </label>
 
+          <input
+            className="formLinks"
+            type="file"
+            id="image-upload"
+            name="image-upload"
+            onChange={handleImageChange}
+            multiple
+            accept="image/*"
+          />
+        </div>
         <div className={thumbnailClassName(images.length)}>
           {images.map((url, index) => (
             <div key={index} className="displayImage">
