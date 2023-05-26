@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Box from '@mui/material/Box';
+import React, { useState } from "react";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Box from "@mui/material/Box";
 import { CButton } from "@coreui/react";
 import { MDBTextArea } from "mdb-react-ui-kit";
 import avatar from "../images/avatar.png";
 import { useParams, useNavigate } from "react-router-dom";
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 function ProjectTabs({ projects, comments, user, getComments }) {
   const [selectedTab, setSelectedTab] = useState(0);
+  const [showPopUp, setShowPopUp] = useState(false);
+  const [commentId, setCommentId] = useState("");
   const navigate = useNavigate();
   const params = useParams();
 
@@ -16,51 +19,30 @@ function ProjectTabs({ projects, comments, user, getComments }) {
     setSelectedTab(newValue);
   };
 
-
-    
-      //Code to handle deleting comments that a user made
-      const [showPopUp, setShowPopUp] = useState(false);
-    
-      const handleYesClick = async () => {
-        // Make your HTTP request here
-        // ...
-        // Close the pop-up
-        //setShowPopUp(false);
-      };
-    
-      const handleNoClick = () => {
-        // Close the pop-up
-        setShowPopUp(false);
-      };
-    
-      //-----------------------------------------------------------------//
-    
-      const handleSubmit = (e) => {
-        e.preventDefault();
-        var CommentDesc = document.getElementById("comment").value;
-    
-        fetch("/projects/PostComment?id=" + params.id, {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
+  const theme = createTheme({
+    palette: {
+      secondary: {
+        main: '#0a89eb',
+      },
+    },
+    components: {
+      MuiTab: {
+        styleOverrides: {
+          root: {
+            color: '#0a89eb',
+            fontFamily: '"Outfit"',
+            textTransform: 'none',
           },
-          body: JSON.stringify({
-            CommentDesc: CommentDesc,
-          }),
-        }).then((response) => {
-          return response.text().then((responseBody) => {
-            if (responseBody == '"Only logged in Users can comment"') {
-              navigate("/login");
-            } else {
-              getComments()
-            }
-          });
-        });
-        document.getElementById("comment").value = "";
-      };
+          selected: {
+            color: '#0a89eb',
+          }
+        }
+      }
+    }
+  });
 
-  const PopUp = ({ onYesClick, onNoClick }) => {
+  const PopUp = ({ onYesClick, onNoClick, commentId }) => {
+    console.log(commentId)
     return (
       <div class="popup">
         <h2>Confirmation</h2>
@@ -77,154 +59,208 @@ function ProjectTabs({ projects, comments, user, getComments }) {
     );
   };
 
+  const handleYesClick = async (commentId) => {
+
+    //console.log(commentId)
+    await fetch("/projects/deletecomment", {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        CommentID: commentId,
+        UserID: user,
+      }),
+    }).then(() => {
+      getComments()
+      setShowPopUp(false);
+    });
+  };
+
+  const handleNoClick = () => {
+    // Close the pop-up
+    setShowPopUp(false);
+  };
+
+  //-----------------------------------------------------------------//
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    var CommentDesc = document.getElementById("comment").value;
+
+    fetch("/projects/PostComment?id=" + params.id, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        CommentDesc: CommentDesc,
+      }),
+    }).then((response) => {
+      return response.text().then((responseBody) => {
+        if (responseBody == '"Only logged in Users can comment"') {
+          navigate("/login");
+        } else {
+          getComments();
+        }
+      });
+    });
+    document.getElementById("comment").value = "";
+  };
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Tabs
-        value={selectedTab}
-        onChange={handleChange}
-        indicatorColor="primary"
-        textColor="primary"
-        variant="fullWidth"
-      >
-        <Tab label="About Project" />
-        <Tab label="Project Poster" />
-        <Tab label="Comments" />
-      </Tabs>
-      {selectedTab === 0 && (
-        <div className="projectInformation">
-          <h2>
-            About {projects && projects.map((project) => project.ProjectName)}
-          </h2>
+    <ThemeProvider theme={theme}>
+        <Box sx={{ width: "100%" }}>
+        <Tabs
+            value={selectedTab}
+            onChange={handleChange}
+            indicatorColor="primary"
+            textColor="primary"
+            variant="fullWidth"
+        >
+            <Tab label="About Project" />
+            <Tab label="Project Poster" />
+            <Tab label="Comments" />
+        </Tabs>
+        {selectedTab === 0 && (
+            <div className="projectInformation">
+            <h2>
+                About {projects && projects.map((project) => project.ProjectName)}
+            </h2>
 
-          <p className="about">
-            {projects && projects.map((project) => project.ProjectIntro)}{" "}
-          </p>
-          <h2>Project Approach</h2>
-          <p className="projectApproach">
-            {projects && projects.map((project) => project.Project_Approach)}
-          </p>
-          <iframe
-            width="100%"
-            height="400"
-            allowFullScreen
-            src={
-              projects && projects.map((project) => project.VideoLink)
-            }
-            title="Project Video"
-          ></iframe>
-        </div>
-      )}
-            {selectedTab === 1 && (
-        <div className="projectInformation">
-          <h2>
-            This project poster will be displayed here.
-            <br></br>
-          </h2>
-
-        </div>
-      )}
-      {selectedTab === 2 && (
-              <div className="commentbox">
-              <div className="comments">
+            <p className="about">
+                {projects && projects.map((project) => project.ProjectIntro)}{" "}
+            </p>
+            <h2>Project Approach</h2>
+            <p className="projectApproach">
+                {projects && projects.map((project) => project.Project_Approach)}
+            </p>
+            <iframe
+                width="100%"
+                height="400"
+                allowFullScreen
+                src={projects && projects.map((project) => project.VideoLink)}
+                title="Project Video"
+            ></iframe>
+            </div>
+        )}
+        {selectedTab === 1 && (
+            <div className="projectInformation">
+            <h2>
+                This project poster will be displayed here.
+                <br></br>
+            </h2>
+            </div>
+        )}
+        {selectedTab === 2 && (
+            <div className="commentbox">
+            <div className="comments">
                 <div className="commentheading">
-                  <h2>Comments</h2>
+                <h2>Comments</h2>
                 </div>
                 <div className="writecomment">
-                  <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit}>
                     <MDBTextArea
-                      label="Write your comment here"
-                      id="comment"
-                      className="textAreaExample"
-                      rows={4}
-                      required
-                      onSubmit={handleSubmit}
+                    label="Write your comment here"
+                    id="comment"
+                    className="textAreaExample"
+                    rows={4}
+                    required
+                    onSubmit={handleSubmit}
                     />
-      
+
                     <button className="sendcomment">
-                      <CButton>Post Comment</CButton>
+                    <CButton>Post Comment</CButton>
                     </button>
-                  </form>
+                </form>
                 </div>
-      
+
                 <div className="showcomments">
-                  {comments &&
+                {comments &&
                     comments.map((comment) => {
-                      if (comment.User === user) {
+                    if (comment.User === user) {
                         return (
-                          <div className="comment">
+                        <div className="comment">
                             <div className="commentDetails">
-                              <img
+                            <img
                                 className="comment-avatar"
                                 src={avatar}
                                 alt="avatar"
-                              ></img>
-                              <p className="commentname">{comment.FirstName}</p>
-      
-                              <p className="commentUsertype">{comment.UserType}</p>
-                              <p className="commentdate">{comment.createdTime}</p>
+                            ></img>
+                            <p className="commentname">Me</p>
+
+                            <p className="commentUsertype">{comment.UserType}</p>
+                            <p className="commentdate">{comment.createdTime}</p>
                             </div>
-                            <p className="commenttext">{comment.CommentDesc}</p>
-      
                             <div
-                              className="deletecommentContainer"
-                              onClick={() => setShowPopUp(true)}
+                            className="deletecommentContainer"
+                            onClick={() => {
+                                setShowPopUp(true);
+                                setCommentId(comment.CommentID);
+                            }}
                             >
-                              <svg
+                            <svg
                                 id="deleteComment"
                                 class="icon-trash"
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 28 40"
                                 width="40"
                                 height="40"
-                              >
+                            >
                                 <path
-                                  class="trash-lid"
-                                  fill-rule="evenodd"
-                                  d="M6 15l4 0 0-3 8 0 0 3 4 0 0 2 -16 0zM12 14l4 0 0 1 -4 0z"
+                                class="trash-lid"
+                                fill-rule="evenodd"
+                                d="M6 15l4 0 0-3 8 0 0 3 4 0 0 2 -16 0zM12 14l4 0 0 1 -4 0z"
                                 />
                                 <path
-                                  class="trash-can"
-                                  d="M8 17h2v9h8v-9h2v9a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2z"
+                                class="trash-can"
+                                d="M8 17h2v9h8v-9h2v9a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2z"
                                 />
-                              </svg>
+                            </svg>
                             </div>
-      
+                            <p className="commenttext">{comment.CommentDesc}</p>
+
+                            
+
                             {showPopUp && (
-                              <div className="overlay">
+                            <div className="overlay">
                                 <PopUp
-                                  onYesClick={handleYesClick}
-                                  onNoClick={handleNoClick}
+                                onYesClick={() => handleYesClick(commentId)}
+                                onNoClick={handleNoClick}
+                                commentId={commentId}
                                 />
-                              </div>
+                            </div>
                             )}
-                          </div>
+                        </div>
                         );
-                      } else {
+                    } else {
                         return (
-                          <div className="comment">
+                        <div className="comment">
                             <div className="commentDetails">
-                              <img
+                            <img
                                 className="comment-avatar"
                                 src={avatar}
                                 alt="avatar"
-                              ></img>
-                              <p className="commentname">{comment.FirstName}</p>
-      
-                              <p className="commentUsertype">{comment.UserType}</p>
-                              <p className="commentdate">{comment.createdTime}</p>
+                            ></img>
+                            <p className="commentname">{comment.FirstName}</p>
+
+                            <p className="commentUsertype">{comment.UserType}</p>
+                            <p className="commentdate">{comment.createdTime}</p>
                             </div>
                             <p className="commenttext">{comment.CommentDesc}</p>
-                          </div>
+                        </div>
                         );
-                      }
+                    }
                     })}
                 </div>
-              </div>
             </div>
-      )}
-    </Box>
+            </div>
+        )}
+        </Box>
+    </ThemeProvider>
   );
 }
 
-  export default ProjectTabs;
+export default ProjectTabs;

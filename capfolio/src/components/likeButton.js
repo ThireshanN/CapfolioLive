@@ -138,10 +138,10 @@ const LikeButton2 = (props) => {
       <div className="like-button">
         <Hand />
         <span>Like</span>
-        <span className={cn("suffix", { liked })}>d </span>
+        <span className={cn("suffix", { liked })}>d &nbsp;</span>
         <span id="projectlike" className="likes-counter">
           {" "}
-          | {likes && likes.map((like) => like.No_of_likes)}
+          {/* | {likes && likes.map((like) => like.No_of_likes)} */}
         </span>
       </div>
     </button>

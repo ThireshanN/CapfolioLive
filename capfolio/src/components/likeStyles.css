@@ -4,12 +4,13 @@
     place-items: center;
     border: none;
     cursor: pointer;
-    padding: 8px 16px;
+    padding: 8px 20px;
     color: #fff;
     font-size: 16px;
     font-weight: 600;
     background-color: transparent;
     float: left;
+    font-family: 'Outfit', sans-serif;
 }
     .like-button-wrapper::before {
         content: "";
@@ -21,9 +22,13 @@
         bottom: 0;
         will-change: background-color;
         transition: background-color 0.3s, transform 0.3s;
-        background-color: #222f3e;
+        background-color: #72a0e9;
         box-shadow: 0 4px 9px -4px #22303f;
         border-radius: 5px;
+    }
+
+    .like-button span{
+        font-family: 'Outfit', sans-serif;
     }
 .like-button-wrapper:hover:not(.liked) svg {
     transform: translateY(-2px) rotate(8deg);
@@ -35,7 +40,7 @@
     animation: click 300ms;
 }
 .like-button-wrapper.liked::before {
-    background-color: #54a0ff;
+    background-color: #0a89eb !important;
 }
 .like-button-wrapper.liked svg {
     animation: hop 500ms;

@@ -18,7 +18,7 @@ const AdminPage = () => {
   }, []);
 
   const fetchAllProjects = async () => {
-    const response = await fetch('/project/AllProjectData').then((response) => response.json());
+    const response = await fetch('/admin/approved/projects').then((response) => response.json());
     setProjects(response);
   };
 
@@ -45,9 +45,9 @@ const AdminPage = () => {
         <CRow xs={{ cols: 1, gutter: 4 }} sm={{ cols: 2 }} md={{ cols: 2 }} lg={{ cols: 2 }} xl={{ cols: 3 }} xxl={{ cols: 3 }}>
           {displayedProjects.map((project) => (
             <CCol xs key={project.ProjectID}>
-              <Link to={`/project-view/${project.ProjectID}`}>
+              <Link to={`/Admin-project-view/${project.ProjectID}`}>
                 <CCard className="project-card h-100">
-                  <MainImage key={project.ProjectID} teamname={project.TeamName} />
+                <MainImage key={project.ProjectID} TeamId={project.TeamId} />
                   <CCardBody>
                     <CCardTitle>{project.ProjectName}</CCardTitle>
                     <CCardText>{project.TeamName}</CCardText>

@@ -1,32 +1,17 @@
-import { CButton } from "@coreui/react";
-import React, { useEffect, useState, useContext, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { Slide } from "react-slideshow-image";
+import { Collapse, CButton } from "@coreui/react";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import Slider from "react-slick";
 import "react-slideshow-image/dist/styles.css";
+import "slick-carousel/slick/slick-theme.css";
+import "slick-carousel/slick/slick.css";
+import ProjectTabs from "./components/ProjectTabs";
 import LikeButton from "./components/likeButton";
 import gitHubLogo from "./images/github-mark-white.png";
-import "./projectView.css";
-import animationData from "./images/icons8-trash.json";
-import lottie from "lottie-web";
-import Slider from 'react-slick';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
-import ProjectTabs from './components/ProjectTabs';
 import { ReactComponent as Heart } from "./images/heart.svg";
 import { ReactComponent as Views } from "./images/views.svg";
-
-import AWS from "aws-sdk";
-
-const bucketName = "capfoliostorage";
-const bucketRegion = "ap-southeast-2";
-const accessKeyId = "AKIAUDUQU75VEF3VDCEL";
-const secretAccessKey = "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";
-
-const s3 = new AWS.S3({
-  region: bucketRegion,
-  accessKeyId: accessKeyId,
-  secretAccessKey: secretAccessKey,
-});
+import AwardBanner from "./components/awardBanner.js";
+import "./projectView.css";
 
 const ProjectView = () => {
   const navigate = useNavigate();
@@ -38,6 +23,10 @@ const ProjectView = () => {
   const [projects, setProject] = useState("");
   const [tech, setTech] = useState("");
   const [user, setUser] = useState("");
+  const [img, setImage] = useState([]);
+  const [lowRes, setLowRes] = useState();
+  const [students, setStudents] = useState([]);
+
   // const blueBoxRef = useRef();
 
   const getProject = async () => {
@@ -45,42 +34,42 @@ const ProjectView = () => {
       (response) => response.json()
     );
 
-    fetch("/project/listTeamFiles/" + response[0].TeamName)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log(data);
-        setData(data);
-      })
-      .catch((error) => {
-        console.error("There was a problem fetching the data:", error);
-      });
-
-    let string = response[0].technologies.split(",");
+    const files = await fetch(`/project/listTeamFiles/${response[0].TeamId}`);
+    const data = await files.json();
     setProject(response);
 
+    let string = response[0].technologies.split(",");
     setTech(string);
+
+    // Assuming you have the data stored in a variable called 'responseData'
+    const processedUsers = response.map((item) => ({
+      name: item.studentNames.split(","),
+      upi: item.studentUPIs.split(","),
+    }));
+    console.log(processedUsers);
+    setStudents(processedUsers);
+
+    // Get all the images for the slideshow//
+    const filteredFiles = data.filter((file) => !file.endsWith("/"));
+    console.log(filteredFiles);
+    const url = "https://capfoliostorage.s3.ap-southeast-2.amazonaws.com/";
+
+    const firstElement = filteredFiles[0];
+    const lastSlashIndex = firstElement.lastIndexOf("/");
+
+    const folder = firstElement.substring(0, lastSlashIndex);
+    const filename = firstElement.substring(lastSlashIndex);
+
+    const reposnceArray = [];
+    for (let i = 0; i < filteredFiles.length; i++) {
+      let getHighRes = "";
+      getHighRes = url + filteredFiles[i];
+      reposnceArray.push(getHighRes);
+    }
+    console.log(reposnceArray);
+    setImage(reposnceArray);
+    //=====================================//
   };
-
-  useEffect(() => {
-    const fetchResponses = async () => {
-      const responseArray = [];
-
-      for (const element of data) {
-        const response = await fetch(`/project/retrieveFile/${element}`);
-        const data = await response.text();
-        responseArray.push(data);
-      }
-      console.log(responseArray);
-      setResponses(responseArray);
-    };
-
-    fetchResponses();
-  }, [data]);
 
   // Function to collect data
   const getComments = async () => {
@@ -96,47 +85,7 @@ const ProjectView = () => {
     console.log(response);
   };
 
-  //Code to handle deleting comments that a user made
-  const [showPopUp, setShowPopUp] = useState(false);
-
-  const handleYesClick = async () => {
-    // Make your HTTP request here
-    // ...
-    // Close the pop-up
-    //setShowPopUp(false);
-  };
-
-  const handleNoClick = () => {
-    // Close the pop-up
-    setShowPopUp(false);
-  };
-
   //-----------------------------------------------------------------//
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    var CommentDesc = document.getElementById("comment").value;
-
-    fetch("/projects/PostComment?id=" + params.id, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        CommentDesc: CommentDesc,
-      }),
-    }).then((response) => {
-      return response.text().then((responseBody) => {
-        if (responseBody == '"Only logged in Users can comment"') {
-          navigate("/login");
-        } else {
-          getComments()
-        }
-      });
-    });
-    document.getElementById("comment").value = "";
-  };
 
   useEffect(() => {
     getComments();
@@ -179,70 +128,111 @@ const ProjectView = () => {
   };
 
   const Slideshow = () => {
-    
     const settings = {
-        dots: true,
-        infinite: true,
-        speed: 500,
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        autoplay: true,
-        autoplaySpeed: 3000,
-      };
-      return (
-        <Slider className="slideshow" {...settings}>
-          {responses.map((response, index) => (
-            <div className="each-slide-effect" key={index}>
-              <div
-                style={{
-                  backgroundImage: `url(${response})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  width: '100%',
-                }}
-              ></div>
+      dots: true,
+      infinite: true,
+      speed: 500,
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      autoplay: true,
+      autoplaySpeed: 3000,
+    };
+    return (
+      <Slider className="slideshow" {...settings}>
+        {console.log(img)}
+        {img.map((response, index) => (
+          <div className="each-slide-effect" key={index}>
+            <div
+              style={{
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                width: "100%",
+              }}
+            >
+              <img src={response} alt={`Slide ${index + 1}`} />
             </div>
-          ))}
-        </Slider>
+          </div>
+        ))}
+      </Slider>
     );
   };
 
-  const PopUp = ({ onYesClick, onNoClick }) => {
+  const Header = ({ project }) => {
     return (
-      <div class="popup">
-        <h2>Confirmation</h2>
-        <p>Are you sure you want to proceed?</p>
-        <div class="popup-buttons">
-          <button className="btn-yes" onClick={onYesClick}>
-            Yes
-          </button>
-          <button className="btn-no" onClick={onNoClick}>
-            No
-          </button>
+      <div className="titlePanel">
+        <AwardBanner key={project.TeamName} text={project.AwardName} />
+        <div className="centerTitle">
+          <p className="semesterTag">
+            {project.capstoneYear} Semester {project.capstoneSemester}
+          </p>
+          <p className="projecttitle">{project.ProjectName}</p>
+          <div className="names">
+            <p className="companyname">By {project.TeamName}</p>
+
+            {/*{project.authors.map((name, i) =>*/}
+            {/*    <div classname='name'>*/}
+            {/*        <p key={`key${i}`}>{name},&nbsp;</p>*/}
+            {/*    </div>*/}
+            {/*)}*/}
+
+            {students.map((user, index) => (
+              //user.upi
+              <div className="name" key={index}>
+                <p>{user.name.join(", ")}</p>
+              </div>
+            ))}
+          </div>
+          <p className="proj-desc">{project.ProjectIntro}</p>
+        </div>
+
+
+        <div className="sidePanel-mobile">
+          <div className="centerTitle">
+            <div className="project-stats">
+              <p>
+                {" "}
+                <Heart /> {params.id}{" "}
+              </p>
+              <p>
+                {" "}
+                <Views /> {project.viewCount}{" "}
+              </p>
+            </div>
+            <div className="names">
+              {/*{project.authors.map((name, i) =>*/}
+              {/*    <div classname='name'>*/}
+              {/*        <p key={`key${i}`}>{name},&nbsp;</p>*/}
+              {/*    </div>*/}
+              {/*)}*/}
+            </div>
+          </div>
+          <div className="techUsed">
+            {tech &&
+              tech.map((tech, i) => (
+                <div className="tech">
+                  <p key={`Key${i}`}>{tech}</p>
+                </div>
+              ))}
+          </div>
         </div>
       </div>
     );
   };
 
-
-  const Header = ({ project }) => {
+  const ProjectSidePanel = ({ project }) => {
     return (
-    <div className="titlePanel">
-      <div className="centerTitle">
-        <p className='semesterTag'>{project.capstoneYear} Semester {project.capstoneSemester}</p>
-        <p className="projecttitle">{project.ProjectName}</p>
-        <div className="names">
-          <p className="companyname">By {project.TeamName}</p>
-
-          {/*{project.authors.map((name, i) =>*/}
-          {/*    <div classname='name'>*/}
-          {/*        <p key={`key${i}`}>{name},&nbsp;</p>*/}
-          {/*    </div>*/}
-          {/*)}*/}
-        </div>
-        <p className="proj-desc">{project.ProjectIntro}</p>
-    </div>
-
+      <div className="sidePanel">
+        <div className="centerTitle">
+        <div className="project-stats">
+            <p>
+              {" "}
+              <Heart /> {params.id}{" "}
+            </p>
+            <p>
+              {" "}
+              <Views /> {project.viewCount}{" "}
+            </p>
+          </div>
         <div className="pv-buttons">
           <CButton>
             {" "}
@@ -257,29 +247,15 @@ const ProjectView = () => {
             </div>
           </div>
         </div>
-      </div>
-    );
-  };
 
-  const ProjectSidePanel = ({ project }) => {
-    return (
-    <div className="sidePanel">
-      <div className="centerTitle">
-        <div className='project-stats'>
-          <p> <Heart/> {params.id} </p> 
-          <p> <Views/> {project.viewCount} </p> 
+          <div className="names">
+            {/*{project.authors.map((name, i) =>*/}
+            {/*    <div classname='name'>*/}
+            {/*        <p key={`key${i}`}>{name},&nbsp;</p>*/}
+            {/*    </div>*/}
+            {/*)}*/}
+          </div>
         </div>
-        <div className="names">
-
-          {/*{project.authors.map((name, i) =>*/}
-          {/*    <div classname='name'>*/}
-          {/*        <p key={`key${i}`}>{name},&nbsp;</p>*/}
-          {/*    </div>*/}
-          {/*)}*/}
-        </div>
-        
-
-    </div>
         <div className="techUsed">
           {tech &&
             tech.map((tech, i) => (
@@ -288,11 +264,9 @@ const ProjectView = () => {
               </div>
             ))}
         </div>
-
       </div>
     );
   };
-
 
   return (
     <div>
@@ -315,15 +289,20 @@ const ProjectView = () => {
       </div>
 
       <div className="projectInformation-wrapper">
-      <div style={{ display: 'flex'}}>
-        <div style={{ width: '75%' }}>
-          <ProjectTabs projects={projects} comments={comments} user={user} getComments={getComments} />
-        </div>
-        <div style={{ width: '25%', }}>
-          {projects &&
-                  projects.map((project) => (
-                    <ProjectSidePanel key={project.id} project={project} />
-                  ))}
+        <div style={{ display: "flex" }}>
+          <div className="projectTabs" style={{ width: "75%" }}>
+            <ProjectTabs
+              projects={projects}
+              comments={comments}
+              user={user}
+              getComments={getComments}
+            />
+          </div>
+          <div className="sidepanel-div" style={{ width: "25%" }}>
+            {projects &&
+              projects.map((project) => (
+                <ProjectSidePanel key={project.id} project={project} />
+              ))}
           </div>
         </div>
       </div>

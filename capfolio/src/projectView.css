@@ -1,4 +1,6 @@
 ﻿@import url('https://fonts.googleapis.com/css2?family=Sen:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sen:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito&family=Outfit:wght@700&display=swap');
 
 * {
     box-sizing: border-box;
@@ -6,7 +8,7 @@
 
 /* Create two unequal columns that floats next to each other */
 .column {
-    float: left;
+    /* float: left; */
     margin-top: 0px;
     padding-top: 0px;
 
@@ -28,11 +30,17 @@
 .headerleft {
     width: 50%;
     margin-left: 5%;
+    background-color: #ededed;
+    border-radius: 10px 0px 0px 10px;
 }
 
 .headerright {
     width: 30%;
     margin-right: 5%;
+    flex-direction: column;
+    display: flex;
+    /* height: 100%; */
+    align-self: stretch;
 }
 
 .right {
@@ -42,7 +50,7 @@
 }
 
 /* Clear floats after the columns */
-.p-row:after {
+/* .p-row:after {
     content: "";
     display: table;
     clear: both;
@@ -52,16 +60,16 @@
     content: "";
     display: table;
     clear: both;
-}
+} */
 
 
 .rowcontent {
     margin-top: 140px;
 }
-
+/* 
 .bluebox {
     width: 100%;
-    /* background-color: #00467f; */
+    background-color: #00467f;
 
 }
 
@@ -81,10 +89,11 @@
     z-index: -1;
     height: var(--right-column-height) !important;
 
-}
+} */
 
 .column.headerright {
     /* margin-top: 50px; */
+    
 }
 
 .mainprojectImg {
@@ -96,7 +105,7 @@
 }
 
 .projecttitle {
-    font-family: 'Sen', sans-serif;
+    font-family: 'Outfit' ,sans-serif !important;
     font-weight: 400;
     display: inline-block;
     align-items: center;
@@ -112,17 +121,17 @@
 .tech {
     display: inline-block;
     vertical-align: top;
-    margin: 10px;
+    margin: 8px;
     overflow: hidden;
-    background-color: #f2f2f2;
-    padding: 0px 4px;
+    background-color: #f6f6f6;
+    padding: 0px 12px;
     border-radius: 4px;
 }
 
 .tech p {
     font-size: 1em;
     padding: 5px;
-    color: #00467F;
+    color: #2d4986;
     margin: 0;
     padding: 5px;
 
@@ -137,6 +146,7 @@
 
 .teammembers {
     width: 100%;
+    flex: 1;
 
 }
 
@@ -151,7 +161,6 @@
 
 
 .name {
-    display: inline-block;
     vertical-align: top;
     overflow: hidden;
     color: #2d4986;
@@ -175,10 +184,15 @@
 }
 
 .projectInformation h2 {
-    color: #00467F;
+    color: #2d4986 ;
     font-size: 160%;
     margin-left: 0px;
     padding-left: 0px;
+    font-family: 'Outfit', sans-serif;
+}
+
+.projectInformation {
+    font-family: 'Nunito', sans-serif;
 }
 
 .commentbox {
@@ -280,12 +294,14 @@ textarea {
 }
 
 .commenttext {
-    margin-bottom: 0px;
+    margin-bottom: 0;
+    display: flex;
+    word-wrap: break-word;
+    flex-direction: column;
 }
 
 .comment p {
     color: #0080a7;
-    padding-left: 20px;
 }
 
 .commentname {
@@ -336,7 +352,7 @@ textarea {
 }
 
 .pv-likeButton .like-button-wrapper::before {
-    background-color: #008CBA;
+    background-color: #72a0e9 ;
 }
 
 .projectInformation-wrapper {
@@ -377,9 +393,6 @@ textarea {
     padding: 0px !important;
 }
 
-.commentDetails {
-    margin-bottom: 20px;
-}
 
 .pv-buttons .btn a {
     color: #fff !important;
@@ -388,6 +401,9 @@ textarea {
     cursor: pointer;
     text-decoration: none;
     padding-left: 6px;
+    font-family: 'Outfit';
+    text-transform: initial;
+    font-size: 14px;
 }
 
 .pv-buttons .btn {
@@ -398,8 +414,8 @@ textarea {
     float: left;
     margin-right: 5%;
     margin-top: 1px;
-    padding: 8px 16px;
-    font-family: 'Fira Sans', sans-serif;
+    padding: 8px 20px;
+    font-family: 'Outfit', sans-serif;
     font-weight: 500;
     background-size: 200% 100%;
     background-position: right;
@@ -422,8 +438,77 @@ textarea {
     width: 100%;
 }
 
+.sidePanel-mobile{
+    display: none;
+}
 
-@media screen and (max-width: 992px) {
+.slick-slide {
+    margin: 0;
+    padding: 0;
+    border: none;
+    outline: none;
+  }
+
+.slick-slide,
+.slick-slide img {
+  height: auto;
+  max-height: 100%;
+}
+
+.slick-slide * {
+    vertical-align: middle;
+    line-height: 1;
+  }
+
+.slick-prev:before,
+.slick-next:before {
+  color: #72a0e9 !important;
+}
+
+.titlePanel p {
+    font-family: 'Nunito', sans-serif;
+}
+
+.titlePanel .semesterTag{
+    background-color: #f6f6f6;
+}
+
+.titlePanel .award-banner {
+    position: inherit;
+    border-radius: 3px 0px 0px 3px;
+    float: right;
+    transform: translateX(2px) translateY(-10px);
+}
+
+@media screen and (max-width: 1200px) {
+
+    .headerleft {
+        width: 50%;
+        margin-left: 5%;
+        background-color: transparent;
+        border-radius: 0px 10px;
+    }
+    
+
+    .projectTabs{
+        width: 100% !important;
+    }
+
+    .projectInformation h2{
+        max-width: 100% !important;
+    }
+
+    .sidePanel-mobile{
+        display: block;
+    }
+
+    .sidePanel{
+        display: none;
+    }
+
+    .sidepanel-div{
+        display: none;
+    }
 
     .bluebox {
         height: auto;
@@ -441,7 +526,7 @@ textarea {
 
     .projectInformation-wrapper {
         margin: 10% 10%;
-        width: 100%;
+        width: 80%;
     }
 
     .projectInformation {
@@ -460,9 +545,8 @@ textarea {
         align-content: center;
         justify-content: center;
         align-items: center;
-        background-color: #00467F;
-        margin-bottom: 20px;
-        padding-bottom: 20px;
+        /* margin-bottom: 20px;
+        padding-bottom: 20px; */
     }
 
     .pv-buttons {
@@ -486,7 +570,7 @@ textarea {
         margin-top: 0px;
         padding-left: 0px;
         align-self: center;
-        font-size: 4rem;
+        font-size: 3rem;
         line-height: 5rem;
         margin-bottom: 10px;
     }
@@ -548,12 +632,23 @@ textarea {
         width: 100%;
         margin-left: 0px;
         align-content: center;
+        margin-top: 5% !important;
     }
 
     .image {
-        width: 50%;
-        margin-left: 25%;
-        margin-right: 25%
+        margin-left: 10%;
+        margin-right: 10%;
+        width: 80%;
+    }
+
+    .each-slide-effect>div {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-size: cover;
+        height: 50vw;
+        width: 50vw;
+    
     }
 
     .comment {
@@ -566,6 +661,35 @@ textarea {
         font-size: 12px;
 
     }
+
+    .p-row{
+        flex-direction: column;
+        align-items: stretch;
+        display: flex;
+        justify-content: center;
+        margin-top: 5%;
+    }
+
+    .titlePanel {
+        background-color: #ededed;
+        border-radius: 0px 0px 10px 10px !important;
+        padding: 10% 0;
+        margin-left: 10%;
+        width: 80%;
+    }
+
+    .titlePanel .semesterTag {
+        margin-left: 0px !important;
+    }
+
+    
+    .proj-desc {
+        font-size: 14px;
+        margin-bottom: 1rem;
+        margin-left: 0px !important;
+        margin-top: 0;
+        width: 75%;
+    }
 }
 
 @media screen and (max-width: 500px) {
@@ -574,9 +698,20 @@ textarea {
         margin-top: 0px;
         padding-left: 0px;
         align-self: center;
-        font-size: 3rem;
+        font-size: 2rem;
         line-height: 3rem;
         margin-bottom: 10px;
+    }
+
+    .projectInformation h2 {
+        color: #00467f;
+        font-size: 130% !important;
+        margin-left: 0;
+        padding-left: 0;
+    }
+
+    .projectInformation {
+        margin: 10% 10px !important;
     }
 }
 
@@ -600,8 +735,9 @@ textarea {
     background-color: white;
 }
 
-.deletecommentContainer{
+.deletecommentContainer {
     float: right;
+    height: 25px;
 }
 
 .icon-trash {
@@ -689,6 +825,7 @@ textarea {
     border-radius: 0px 10px 10px 0px;
     padding: 10% 0%;
     /* height:400px; */
+    height: 100%;
   }
 
   .proj-desc{
@@ -699,8 +836,16 @@ textarea {
     font-size: 14px;
 }
   
-.p-row {
+/* .p-row {
     align-items: flex-start;
+    display: flex;
+    justify-content: center;
+    margin-top: 5%;
+} */
+
+.p-row{
+    /* flex-direction: column; */
+    align-items: stretch;
     display: flex;
     justify-content: center;
     margin-top: 5%;
@@ -738,3 +883,6 @@ textarea {
     width: 24px;
     height: 24px;
   }
+
+
+

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito&family=Outfit:wght@700&display=swap');
+
 .Profile {
     display: flex;
     justify-content: center;
@@ -84,4 +86,31 @@
 
 .Profile .Info .Links a:hover {
     color: #0055CC;
+}
+
+.SidePanel{
+    margin-top:50px;
+    padding-left: 30px;
+}
+
+.sidebarmargin{
+    margin-top:100px;
+}
+
+.project-list-liked-projects{
+    max-width: 100%;
+}
+.semtag{
+    float:left;
+}
+
+.myProject{
+    font-family: 'Outfit', sans-serif;
+    font-size: 3.5em;
+        color: #2d4986;
+}
+
+section{
+    background-color: rgb(239 239 239);
+    margin-top: 50px;
 }
