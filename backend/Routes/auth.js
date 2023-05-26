@@ -161,33 +161,54 @@ passport.use(
       const exists = await emailExists(emailToCheck);
       const studentUpi = emailToCheck.slice(0, emailToCheck.indexOf("@"));
       //console.log("Email exists:", exists);
+        console.log(pic_logo);
       if (!exists) {
         const id = await next_id();
-        if (emailToCheck === "admin@aucklanduni.ac.nz") {
+        console.log(emailToCheck);
+        if (emailToCheck === "tnai955@aucklanduni.ac.nz") {
+            console.log("T1");
             type = 3;
+            console.log("T2");
             sql = `Insert into Users(UserID, UserTypeID, FirstName, lastName, Email, Picture) values (${id}, ${type}, "${first_name}", "${last_name}", "${emailToCheck}", "${pic_logo}");`;
+            console.log("T3");
             sql2 = `Insert into Admins(UserID, UserTypeID) values (${id}, 3);`;
-            const var1 = await executeSQLstatement(sql1);
+            console.log("T4");
+            const var1 = await executeSQLstatement(sql);
+            console.log("T5");
             const var2 = await executeSQLstatement(sql2);
+            console.log("T6");
         } else if (emailToCheck.endsWith("@aucklanduni.ac.nz")) {
+            console.log("T7");
             type = 1;
+            console.log("T8");
             sql = `Insert into Users(UserID, UserTypeID, FirstName, lastName, Email, Picture) values (${id}, ${type}, "${first_name}", "${last_name}", "${emailToCheck}", "${pic_logo}");`;
+            console.log("T9");
             sql2 = `Insert into Student(UserID, UserTypeID,  StudentUPI) values (${id}, 1, "${emailToCheck.substring(0, 7)}");`;
+            console.log("T10");
             const var1 = (await executeSQLstatement(sql));
+            console.log("T11");
             const var2 = (await executeSQLstatement(sql2));
+            console.log("T12");
         } else {
+            console.log("T13");
             type = 4;
+            console.log("T14");
             sql = `Insert into Users(UserID, UserTypeID, FirstName, lastName, Email, Picture) values (${id}, ${type}, "${first_name}", "${last_name}", "${emailToCheck}", "${pic_logo}");`;
+            console.log("T15");
             sql2 = `Insert into Visitor(UserID, UserTypeID) values (${id}, 4);`;
+            console.log("T16");
             const var1 = (await executeSQLstatement(sql));
+            console.log("T17");
             const var2 = (await executeSQLstatement(sql2));
+            console.log("T18");
         }
       } else {
         //unregistered student
         //they have a user and student record, but the field 'isRegistered' in Student table is SET to 0
         //the above occurs from ./FormAddProject Route
         //SO NOW SET 'isRegistered' to 1 (student table), and also set firstname and lastname (users table)
-        if (emailToCheck.endsWith("@aucklanduni.ac.nz")) {
+          console.log("T18");
+          if (emailToCheck.endsWith("@aucklanduni.ac.nz")) {
           const isRegistered = (
             await executeSQLstatement(
               `SELECT isRegistered FROM Capfolio.Student WHERE StudentUPI = '${studentUpi}'`
@@ -207,10 +228,13 @@ passport.use(
         const sql2 = `UPDATE Users SET Picture = ? WHERE Email = ?;`;
         await executeSQLstatement(sql2, [pic_logo, emailToCheck]);
       }
-
+        console.log("T19");
       profile.photo = profile._json.picture;
+        console.log("T20");
       //Insert into Admins(UserID) values (40);
+        console.log("T21");
       return cb(null, profile);
+        console.log("T22");
 
     }
   )
