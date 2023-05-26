@@ -428,7 +428,7 @@ async function sendPasswordResetEmail(email) {
 
 
     const html = `
-        <h1> You forgot your password Dummy. </h1>
+        <h1> This email was sent because you forgot your password. </h1>
         <p> Your passowrd reset code is: <h3> ${hash} </h3> </p>
     `;
     //console.log("Sub7");
