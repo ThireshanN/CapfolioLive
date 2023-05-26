@@ -163,7 +163,11 @@ passport.use(
       if (!exists) {
         const id = await next_id();
         if (emailToCheck === "admin@aucklanduni.ac.nz") {
-          type = 3;
+            type = 3;
+            sql1 = `Insert into Users(UserID, UserTypeID, FirstName, lastName, Email) values (${id}, ${type}, "${first_name}", "${last_name}", "${emailToCheck}");`;
+            sql2 = `Insert into Visitor(UserID, UserTypeID) values (${id}, 3);`;
+            const var1 = await executeSQLstatement(sql1);
+            const var2 = await executeSQLstatement(sql2);
         } else if (emailToCheck.endsWith("@aucklanduni.ac.nz")) {
           type = 1;
           sql1 = `Insert into Users(UserID, UserTypeID, FirstName, lastName, Email) values (${id}, ${type}, "${first_name}", "${last_name}", "${emailToCheck}");`;
