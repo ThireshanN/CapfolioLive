@@ -134,10 +134,6 @@ const ProjectGallery = () => {
                                     </CCardFooter> */}
                                     <CCardFooter>
                                       <p className='semesterTag'>{project.capstoneYear} Semester {project.capstoneSemester}</p>
-                                        {/* <Link to={`/project-view/${project.ProjectID}`}>
-                                            <CButton><span>View Project</span></CButton>
-                                        </Link>
-                                        <LikeButton key={project.TeamName} likenumber={project.ProjectID} /> */}
                                         <div className='project-stats'>
                                         <p> <Heart/> {project.likes} </p> 
                                         <p> <Views/> {project.viewCount} </p> 

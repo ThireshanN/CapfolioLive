@@ -10,6 +10,7 @@ import LikeButton from "./components/likeButton";
 import gitHubLogo from "./images/github-mark-white.png";
 import { ReactComponent as Heart } from "./images/heart.svg";
 import { ReactComponent as Views } from "./images/views.svg";
+import AwardBanner from "./components/awardBanner.js";
 import "./projectView.css";
 
 const ProjectView = () => {
@@ -159,6 +160,7 @@ const ProjectView = () => {
   const Header = ({ project }) => {
     return (
       <div className="titlePanel">
+        <AwardBanner key={project.TeamName} text={project.AwardName} />
         <div className="centerTitle">
           <p className="semesterTag">
             {project.capstoneYear} Semester {project.capstoneSemester}
@@ -183,20 +185,7 @@ const ProjectView = () => {
           <p className="proj-desc">{project.ProjectIntro}</p>
         </div>
 
-        <div className="pv-buttons">
-          <CButton>
-            {" "}
-            <a href={project.githubLink} target="_blank">
-              {" "}
-              <img src={gitHubLogo}></img> GitHub
-            </a>
-          </CButton>
-          <div>
-            <div className="pv-likeButton">
-              <LikeButton likenumber={params.id} />
-            </div>
-          </div>
-        </div>
+
         <div className="sidePanel-mobile">
           <div className="centerTitle">
             <div className="project-stats">
@@ -234,7 +223,7 @@ const ProjectView = () => {
     return (
       <div className="sidePanel">
         <div className="centerTitle">
-          <div className="project-stats">
+        <div className="project-stats">
             <p>
               {" "}
               <Heart /> {params.id}{" "}
@@ -244,6 +233,21 @@ const ProjectView = () => {
               <Views /> {project.viewCount}{" "}
             </p>
           </div>
+        <div className="pv-buttons">
+          <CButton>
+            {" "}
+            <a href={project.githubLink} target="_blank">
+              {" "}
+              <img src={gitHubLogo}></img> GitHub
+            </a>
+          </CButton>
+          <div>
+            <div className="pv-likeButton">
+              <LikeButton likenumber={params.id} />
+            </div>
+          </div>
+        </div>
+
           <div className="names">
             {/*{project.authors.map((name, i) =>*/}
             {/*    <div classname='name'>*/}
