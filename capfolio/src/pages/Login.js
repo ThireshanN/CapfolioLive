@@ -46,7 +46,8 @@ const Login = () => {
       // Redirect to the home page
       window.location.href = '/';
     } else {
-      alert('Failed to log in');
+      const errorData = await response.json();
+      alert(errorData.error);
     }
   };
 
@@ -84,7 +85,7 @@ const Login = () => {
                 </button>
               </div>
               <p className="forgot-password text-right">
-                Forgot <Link to="/Rest-Password">password?</Link>
+                Forgot <Link to="/Email-Password">password?</Link>
               </p>
               <p className="register text-center">
                 Don't have an account? <Link to="/sign-up">Sign Up</Link>

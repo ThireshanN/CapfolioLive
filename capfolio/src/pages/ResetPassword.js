@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const ResetPassword = () => {
+  const [code, setCode] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState('');
@@ -9,6 +10,9 @@ const ResetPassword = () => {
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     switch (id) {
+      case 'code':
+        setCode(value);
+        break;
       case 'password':
         setPassword(value);
         break;
@@ -31,9 +35,9 @@ const ResetPassword = () => {
     const response = await fetch('http://localhost:3000/auth/reset-password', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ password })
+      body: JSON.stringify({ code, password }),
     });
 
     if (response.status === 200) {
@@ -49,6 +53,17 @@ const ResetPassword = () => {
         <div className="auth-inner">
           <form onSubmit={handleSubmit}>
             <h3>Reset Password</h3>
+            <div className="mb-3">
+              <label htmlFor="code">Confirmation Code</label>
+              <input
+                type="text"
+                className="form-control"
+                value={code}
+                onChange={handleInputChange}
+                id="code"
+                placeholder="Enter confirmation code"
+              />
+            </div>
             <div className="mb-3">
               <label htmlFor="password">New Password</label>
               <input

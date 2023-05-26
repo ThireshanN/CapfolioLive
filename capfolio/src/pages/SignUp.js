@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Link } from "react-router-dom";
 import GoogleLogin from '../images/btn_google_signin_dark_pressed_web@2x.png';
+import {useNavigate} from 'react-router-dom';
 const SignUp = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -48,7 +50,7 @@ const SignUp = () => {
     });
 
     if (response.status === 200) {
-      window.location.href = '/login';
+      navigate('/Code-Confirmation');
     } else {
       alert('Failed to sign up');
     }
@@ -117,10 +119,9 @@ const SignUp = () => {
                 />
               </div>
               <div className="d-grid">
-              <Link to="/Code-Confirmation">
                 <button type="submit" className="btn btn-primary">
                   Sign Up
-                </button></Link>
+                </button>
               </div>
               <p className="forgot-password text-right">
                 Already registered <Link to="/login">Sign In?</Link>

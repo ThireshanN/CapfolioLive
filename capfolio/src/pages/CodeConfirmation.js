@@ -6,7 +6,21 @@ const CodeConfirmation = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // TODO: validate the code and confirm the user's email
+    const response = await fetch('http://localhost:3000/auth/emailVerify', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ code })
+    });
+
+    if (response.status === 200) {
+      // Redirect to the home page
+      window.location.href = '/login';
+    } else {
+      const errorData = await response.json();
+      alert(errorData.error);
+    }
   };
 
   return (
