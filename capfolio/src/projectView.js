@@ -27,8 +27,6 @@ const ProjectView = () => {
   const [lowRes, setLowRes] = useState();
   const [students, setStudents] = useState([]);
 
-  // const blueBoxRef = useRef();
-
   const getProject = async () => {
     const response = await fetch("/projects/project?id=" + params.id).then(
       (response) => response.json()
@@ -62,13 +60,13 @@ const ProjectView = () => {
       reposnceArray.push(getHighRes);
     }
     console.log(reposnceArray)
+    setImage(reposnceArray);
 
     const processedUsers = response.map((item) => ({
       name: item.studentNames.split(","),
       upi: item.studentUPIs.split(","),
     }));
     setStudents(processedUsers);
-    setImage(reposnceArray);
     //=====================================//
   };
 
