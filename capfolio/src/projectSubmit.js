@@ -373,7 +373,7 @@ export default function ProjectSubmit() {
           xxl={{ cols: 2 }}
         >
           <CCol xs>
-            <MDBInput required id="company" label="Company Name" />
+            <MDBInput required id="company" label="Team Name" />
           </CCol>
           <CCol>
             <MDBInput required id="projectName" label="Project Title" />

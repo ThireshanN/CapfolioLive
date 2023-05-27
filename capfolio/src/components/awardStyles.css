@@ -20,6 +20,8 @@
   width: 130px;
   font-family: 'DM Sans', sans-serif;
   color: #FFFFFF;
+  z-index: 1;
+
 }
 
 .award-banner span{

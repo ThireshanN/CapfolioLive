@@ -2,10 +2,12 @@ import { CCardImage } from "@coreui/react";
 import React, { useEffect, useState } from "react";
 import Placeholder from "../images/download.png";
 import ProgressiveImage from "react-progressive-graceful-image";
+import Skeleton from '@mui/material/Skeleton';
 
 const MainImage = (props) => {
   const [img, setImage] = useState();
   const [lowRes, setLowRes] = useState();
+  const [isLoading, setIsLoading] = useState(true); // Added loading state
 
   useEffect(() => {
     const getMainImage = async () => {
@@ -31,15 +33,20 @@ const MainImage = (props) => {
         const getHighRes = url + filteredFiles[0];
         setImage(getHighRes);
       }
+      setIsLoading(false); // Data has been fetched and set, stop loading
     };
 
     getMainImage();
   }, []);
 
   return (
-    <ProgressiveImage src={img} placeholder={lowRes}>
-      {(src) => <CCardImage id="imgcard" orientation="top" src={src} />}
-    </ProgressiveImage>
+    isLoading ? (
+      <Skeleton variant="rectangular" width="100%" height={190} />
+    ) : (
+      <ProgressiveImage src={img} placeholder={lowRes}>
+        {(src) => <CCardImage id="imgcard" orientation="top" src={src} />}
+      </ProgressiveImage>
+    )
   );
 };
 

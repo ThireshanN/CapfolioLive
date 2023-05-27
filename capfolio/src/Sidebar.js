@@ -126,6 +126,24 @@ const Sidebar = ({ onApplyFilter }) => {
 
   const animatedComponents = makeAnimated();
 
+  const customStyles = {
+    control: (base, state) => ({
+      ...base,
+      fontFamily: "Nunito, sans-serif",
+
+    }),
+    menu: base => ({
+      ...base,
+      fontFamily: "Nunito, sans-serif",
+
+    }),
+    singleValue: base => ({
+      ...base,
+      fontFamily: "Nunito, sans-serif",
+
+    })
+  };
+
   return (
     <div>
       <div>
@@ -155,6 +173,7 @@ const Sidebar = ({ onApplyFilter }) => {
                         isMulti
                         onChange={handleChangeYears}
                         options={startYears}
+                        styles={customStyles} 
                       />
                     </div>
                     <div className="mt-3 me-0 w-25 col-xs-6">
@@ -165,6 +184,7 @@ const Sidebar = ({ onApplyFilter }) => {
                         isMulti
                         onChange={handleChangeSemesters}
                         options={startSemester}
+                        styles={customStyles} 
                       />
                     </div>
                     <div className="mt-3 me-0 w-25 col-xs-6">
@@ -176,6 +196,7 @@ const Sidebar = ({ onApplyFilter }) => {
                         onChange={handleChangeTechnologies}
                         options={techOptions}
                         maxMenuHeight={250}
+                        styles={customStyles} 
                       />
                     </div>
                     <div className="mt-3 me-0 w-25 col-xs-6">
@@ -186,6 +207,7 @@ const Sidebar = ({ onApplyFilter }) => {
                         isMulti
                         onChange={handleChangeAwards}
                         options={awarded}
+                        styles={customStyles} 
                       />
                     </div>
                   </div>
@@ -197,6 +219,7 @@ const Sidebar = ({ onApplyFilter }) => {
                         className="basic-single"
                         classNamePrefix="select"
                         name="color"
+                        styles={customStyles} 
                         onChange={handleChangeSortBy}
                         options={sortBy}
                       />
