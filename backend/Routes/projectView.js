@@ -44,10 +44,11 @@ projectViewRouter.get("/project", async (req, res) => {
     Project.Project_Approach,
     Project.viewCount,
     Project.TeamId,
-    GROUP_CONCAT(technologiesUsed.technologyName) AS 'technologies',
+    GROUP_CONCAT(technologiesUsed.technologyName) AS 'technologies', AwardName, AwardDesc,
     (SELECT GROUP_CONCAT(Student.StudentUPI) FROM Student WHERE Student.projectID = Project.ProjectID) AS 'studentUPIs',
     (SELECT GROUP_CONCAT(CONCAT(Users.firstName, ' ', Users.lastName)) FROM Student INNER JOIN Users ON Users.Email = CONCAT(Student.StudentUPI, '@aucklanduni.ac.nz') WHERE Student.projectID = Project.ProjectID) AS 'studentNames'
-FROM Capfolio.Project
+FROM Capfolio.Project LEFT JOIN ProjectAward ON ProjectAward.ProjectID_FK = Project.ProjectID
+LEFT JOIN Award ON Award.AwardID = ProjectAward.AwardID_FK
 INNER JOIN ProjectTech ON Project.ProjectID = ProjectTech.ProjectID_FK 
 INNER JOIN technologiesUsed ON ProjectTech.techID_FK = technologiesUsed.techID
 WHERE Project.ProjectID = ${id}
