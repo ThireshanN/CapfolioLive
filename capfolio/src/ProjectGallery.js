@@ -96,6 +96,7 @@ const ProjectGallery = () => {
     }
     const [visible, setVisible] = useState(false);
 
+
       
     return (
         <div className="project-gallery">
