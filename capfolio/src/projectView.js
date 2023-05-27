@@ -198,13 +198,27 @@ const ProjectView = () => {
                 <Views /> {project.viewCount}{" "}
               </p>
             </div>
-            <div className="names">
-              {/*{project.authors.map((name, i) =>*/}
-              {/*    <div classname='name'>*/}
-              {/*        <p key={`key${i}`}>{name},&nbsp;</p>*/}
-              {/*    </div>*/}
-              {/*)}*/}
-            </div>
+            <div className="pv-buttons">
+              <CButton>
+                {" "}
+                <a href={project.githubLink} target="_blank">
+                  {" "}
+                  <img src={gitHubLogo}></img> GitHub
+                </a>
+              </CButton>
+              <div>
+                <div className="pv-likeButton">
+                  <LikeButton likenumber={params.id} />
+                </div>
+              </div>
+          </div>
+            {/* <div className="names">
+              {project.authors.map((name, i) =>
+                  <div classname='name'>
+                      <p key={`key${i}`}>{name},&nbsp;</p>
+                  </div>
+              )}
+            </div> */}
           </div>
           <div className="techUsed">
             {tech &&
@@ -248,13 +262,13 @@ const ProjectView = () => {
           </div>
         </div>
 
-          <div className="names">
-            {/*{project.authors.map((name, i) =>*/}
-            {/*    <div classname='name'>*/}
-            {/*        <p key={`key${i}`}>{name},&nbsp;</p>*/}
-            {/*    </div>*/}
-            {/*)}*/}
-          </div>
+        {/* <div className="names">
+              {project.authors.map((name, i) =>
+                  <div classname='name'>
+                      <p key={`key${i}`}>{name},&nbsp;</p>
+                  </div>
+              )}
+            </div> */}
         </div>
         <div className="techUsed">
           {tech &&

@@ -12,6 +12,7 @@ import { ReactComponent as Views } from "./images/views.svg";
 import ProjectIntro from './components/ProjectIntro'; 
 import { Pagination } from '@mui/material';
 import Search from './Search';
+import Skeleton from '@mui/material/Skeleton';
 
 const ProjectGallery = () => {
     const [projects, setProjects] = useState([]);
@@ -31,12 +32,19 @@ const ProjectGallery = () => {
 
 
     const fetchAllProjects = async () => {
-        const response = await fetch("/project/AllProjectData").then((response) => response.json());
-        setProjects(response);
-        setIsFiltered(false);
-        setIsNoResults(false);
-
+    
+        try {
+            const response = await fetch("/project/AllProjectData");
+            const data = await response.json();
+            setProjects(data);
+            setIsFiltered(false);
+            setIsNoResults(false);
+        } catch (error) {
+            // Handle error here
+            console.error("Failed to fetch projects: ", error);
+        } 
     };
+
    //Checks to see if it should render all projects or just filtered ones - used for when no options are selected
     useEffect(() => {
         if (!isFiltered) {
@@ -88,6 +96,7 @@ const ProjectGallery = () => {
     }
     const [visible, setVisible] = useState(false);
 
+      
     return (
         <div className="project-gallery">
             <Search onApplySearch={handleApplySearch} />
@@ -117,7 +126,7 @@ const ProjectGallery = () => {
                               <Link to={`/project-view/${project.ProjectID}`}>
                                 <CCard className="project-card h-100">
                                     <AwardBanner key={project.TeamName} text={project.AwardName} />
-                                    <MainImage key={project.ProjectID} TeamId={project.TeamId} />
+                                        <MainImage key={project.ProjectID} TeamId={project.TeamId} />  
                                     <CCardBody>
                                         <CCardTitle>{project.ProjectName}</CCardTitle>
                                         <CCardText>

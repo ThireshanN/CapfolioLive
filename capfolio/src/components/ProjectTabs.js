@@ -172,7 +172,7 @@ function ProjectTabs({ projects, comments, user, getComments }) {
                     />
 
                     <button className="sendcomment">
-                    <CButton>Post Comment</CButton>
+                    <CButton>Comment</CButton>
                     </button>
                 </form>
                 </div>

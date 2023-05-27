@@ -248,6 +248,7 @@
     margin-top: 50px;
     margin-left: 15%;
     margin-bottom: 10px;
+    font-family: 'Outfit', sans-serif;
 }
 
 form {
@@ -286,7 +287,6 @@ textarea {
 .comment {
     background-color: #fff;
     border-radius: 5px;
-    font-family: Figtree,sans-serif;
     /* margin: 0 50px 40px 25%; */
     padding: 30px 70px;
     width: 75%;
@@ -302,6 +302,7 @@ textarea {
 
 .comment p {
     color: #0080a7;
+    font-family: 'Nunito', sans-serif;
 }
 
 .commentname {
@@ -724,6 +725,7 @@ textarea {
     outline: none;
     float: right;
     padding-top: 10px;
+    text-transform: initial;
 }
 
 .textAreaExample {
