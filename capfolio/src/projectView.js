@@ -41,12 +41,7 @@ const ProjectView = () => {
     setTech(string);
 
     // Assuming you have the data stored in a variable called 'responseData'
-    const processedUsers = response.map((item) => ({
-      name: item.studentNames.split(","),
-      upi: item.studentUPIs.split(","),
-    }));
-    console.log(processedUsers);
-    setStudents(processedUsers);
+    
 
     // Get all the images for the slideshow//
     const filteredFiles = data.filter((file) => !file.endsWith("/"));
@@ -65,7 +60,13 @@ const ProjectView = () => {
       getHighRes = url + filteredFiles[i];
       reposnceArray.push(getHighRes);
     }
-    console.log(reposnceArray);
+    console.log(reposnceArray)
+
+    const processedUsers = response.map((item) => ({
+      name: item.studentNames.split(","),
+      upi: item.studentUPIs.split(","),
+    }));
+    setStudents(processedUsers);
     setImage(reposnceArray);
     //=====================================//
   };
@@ -138,7 +139,6 @@ const ProjectView = () => {
     };
     return (
       <Slider className="slideshow" {...settings}>
-        {console.log(img)}
         {img.map((response, index) => (
           <div className="each-slide-effect" key={index}>
             <div
