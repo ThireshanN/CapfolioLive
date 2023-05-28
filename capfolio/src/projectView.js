@@ -166,13 +166,14 @@ const ProjectView = () => {
           <p className="projecttitle">{project.ProjectName}</p>
           <div className="names">
             <p className="companyname">By {project.TeamName}</p>
-{/* 
-            {students.map((user, index) => (
-              //user.upi
-              <div className="name" key={index}>
-                <p>{user.name.join(<br/>)}</p>
-              </div>
-            ))} */}
+            <div className="member-names">
+              {students.map((user, index) => (
+                //user.upi
+                <div className="name" key={index}>
+                  <p>{user.name.join(", ")}</p>
+                </div>
+              ))}
+            </div>
           </div>
           <p className="proj-desc">{project.ProjectIntro}</p>
         </div>
@@ -204,13 +205,6 @@ const ProjectView = () => {
                 </div>
               </div>
           </div>
-            {/* <div className="names">
-              {project.authors.map((name, i) =>
-                  <div classname='name'>
-                      <p key={`key${i}`}>{name},&nbsp;</p>
-                  </div>
-              )}
-            </div> */}
           </div>
           <div className="techUsed">
             {tech &&
@@ -253,14 +247,6 @@ const ProjectView = () => {
             </div>
           </div>
         </div>
-
-        {/* <div className="names">
-              {project.authors.map((name, i) =>
-                  <div classname='name'>
-                      <p key={`key${i}`}>{name},&nbsp;</p>
-                  </div>
-              )}
-            </div> */}
         </div>
         <p className="sp-subtitle">Made with</p>
         <div className="techUsed">

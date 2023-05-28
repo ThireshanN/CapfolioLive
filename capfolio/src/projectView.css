@@ -159,6 +159,7 @@
     color: #2d4986;
     margin-left: 50px;
     padding: 0;
+    font-weight: 600;
 }
 
 
@@ -454,8 +455,10 @@ textarea {
 
 .slick-slide,
 .slick-slide img {
-  height: auto;
-  max-height: 100%;
+    height: auto;
+    max-height: 100%;
+    width: 100%;
+    object-fit: contain;
 }
 
 .slick-slide * {
@@ -493,7 +496,20 @@ p.sp-subtitle {
     font-weight: 600;
 }
 
+.member-names{
+    display: none;
+}
+
 @media screen and (max-width: 1200px) {
+
+    
+    .member-names{
+        display: block;
+    }
+
+    .member-names .name{
+        margin-top: 0;
+    }
 
     .headerleft {
         width: 50%;
@@ -620,6 +636,11 @@ p.sp-subtitle {
 
     .tech p {
         font-size: 1em;
+    }
+
+    .companyname {
+        margin-left: 0;
+        margin-bottom: 0;
     }
 
     .names {
