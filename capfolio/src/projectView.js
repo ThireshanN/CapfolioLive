@@ -189,7 +189,7 @@ const ProjectView = () => {
             <div className="project-stats">
               <p>
                 {" "}
-                <Heart /> {params.id}{" "}
+                <Heart /> {project.likes}{" "}
               </p>
               <p>
                 {" "}
@@ -206,7 +206,7 @@ const ProjectView = () => {
               </CButton>
               <div>
                 <div className="pv-likeButton">
-                  <LikeButton likenumber={params.id} />
+                  <LikeButton likenumber={params.id}  />
                 </div>
               </div>
           </div>
@@ -238,7 +238,7 @@ const ProjectView = () => {
         <div className="project-stats">
             <p>
               {" "}
-              <Heart /> {params.id}{" "}
+              <Heart /> {project.likes}{" "}
             </p>
             <p>
               {" "}
