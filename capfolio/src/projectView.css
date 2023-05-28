@@ -483,6 +483,16 @@ textarea {
     transform: translateX(2px) translateY(-10px);
 }
 
+p.sp-subtitle {
+    display: inline-block;
+    margin-top: 10px;
+    /* float: left; */
+    margin-bottom: 5px !important;
+    width: 100%;
+    color: #2d4986;
+    font-weight: 600;
+}
+
 @media screen and (max-width: 1200px) {
 
     .headerleft {
