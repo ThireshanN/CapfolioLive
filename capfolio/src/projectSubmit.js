@@ -338,21 +338,21 @@ export default function ProjectSubmit() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        ProjectName: "'" + projectName + "'",
+        ProjectName: "\"" + projectName + "\"",
         IsApproved: 0,
-        projectDec: "'" + Project_About + "'",
-        githubLink: "'" + githubLink + "'",
-        capstoneYear: "'" + yearString + "'",
+        projectDec: "\"" + Project_About + "\"",
+        githubLink: "\"" + githubLink + "\"",
+        capstoneYear: "\"" + yearString + "\"",
         capstoneSemester: semesterString,
         adminID_FK: 7,
-        TeamName: "'" + TeamName + "'",
-        VideoLink: "'" + newLink + "'",
-        ProjectIntro: "'" + ProjectIntro + "'",
-        Project_Approach: "'" + Project_Approach + "'",
+        TeamName: "\"" + TeamName + "\"",
+        VideoLink: "\"" + newLink + "\"",
+        ProjectIntro: "\"" + ProjectIntro + "\"",
+        Project_Approach: "\"" + Project_Approach + "\"",
         Technologies: arrayTech,
         Users: users,
         TeamLeader: user,
-        TeamId: "'" + teamID + "'",
+        TeamId: "\"" + teamID + "\"",
       }),
     });
   };
@@ -495,9 +495,9 @@ export default function ProjectSubmit() {
                 <MDBInput
                   required
                   label="First Name"
-                  value={user.firstName}
+                  value={user.FirstName}
                   onChange={(e) =>
-                    handleUserChange(index, "firstName", e.target.value)
+                    handleUserChange(index, "FirstName", e.target.value)
                   }
                 />
               </CCol>
