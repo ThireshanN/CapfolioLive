@@ -166,19 +166,13 @@ const ProjectView = () => {
           <p className="projecttitle">{project.ProjectName}</p>
           <div className="names">
             <p className="companyname">By {project.TeamName}</p>
-
-            {/*{project.authors.map((name, i) =>*/}
-            {/*    <div classname='name'>*/}
-            {/*        <p key={`key${i}`}>{name},&nbsp;</p>*/}
-            {/*    </div>*/}
-            {/*)}*/}
-
+{/* 
             {students.map((user, index) => (
               //user.upi
               <div className="name" key={index}>
-                <p>{user.name.join(", ")}</p>
+                <p>{user.name.join(<br/>)}</p>
               </div>
-            ))}
+            ))} */}
           </div>
           <p className="proj-desc">{project.ProjectIntro}</p>
         </div>
@@ -189,11 +183,11 @@ const ProjectView = () => {
             <div className="project-stats">
               <p>
                 {" "}
-                <Heart /> {project.likes}{" "}
+                <Heart /> {project.likes}{" Likes "}
               </p>
               <p>
                 {" "}
-                <Views /> {project.viewCount}{" "}
+                <Views /> {project.viewCount}{" Views"}
               </p>
             </div>
             <div className="pv-buttons">
@@ -238,11 +232,11 @@ const ProjectView = () => {
         <div className="project-stats">
             <p>
               {" "}
-              <Heart /> {project.likes}{" "}
+              <Heart /> {project.likes}{" Likes "}
             </p>
             <p>
               {" "}
-              <Views /> {project.viewCount}{" "}
+              <Views /> {project.viewCount}{" Views"}
             </p>
           </div>
         <div className="pv-buttons">
@@ -268,6 +262,7 @@ const ProjectView = () => {
               )}
             </div> */}
         </div>
+        <p className="sp-subtitle">Made with</p>
         <div className="techUsed">
           {tech &&
             tech.map((tech, i) => (
@@ -276,6 +271,17 @@ const ProjectView = () => {
               </div>
             ))}
         </div>
+        <div className="names">
+            <p className="sp-subtitle">Team members</p>
+
+            {students.map((user, index) => (
+              <div className="name" key={index}>
+                  {user.name.map((name, nameIndex) => (
+                      <p key={nameIndex}>{name}<br/></p>
+                  ))}
+              </div>
+          ))}
+          </div>
       </div>
     );
   };
