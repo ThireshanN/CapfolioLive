@@ -1,10 +1,12 @@
 import AWS from "aws-sdk";
-import { MDBBtn, MDBInput, MDBTextArea } from "mdb-react-ui-kit";
+import { MDBBtn, MDBInput, MDBTextArea, MDBSpinner } from "mdb-react-ui-kit";
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import CreatableSelect from "react-select/creatable";
 import Resizer from "react-image-file-resizer";
+import { useNavigate } from "react-router-dom";
+
 import "./projectSubmit.css";
 
 import { CCol, CRow } from "@coreui/react";
@@ -77,6 +79,15 @@ export default function ProjectSubmit() {
   };
 
   const animatedComponents = makeAnimated();
+  const navigate = useNavigate();
+
+  const delayFunction = (fn, delay) => {
+    setTimeout(fn, delay);
+  };
+
+  const reRoute = () => {
+    navigate("/");
+  };
 
   //-------------------Handles the users being added--------------------//
 
@@ -105,7 +116,7 @@ export default function ProjectSubmit() {
   const [technologies, setTechnologies] = useState([]);
   const [fetchTeamIDs, setFetchTeamIDs] = useState([]);
   const [user, setUser] = useState("");
-
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     // Fetch the technologies from the database and update state
     fetch("/project/technologyNames")
@@ -202,7 +213,7 @@ export default function ProjectSubmit() {
   // Handles submitting the form
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+    setIsLoading(true);
     let teamID = makeid(16);
 
     while (checkIfStringExists(teamID)) {
@@ -338,23 +349,24 @@ export default function ProjectSubmit() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        ProjectName: "\"" + projectName + "\"",
+        ProjectName: '"' + projectName + '"',
         IsApproved: 0,
-        projectDec: "\"" + Project_About + "\"",
-        githubLink: "\"" + githubLink + "\"",
-        capstoneYear: "\"" + yearString + "\"",
+        projectDec: '"' + Project_About + '"',
+        githubLink: '"' + githubLink + '"',
+        capstoneYear: '"' + yearString + '"',
         capstoneSemester: semesterString,
         adminID_FK: 7,
-        TeamName: "\"" + TeamName + "\"",
-        VideoLink: "\"" + newLink + "\"",
-        ProjectIntro: "\"" + ProjectIntro + "\"",
-        Project_Approach: "\"" + Project_Approach + "\"",
+        TeamName: '"' + TeamName + '"',
+        VideoLink: '"' + newLink + '"',
+        ProjectIntro: '"' + ProjectIntro + '"',
+        Project_Approach: '"' + Project_Approach + '"',
         Technologies: arrayTech,
         Users: users,
         TeamLeader: user,
-        TeamId: "\"" + teamID + "\"",
+        TeamId: '"' + teamID + '"',
       }),
     });
+    delayFunction(reRoute, 5000);
   };
 
   return (
@@ -543,9 +555,7 @@ export default function ProjectSubmit() {
           type="url"
         />
         <div className="fileUploadOptions">
-          <label for="pdf-upload">
-            Upload your project poster
-          </label>
+          <label for="pdf-upload">Upload your project poster</label>
           <input
             className="formLinks"
             type="file"
@@ -554,9 +564,7 @@ export default function ProjectSubmit() {
             accept="application/pdf"
             onChange={handlePDFUpload}
           />
-          <label for="image-upload">
-            Upload pictures of your project
-          </label>
+          <label for="image-upload">Upload pictures of your project</label>
 
           <input
             className="formLinks"
@@ -582,9 +590,16 @@ export default function ProjectSubmit() {
           ))}
         </div>
 
-        <MDBBtn className="mb-4" type="submit" block>
-          Submit Project!
-        </MDBBtn>
+        {isLoading ? (
+          <MDBBtn disabled className="mb-4">
+            <MDBSpinner size="sm" role="status" tag="span" className="me-2" />
+            Loading... Please wait
+          </MDBBtn>
+        ) : (
+          <MDBBtn className="mb-4" type="submit" block>
+            Submit Project!
+          </MDBBtn>
+        )}
       </form>
     </div>
   );
