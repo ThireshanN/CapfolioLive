@@ -49,6 +49,7 @@ function ProjectPoster({pdf, onDocumentLoad, loadState }) { //Passing id as prop
           onLoadError={onDocumentLoadError}
           renderTextLayer={false}
           onRenderTextLayerSuccess={onTextLoadSuccess}
+          error={"No project poster to display"}
         >
           <Page pageNumber={pageNumber} width={containerWidth} />
         </Document>
