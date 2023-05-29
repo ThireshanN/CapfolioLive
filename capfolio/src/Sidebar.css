@@ -157,6 +157,13 @@ h3 {
         width: 80%;
         background-color: #72a0e9;
     }
+
+    .btn.btn-primary.apply-filter-btn{
+        font-size: 12px;
+        margin-left: 12px;
+        margin-top: 10px;
+
+    }
   }
 
 
