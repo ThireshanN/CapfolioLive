@@ -178,7 +178,7 @@ projectRouter.get('/searchProject', async (req, res) => {
         LEFT JOIN likes ON likes.ProjectID_FK = Project.ProjectID
         WHERE Project.IsApproved = 1
         GROUP BY ProjectID 
-        HAVING Project.ProjectName like "${searchWord}%"
+        HAVING Project.ProjectName like "%${searchWord}%"
         ORDER BY ProjectID;
         `;
         const allProjects = (await executeSQLstatement(sql))[0]
