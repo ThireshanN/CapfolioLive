@@ -33,8 +33,8 @@ const ProjectView = () => {
       (response) => response.json()
     );
 
-    const files = await fetch(`/project/listTeamFiles/${response[0].TeamId}`);
-    const data = await files.json();
+    const files =  fetch(`/project/listTeamFiles/${response[0].TeamId}`);
+    const data =  files.json();
     setProject(response);
 
     let string = response[0].technologies.split(",");

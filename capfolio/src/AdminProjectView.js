@@ -489,10 +489,10 @@ const AdminProjectView = () => {
             marginTop: "20px", // Adjust the margin value as needed
           }}> 
             <Stack direction="row" spacing={2}>
-                <Button variant="outlined" startIcon={<DeleteIcon />} onClick={handleApproveProject} color="error">
+                <Button variant="outlined" startIcon={<DeleteIcon />}  color="error">
                     Delete
                 </Button>
-                <Button variant="contained" endIcon={<SendIcon />} color="success">
+                <Button variant="contained" endIcon={<SendIcon />} onClick={handleApproveProject} color="success">
                     Approve
                 </Button>
             </Stack>
