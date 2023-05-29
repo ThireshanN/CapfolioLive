@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
@@ -7,13 +7,15 @@ import { MDBTextArea } from "mdb-react-ui-kit";
 import avatar from "../images/avatar.png";
 import { useParams, useNavigate } from "react-router-dom";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import ProjectPoster from "./ProjectPoster.js";
 
-function ProjectTabs({ projects, comments, user, getComments }) {
+function ProjectTabs({ projects, comments, user, getComments, pdf }) {
   const [selectedTab, setSelectedTab] = useState(0);
   const [showPopUp, setShowPopUp] = useState(false);
   const [commentId, setCommentId] = useState("");
   const navigate = useNavigate();
   const params = useParams();
+  const [isLoading, setIsLoading] = useState(true); // Added loading state
 
   const handleChange = (event, newValue) => {
     setSelectedTab(newValue);
@@ -110,6 +112,10 @@ function ProjectTabs({ projects, comments, user, getComments }) {
     document.getElementById("comment").value = "";
   };
 
+  useEffect(() => {
+    console.log("isLoading state changed", isLoading);
+  }, [isLoading]);
+
   return (
     <ThemeProvider theme={theme}>
         <Box sx={{ width: "100%" }}>
@@ -148,10 +154,7 @@ function ProjectTabs({ projects, comments, user, getComments }) {
         )}
         {selectedTab === 1 && (
             <div className="projectInformation">
-            <h2>
-                This project poster will be displayed here.
-                <br></br>
-            </h2>
+                <ProjectPoster pdf={pdf} onDocumentLoad={setIsLoading} isLoad={isLoading}/>
             </div>
         )}
         {selectedTab === 2 && (

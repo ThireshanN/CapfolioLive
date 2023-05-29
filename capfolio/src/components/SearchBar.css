@@ -36,9 +36,11 @@
     box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
   }
   
+
   .search-bar .search-button:hover {
-    background-color: #00335A;
-    transition: ease-in-out 0.05s;
+    /* transform: translate(0, -3px); */
+    box-shadow: 0 20px 80px -10px #0a89eb;
+    color: #f8fbfc !important;
   }
 
   .form {

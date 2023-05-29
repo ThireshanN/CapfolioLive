@@ -121,15 +121,16 @@
 .tech {
     display: inline-block;
     vertical-align: top;
-    margin: 8px;
+    margin: 5px;
     overflow: hidden;
     background-color: #f6f6f6;
     padding: 0px 12px;
-    border-radius: 4px;
+    border-radius: 20px;
+    margin-left: 0;
 }
 
 .tech p {
-    font-size: 1em;
+    font-size: 0.8rem;
     padding: 5px;
     color: #2d4986;
     margin: 0;
@@ -138,9 +139,10 @@
 }
 
 .techUsed {
-    margin-top: 0px;
-    margin-left: 40px;
-
+    /* margin-top: 20px; */
+    /* margin-left: 40px; */
+    margin-bottom: 20px;
+    display: inline-block;
 
 }
 
@@ -155,8 +157,9 @@
     vertical-align: top;
     font-size: 1rem;
     color: #2d4986;
-    margin: 0;
+    margin-left: 50px;
     padding: 0;
+    font-weight: 600;
 }
 
 
@@ -169,11 +172,11 @@
 .name p {
     margin: 0;
     padding: 0;
-    font-size: 1vw;
+    font-size: 1rem;
 }
 
 .names {
-    margin-left: 50px;
+    /* margin-left: 50px; */
 }
 
 .projectInformation {
@@ -290,7 +293,7 @@ textarea {
     /* margin: 0 50px 40px 25%; */
     padding: 30px 70px;
     width: 75%;
-    margin: 10px 0px 10px 15%;
+    margin: 10px 0px 10px 10%;
 }
 
 .commenttext {
@@ -301,7 +304,7 @@ textarea {
 }
 
 .comment p {
-    color: #0080a7;
+    color: #2d4986;
     font-family: 'Nunito', sans-serif;
 }
 
@@ -309,6 +312,16 @@ textarea {
     margin-bottom: 0px;
     font-weight: 600;
     transform: translateY(0px);
+    color: #72a0e9 !important;
+}
+
+.commentdate, .commentUsertype{
+    opacity: 0.75;
+    font-size: 14px;
+}
+
+.commentDetails {
+    margin-bottom: 10px;
 }
 
 
@@ -348,7 +361,7 @@ textarea {
 
 
 .pv-likeButton {
-    margin-left: 50px;
+    /* margin-left: 50px; */
     margin-top: 10px;
 }
 
@@ -375,7 +388,7 @@ textarea {
     margin: 10px;
     margin-top: 0px;
     transform: translateY(0px);
-
+    margin-bottom: 50px;
 }
 
 .commentdate {
@@ -423,7 +436,7 @@ textarea {
     transition: all 0.25s ease;
     cursor: pointer;
     text-decoration: none;
-
+    margin-bottom: 10px;
 }
 
 .btn img {
@@ -433,8 +446,8 @@ textarea {
 }
 
 .pv-buttons {
-    margin-left: 50px;
-    margin-top: 30px;
+    /* margin-left: 50px; */
+    /* margin-top: 30px; */
     min-height: 50px;
     width: 100%;
 }
@@ -452,8 +465,10 @@ textarea {
 
 .slick-slide,
 .slick-slide img {
-  height: auto;
-  max-height: 100%;
+    height: auto;
+    max-height: 100%;
+    width: 100%;
+    object-fit: contain;
 }
 
 .slick-slide * {
@@ -481,7 +496,42 @@ textarea {
     transform: translateX(2px) translateY(-10px);
 }
 
+p.sp-subtitle {
+    display: inline-block;
+    margin-top: 20px;
+    /* float: left; */
+    margin-bottom: 5px !important;
+    width: 100%;
+    color: #0a89eb;
+    font-weight: 600;
+}
+
+.sp-subtitle .name{
+    margin-top: 0;
+}
+
+.member-names{
+    display: none;
+}
+
+.react-pdf__Page__textContent.textLayer{
+    display: none;
+}
+
+.react-pdf__Page__annotations.annotationLayer{
+    display: none;
+}
+
 @media screen and (max-width: 1200px) {
+
+    
+    .member-names{
+        display: block;
+    }
+
+    .member-names .name{
+        margin-top: 0;
+    }
 
     .headerleft {
         width: 50%;
@@ -571,8 +621,8 @@ textarea {
         margin-top: 0px;
         padding-left: 0px;
         align-self: center;
-        font-size: 3rem;
-        line-height: 5rem;
+        font-size: 2rem;
+        line-height: 2rem;
         margin-bottom: 10px;
     }
 
@@ -607,7 +657,13 @@ textarea {
     }
 
     .tech p {
-        font-size: 1em;
+        font-size: 0.8em;
+    }
+
+    .companyname {
+        margin-left: 0;
+        margin-bottom: 0;
+        color: #0a89eb;
     }
 
     .names {
@@ -699,8 +755,8 @@ textarea {
         margin-top: 0px;
         padding-left: 0px;
         align-self: center;
-        font-size: 2rem;
-        line-height: 3rem;
+        font-size: 1.5rem;
+        line-height: 1.5rem;
         margin-bottom: 10px;
     }
 
@@ -713,6 +769,10 @@ textarea {
 
     .projectInformation {
         margin: 10% 10px !important;
+    }
+
+    .tech p {
+        font-size: 0.75em;
     }
 }
 
@@ -865,20 +925,23 @@ textarea {
     margin-bottom: 10%;
     min-height: 400px;
     padding-right: 10px;
+    padding-left: 10%;
   }
 
   .sidePanel .project-stats {
     display: flex;
     padding: 20px 10px;
-    margin-left: 40px;
+    /* margin-left: 40px; */
     float: none;
+    justify-content: center;
   }
   
   .sidePanel .project-stats p {
     margin-bottom: 0px;
     margin-right: 30px;
     font-size: 18px;
-    color: #72a0e9;
+    color: #0a89eb;
+    justify-content: center;
   }
 
   .sidePanel .project-stats svg {
