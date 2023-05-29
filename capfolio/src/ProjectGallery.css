@@ -208,6 +208,7 @@ p.card-text {
   margin-bottom: 0px;
   margin-right: 10px;
   font-size: 14px;
+  color: #0a89eb;
 }
 
 .custom-list-group-item {
@@ -238,4 +239,6 @@ p.card-text {
   .filter{
     display: none;
   }
+
+
 }
