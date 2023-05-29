@@ -3,7 +3,7 @@ import { Document, Page } from 'react-pdf';
 import { pdfjs } from 'react-pdf';
 import ResizeDetector from 'react-resize-detector';
 import "../projectView.css";
-
+import Skeleton from '@mui/material/Skeleton';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
@@ -44,6 +44,7 @@ function ProjectPoster({pdf, onDocumentLoad, loadState }) { //Passing id as prop
       <ResizeDetector handleWidth onResize={onResize}>
         <Document
           file={pdf}
+        //   loading={<Skeleton variant="rectangular" width="100%" height={490} />}
           onLoadSuccess={onDocumentLoadSuccess}
           onLoadError={onDocumentLoadError}
           renderTextLayer={false}

@@ -293,7 +293,7 @@ textarea {
     /* margin: 0 50px 40px 25%; */
     padding: 30px 70px;
     width: 75%;
-    margin: 10px 0px 10px 15%;
+    margin: 10px 0px 10px 10%;
 }
 
 .commenttext {
@@ -304,7 +304,7 @@ textarea {
 }
 
 .comment p {
-    color: #0080a7;
+    color: #2d4986;
     font-family: 'Nunito', sans-serif;
 }
 
@@ -312,6 +312,16 @@ textarea {
     margin-bottom: 0px;
     font-weight: 600;
     transform: translateY(0px);
+    color: #72a0e9 !important;
+}
+
+.commentdate, .commentUsertype{
+    opacity: 0.75;
+    font-size: 14px;
+}
+
+.commentDetails {
+    margin-bottom: 10px;
 }
 
 
@@ -378,7 +388,7 @@ textarea {
     margin: 10px;
     margin-top: 0px;
     transform: translateY(0px);
-
+    margin-bottom: 50px;
 }
 
 .commentdate {
@@ -488,12 +498,16 @@ textarea {
 
 p.sp-subtitle {
     display: inline-block;
-    margin-top: 10px;
+    margin-top: 20px;
     /* float: left; */
     margin-bottom: 5px !important;
     width: 100%;
-    color: #2d4986;
+    color: #0a89eb;
     font-weight: 600;
+}
+
+.sp-subtitle .name{
+    margin-top: 0;
 }
 
 .member-names{

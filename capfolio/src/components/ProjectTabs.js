@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
@@ -113,6 +113,10 @@ function ProjectTabs({ projects, comments, user, getComments, pdf }) {
     document.getElementById("comment").value = "";
   };
 
+  useEffect(() => {
+    console.log("isLoading state changed", isLoading);
+  }, [isLoading]);
+
   return (
     <ThemeProvider theme={theme}>
         <Box sx={{ width: "100%" }}>
@@ -155,11 +159,10 @@ function ProjectTabs({ projects, comments, user, getComments, pdf }) {
                 This project poster will be displayed here.
                 <br></br>
             </h2> */}
-            {/* {isLoading ? (
-                <Skeleton variant="rectangular" width="100%" height={390} />
-            ) : ( */}
+            {/* {isLoading && (
+                <Skeleton variant="rectangular" width="100%" height={490} />
+                )} */}
                 <ProjectPoster pdf={pdf} onDocumentLoad={setIsLoading} isLoad={isLoading}/>
-            {/* )} */}
             </div>
         )}
         {selectedTab === 2 && (
