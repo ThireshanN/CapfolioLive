@@ -13,6 +13,7 @@ import { ReactComponent as Views } from "./images/views.svg";
 import AwardBanner from "./components/awardBanner.js";
 import "./projectView.css";
 
+
 const ProjectView = () => {
   const navigate = useNavigate();
 
@@ -26,7 +27,7 @@ const ProjectView = () => {
   const [img, setImage] = useState([]);
   const [lowRes, setLowRes] = useState();
   const [students, setStudents] = useState([]);
-
+  const [pdf, setPDF] = useState()
   const getProject = async () => {
     const response = await fetch("/projects/project?id=" + params.id).then(
       (response) => response.json()
@@ -43,9 +44,14 @@ const ProjectView = () => {
     
 
     // Get all the images for the slideshow//
-    const filteredFiles = data.filter((file) => !file.endsWith("/"));
+    const filteredFiles = data.filter((file) => !file.endsWith("/") || !file.includes('/lowres/') || !file.includes('/projectPoster/'));
+    const extractPDF = data.filter((file) => file.includes('/projectPoster/'));
+    console.log(extractPDF)
     console.log(filteredFiles);
     const url = "https://capfoliostorage.s3.ap-southeast-2.amazonaws.com/";
+    const getPDF = url + extractPDF
+    console.log(getPDF)
+    setPDF(getPDF)
 
     const firstElement = filteredFiles[0];
     const lastSlashIndex = firstElement.lastIndexOf("/");
@@ -314,6 +320,7 @@ const ProjectView = () => {
               comments={comments}
               user={user}
               getComments={getComments}
+              pdf={pdf}
             />
           </div>
           <div className="sidepanel-div" style={{ width: "25%" }}>
