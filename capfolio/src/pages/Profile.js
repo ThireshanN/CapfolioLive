@@ -36,11 +36,10 @@ const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState("");
   const [profession, setProfession] = useState("");
-  const [github, setGithub] = useState("https://github.com");
-  const [linkedin, setLinkedin] = useState("https://linkedin.com");
-  const [description, setDescription] = useState(
-    "I am a CompSci student at the University of Auckland and I have taken COMPSCI399 in 2023 Semester 1."
-  );
+  const [github, setGithub] = useState("");
+  const [linkedin, setLinkedin] = useState("");
+  const [description, setDescription] = useState("")
+  
   const [picture, setPicture] = useState("");
   const [projects, setProjects] = useState([]);
   const [userProject, setUserProject] = useState([]);
@@ -58,6 +57,8 @@ const Profile = () => {
         setName(`${userData.FirstName} ${userData.LastName}`);
         setPicture(userData.Photo);
         setProfession(userData.Type);
+        setGithub(userData.githubLink);
+        setLinkedin(userData.linkedin);
         setDescription(userData.userDescription);
         if (userData.UserType === 1) {
           setStudent(true);
@@ -146,6 +147,13 @@ const Profile = () => {
     setDescription(e.target.value);
   };
 
+  const handleGitHubChange = (e) => {
+    setGithub(e.target.value);
+  };
+  const handleLinkedinChange = (e) => {
+    setLinkedin(e.target.value);
+  };
+
   return (
     <section style={{ backgroundColor: "#eee" }}>
       <MDBContainer className="py-5">
@@ -162,11 +170,15 @@ const Profile = () => {
                 />
                 {isEditing ? (
                   <div>
-                    <input value={name} onChange={handleNameChange} placeholder="Name" />
+                    <input
+                      value={name}
+                      onChange={handleNameChange}
+                      placeholder="Name"
+                    />
                     <input
                       value={profession}
                       onChange={handleProfessionChange}
-                      placeholder='Occupation'
+                      placeholder="Occupation"
                     />
                     <textarea
                       value={description}
@@ -201,15 +213,15 @@ const Profile = () => {
                     </div>
                   ) : (
                     <div>
-                    {isEditing ? (
-                      <MDBBtn onClick={handleSaveProfile}>
-                        Save Profile
-                      </MDBBtn>
-                    ) : (
-                      <MDBBtn onClick={handleEditProfile}>
-                        Edit Profile
-                      </MDBBtn>
-                    )}
+                      {isEditing ? (
+                        <MDBBtn onClick={handleSaveProfile}>
+                          Save Profile
+                        </MDBBtn>
+                      ) : (
+                        <MDBBtn onClick={handleEditProfile}>
+                          Edit Profile
+                        </MDBBtn>
+                      )}
                     </div>
                   )}
                 </div>
@@ -219,26 +231,44 @@ const Profile = () => {
             <MDBCard className="mb-4 mb-lg-0">
               <MDBCardBody className="p-0">
                 <MDBListGroup flush className="rounded-3">
-                  <a href={github}>
-                    <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
-                      <MDBIcon
-                        fab
-                        icon="github fa-lg"
-                        style={{ color: "#333333" }}
+                  {isEditing ? (
+                    <div>
+                      <input
+                        value={github}
+                        onChange={handleGitHubChange}
+                        placeholder="GitHub Profile"
                       />
-                      <MDBCardText>GitHub</MDBCardText>
-                    </MDBListGroupItem>
-                  </a>
-                  <a href={linkedin}>
-                    <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
-                      <MDBIcon
-                        fab
-                        icon="linkedin fa-lg"
-                        style={{ color: "#55acee" }}
+                      <input
+                        value={linkedin}
+                        onChange={handleLinkedinChange}
+                        placeholder="LinkedIn Profile"
                       />
-                      <MDBCardText>LinkedIn</MDBCardText>
-                    </MDBListGroupItem>
-                  </a>
+                    </div>
+                  ) : (
+                    <div>
+                      <a href={github}>
+                        <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
+                          <MDBIcon
+                            fab
+                            icon="github fa-lg"
+                            style={{ color: "#333333" }}
+                          />
+                          <MDBCardText>GitHub</MDBCardText>
+                        </MDBListGroupItem>
+                      </a>
+
+                      <a href={linkedin}>
+                        <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
+                          <MDBIcon
+                            fab
+                            icon="linkedin fa-lg"
+                            style={{ color: "#55acee" }}
+                          />
+                          <MDBCardText>LinkedIn</MDBCardText>
+                        </MDBListGroupItem>
+                      </a>
+                    </div>
+                  )}
                 </MDBListGroup>
               </MDBCardBody>
             </MDBCard>
