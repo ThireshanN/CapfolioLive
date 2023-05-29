@@ -44,7 +44,7 @@ const ProjectView = () => {
     
 
     // Get all the images for the slideshow//
-    const filteredFiles = data.filter((file) => !file.endsWith("/") || !file.includes('/lowres/') || !file.includes('/projectPoster/'));
+    const filteredFiles = data.filter((file) => !(file.endsWith("/") || file.includes('lowres') || file.includes('/projectPoster/')));
     const extractPDF = data.filter((file) => file.includes('/projectPoster/'));
     console.log(extractPDF)
     console.log(filteredFiles);
