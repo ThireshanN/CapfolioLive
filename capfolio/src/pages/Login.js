@@ -27,7 +27,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const response = await fetch('http://localhost:3000/auth/login', {
+    const response = await fetch('/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -37,7 +37,7 @@ const Login = () => {
 
     if (response.status === 200) {
       // Fetch the user data from the server
-      const userResponse = await fetch('http://localhost:3000/auth/user');
+      const userResponse = await fetch('/auth/user');
       const userData = await userResponse.json();
 
       // Update the context with the user data
@@ -91,7 +91,7 @@ const Login = () => {
                 Don't have an account? <Link to="/sign-up">Sign Up</Link>
               </p>
               <div>
-                <a id="loginButton" href="http://localhost:3000/auth/google">
+                <a id="loginButton" href="/auth/google">
                 <img className='resize-google-button' src={GoogleLogin}/>
                 </a>
               </div>
