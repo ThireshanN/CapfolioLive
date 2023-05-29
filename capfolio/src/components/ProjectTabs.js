@@ -7,13 +7,16 @@ import { MDBTextArea } from "mdb-react-ui-kit";
 import avatar from "../images/avatar.png";
 import { useParams, useNavigate } from "react-router-dom";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import ProjectPoster from "./ProjectPoster.js";
+import Skeleton from '@mui/material/Skeleton';
 
-function ProjectTabs({ projects, comments, user, getComments }) {
+function ProjectTabs({ projects, comments, user, getComments, pdf }) {
   const [selectedTab, setSelectedTab] = useState(0);
   const [showPopUp, setShowPopUp] = useState(false);
   const [commentId, setCommentId] = useState("");
   const navigate = useNavigate();
   const params = useParams();
+  const [isLoading, setIsLoading] = useState(true); // Added loading state
 
   const handleChange = (event, newValue) => {
     setSelectedTab(newValue);
@@ -148,10 +151,15 @@ function ProjectTabs({ projects, comments, user, getComments }) {
         )}
         {selectedTab === 1 && (
             <div className="projectInformation">
-            <h2>
+            {/* <h2>
                 This project poster will be displayed here.
                 <br></br>
-            </h2>
+            </h2> */}
+            {/* {isLoading ? (
+                <Skeleton variant="rectangular" width="100%" height={390} />
+            ) : ( */}
+                <ProjectPoster pdf={pdf} onDocumentLoad={setIsLoading} isLoad={isLoading}/>
+            {/* )} */}
             </div>
         )}
         {selectedTab === 2 && (

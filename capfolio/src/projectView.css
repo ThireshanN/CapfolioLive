@@ -500,6 +500,14 @@ p.sp-subtitle {
     display: none;
 }
 
+.react-pdf__Page__textContent.textLayer{
+    display: none;
+}
+
+.react-pdf__Page__annotations.annotationLayer{
+    display: none;
+}
+
 @media screen and (max-width: 1200px) {
 
     
@@ -635,7 +643,7 @@ p.sp-subtitle {
     }
 
     .tech p {
-        font-size: 1em;
+        font-size: 0.8em;
     }
 
     .companyname {
