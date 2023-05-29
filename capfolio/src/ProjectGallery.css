@@ -52,10 +52,14 @@
 
 }
 
-.project-gallery .card .btn:hover {
+.card-footer .project-stats{
+  padding-right: 0;
+}
+
+/* .project-gallery .card .btn:hover {
   background-position: left;
   border-color: #54a0ff;
-}
+} */
 
 
 .project-gallery .col .card {
@@ -230,6 +234,9 @@ p.card-text {
 .cfilter{
   display: none;
 }
+
+
+
 
 @media screen and (max-width: 992px) {
   .cfilter{

@@ -8,7 +8,6 @@ import avatar from "../images/avatar.png";
 import { useParams, useNavigate } from "react-router-dom";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ProjectPoster from "./ProjectPoster.js";
-import Skeleton from '@mui/material/Skeleton';
 
 function ProjectTabs({ projects, comments, user, getComments, pdf }) {
   const [selectedTab, setSelectedTab] = useState(0);
@@ -155,13 +154,6 @@ function ProjectTabs({ projects, comments, user, getComments, pdf }) {
         )}
         {selectedTab === 1 && (
             <div className="projectInformation">
-            {/* <h2>
-                This project poster will be displayed here.
-                <br></br>
-            </h2> */}
-            {/* {isLoading && (
-                <Skeleton variant="rectangular" width="100%" height={490} />
-                )} */}
                 <ProjectPoster pdf={pdf} onDocumentLoad={setIsLoading} isLoad={isLoading}/>
             </div>
         )}
