@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from "react-router-dom";
-import GoogleLogin from '../images/btn_google_signin_dark_pressed_web@2x.png';
 import {useNavigate} from 'react-router-dom';
+import Button from '@mui/material/Button';
+import GoogleIcon from '@mui/icons-material/Google';
 const SignUp = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -127,9 +128,9 @@ const SignUp = () => {
                 Already registered <Link to="/login">Sign In?</Link>
               </p>
               <div>
-                <a id="loginButton" href="http://localhost:3000/auth/google"> 
-                <img className='resize-google-button' src={GoogleLogin}/>
-                </a>
+              <Button variant="outlined" href="http://localhost:3000/auth/google">
+                  <GoogleIcon />  Sign In With Google
+                </Button>
               </div>
             </form>
           </div>

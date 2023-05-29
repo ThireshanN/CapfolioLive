@@ -34,12 +34,6 @@ const AdminPage = () => {
     
     <div className="admin-page">
         <div className="side-panel">
-        <ul className="side-panel-nav">
-          <li>Dashboard</li>
-          <li>Users</li>
-          <li>Projects</li>
-          <li>Settings</li>
-        </ul>
       </div>
       <div className="project-list">
         <CRow xs={{ cols: 1, gutter: 4 }} sm={{ cols: 2 }} md={{ cols: 2 }} lg={{ cols: 2 }} xl={{ cols: 3 }} xxl={{ cols: 3 }}>

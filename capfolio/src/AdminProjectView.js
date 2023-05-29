@@ -36,14 +36,31 @@ const s3 = new AWS.S3({
 const AdminProjectView = () => {
   const [data, setData] = useState([]);
   const [responses, setResponses] = useState([]);
-  const params = useParams();
+  const params = useParams(); 
   const [projects, setProject] = useState("");
   const [tech, setTech] = useState("");
+  const [capstoneYear, setCapstoneYear] = useState('');
+  const [capstoneSemester, setCapstoneSemester] = useState('');
+  const [ProjectName, setProjectName] = useState(''); 
+  const [TeamName, setTeamName] = useState('');
+  const [githubLink, setgithubLink] = useState('');
+  const [VideoLink, setVideoLink] = useState('');
+  const [projectIntro, setProjectIntro] = useState('');
+  const [projectApproach, setProjectApproach] = useState('');
+  const [selectedTechnologies, setSelectedTechnologies] = useState([]);
+  const [selectedAwards, setSelectedAwards] = useState([]);
+  const [technologies, setTechnologies] = useState([]);
+  const [projectId, setProjectId] = useState();
+  const [isEditing, setIsEditing] = useState(false);
+  
 
   const getProject = async () => {
     const response = await fetch("/projects/project?id=" + params.id).then(
       (response) => response.json()
     );
+
+    let string1 = response[0].technologies.split(",");
+    setTech(string1);
 
     fetch("/project/listTeamFiles/" + response[0].TeamName)
       .then((response) => {
@@ -64,7 +81,79 @@ const AdminProjectView = () => {
     setProject(response);
   };
 
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
 
+  const handleSave = (e) => {
+    e.stopPropagation();
+    // Save the edited project information
+    console.log({
+      ProjectName: ProjectName,
+      TeamName: TeamName,
+      capstoneYear: capstoneYear,
+      capstoneSemester: capstoneSemester,
+      projectIntro: projectIntro,
+      projectApproach: projectApproach,
+      selectedTechnologies,
+      selectedAwards,
+    });
+
+    const techoo = selectedTechnologies;
+    techoo.forEach((e) => arrayTech.push(e.label));
+    const arrayTech = [];
+    for (let i = 0; i < arrayTech.length; i++) {
+      arrayTech[i] = arrayTech[i].replace(/'/g, '"');
+    }
+
+
+    // STILL HAVE TO DO THE ARRAY THING LIKE YOU DID IN TECHOO FOR AWARDS
+
+    //UPDATING THE DATABASE
+
+    fetch("/admin/updateProject", {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: projectId,
+        Name: ProjectName,
+        Description: projectIntro,
+        Year: capstoneYear,
+        Semester: capstoneSemester,
+        github: githubLink,
+        TeamName: TeamName,
+        video: VideoLink,
+        Intro: projectIntro,
+        approach: projectApproach
+      }),
+    });
+
+
+    // Perform the necessary saving logic here
+
+    // Reset the editing state
+    setIsEditing(false);
+  };
+
+  const handleApproveProject = (e) => {
+    e.preventDefault();
+    fetch("/admin/approveProject", {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: projectId
+      }),
+    });
+  }
+  const handleProjectNameChange = (e) => {
+    setProjectName(e.target.value);
+  }
 
   useEffect(() => {
     const fetchResponses = async () => {
@@ -86,12 +175,57 @@ const AdminProjectView = () => {
     getProject();
   }, []);
 
+  useEffect(() => {
+    setProjectName(projects && projects.map((project) => project.ProjectName).join(' '));
+    setTeamName(projects && projects.map((project) => project.TeamName).join(' '));
+    setCapstoneYear(projects && projects.map((project) => project.capstoneYear).join(' '));
+    setCapstoneSemester(projects && projects.map((project) => project.capstoneSemester).join(' '));
+    setVideoLink(projects && projects.map((project) => project.VideoLink).join(' '));
+    setgithubLink(projects && projects.map((project) => project.githubLink).join(' '));
+    setProjectIntro(projects && projects.map((project) => project.ProjectIntro).join(' '));
+    setProjectApproach(projects && projects.map((project) => project.Project_Approach).join(' '));
+    setProjectId(projects && projects.map((project) => project.ProjectID).join(' '));
+  }, [projects]);
+
+  useEffect(() => {
+    fetch("/project/technologyNames")
+      .then((response) => response.json())
+      .then((data) => setTechnologies(data))
+      .catch((error) => console.error(error));
+  }, []);
+
+  const techOptions = technologies.map((techy) => ({
+    value: techy,
+    label: techy,
+  }));
+
+  const handleChangeTechnologies = (selectedTechnologies) => {
+    setSelectedTechnologies(selectedTechnologies);
+  };
+
+  const handleChangeAwards = (selectedAwards) => {
+    setSelectedAwards(selectedAwards);
+  };
+
+  const awarded = [
+    { value: "None", label: "None" },
+    { value: "Excellence Award", label: "Excellence Award" },
+    { value: "Community Award", label: "Community Award" },
+    { value: "People's Choice Award", label: "People's Choice Award" },
+  ];
+
   const buttonStyle = {
     width: "30px",
     background: "none",
     border: "0px",
     class: "arrows",
   };
+  const [selectedTab, setSelectedTab] = useState(0);
+  
+    const handleChange = (event, newValue) => {
+      setSelectedTab(newValue);
+    };
+
 
   const properties = {
     prevArrow: (
@@ -146,249 +280,6 @@ const AdminProjectView = () => {
     );
   };
 
-  const Header = ({ project }) => {
-    const [capstoneYear, setCapstoneYear] = useState('');
-    const [capstoneSemester, setCapstoneSemester] = useState('');
-    const [ProjectName, setProjectName] = useState(''); 
-    const [TeamName, setTeamName] = useState('');
-    const [githubLink, setgithubLink] = useState('');
-    const [VideoLink, setVideoLink] = useState('');
-    const [isEditing, setIsEditing] = useState(false);
-
-    useEffect(() => {
-        setProjectName(projects && projects.map((project) => project.ProjectName).join(' '));
-        setTeamName(projects && projects.map((project) => project.TeamName).join(' '));
-        setCapstoneYear(projects && projects.map((project) => project.capstoneYear).join(' '));
-        setCapstoneSemester(projects && projects.map((project) => project.capstoneSemester).join(' '));
-        setVideoLink(projects && projects.map((project) => project.VideoLink).join(' '));
-        setgithubLink(projects && projects.map((project) => project.githubLink).join(' '));
-      }, [projects]);
-
-    
-    const handleEdit = () => {
-        setIsEditing(true);
-    };
-  
-    const handleSave = () => {
-        // Save the edited project information
-        console.log({
-            ProjectName: ProjectName,
-            TeamName: TeamName,
-            capstoneYear: capstoneYear,
-            capstoneSemester: capstoneSemester
-        });
-    
-        // Perform the necessary saving logic here
-    
-        // Reset the editing state
-        setIsEditing(false);
-        };
-  
-    return (
-      <div className="titlePanel">
-        <div className="centerTitle">
-          <p className="semesterTag">
-            {isEditing ? (
-              <>
-                <input
-                  type="text"
-                  value={capstoneYear}
-                  onChange={(e) => setCapstoneYear(e.target.value)}
-                />
-                Semester{' '}
-                <input
-                  type="text"
-                  value={capstoneSemester}
-                  onChange={(e) => setCapstoneSemester(e.target.value)}
-                />
-              </>
-            ) : (
-              `${capstoneYear} Semester ${capstoneSemester}`
-            )}
-          </p>
-          <p className="projecttitle">
-            {isEditing ? (
-              <input
-                type="text"
-                value={ProjectName}
-                onChange={(e) => setProjectName(e.target.value)}
-              />
-            ) : (
-              ProjectName
-            )}
-          </p>
-          <div className="names">
-            <p className="companyname">
-              By{' '}
-              {isEditing ? (
-                <input
-                  type="text"
-                  value={TeamName}
-                  onChange={(e) => setTeamName(e.target.value)}
-                />
-              ) : (
-                TeamName
-              )}
-            </p>
-          </div>
-          <p className="proj-desc">{project.ProjectIntro}</p>
-          <div className="pv-buttons">
-          {" "}
-          {isEditing ? (
-            <input
-              type="text"
-              value={project.githubLink}
-              onChange={(e) => setgithubLink(e.target.value)}
-            />
-          ) : (
-            <CButton>
-            <a href={project.githubLink} target="_blank" rel="noreferrer">
-              <img src={gitHubLogo} alt="GitHub Logo" /> GitHub
-            </a>
-            </CButton>
-          )}
-          {" "}
-          {isEditing ? (
-            <input
-              type="text"
-              value={project.VideoLink}
-              onChange={(e) => setVideoLink(e.target.value)}
-            />
-          ) : (
-            <CButton>
-            <a href={project.VideoLink} target="_blank" rel="noreferrer">
-              <YouTubeIcon /> YouTube
-            </a>
-            </CButton>
-          )}
-          
-        </div>
-    </div>
-  
-        <div className="pv-buttons">
-          {isEditing ? (
-            <button onClick={handleSave} className="btn btn-primary">Save</button>
-          ) : (
-            <button onClick={handleEdit} className="btn btn-primary">Edit</button>
-          )}
-        </div>
-        
-      </div>
-    );
-  };
-  
-  const ProjectSidePanel = ({ project }) => {
-    const [technologies, setTechnologies] = useState([]);
-    const [isEditing, setIsEditing] = useState(false);
-    const [selectedTechnologies, setSelectedTechnologies] = useState([]);
-    const [selectedAwards, setSelectedAwards] = useState([]);
-  
-    useEffect(() => {
-      fetch("/project/technologyNames")
-        .then((response) => response.json())
-        .then((data) => setTechnologies(data))
-        .catch((error) => console.error(error));
-    }, []);
-  
-    const techOptions = technologies.map((techy) => ({
-      value: techy,
-      label: techy,
-    }));
-  
-    const awarded = [
-      { value: "None", label: "None" },
-      { value: "Excellence Award", label: "Excellence Award" },
-      { value: "Community Award", label: "Community Award" },
-      { value: "People's Choice Award", label: "People's Choice Award" },
-    ];
-  
-    const handleChangeTechnologies = (selectedTechnologies) => {
-      setSelectedTechnologies(selectedTechnologies);
-    };
-  
-    const handleChangeAwards = (selectedAwards) => {
-      setSelectedAwards(selectedAwards);
-    };
-  
-    const handleEdit = () => {
-      setIsEditing(true);
-    };
-  
-    const handleSave = () => {
-      // Save the edited project information
-      console.log({
-        selectedTechnologies,
-        selectedAwards,
-      });
-  
-      // Perform the necessary saving logic here
-  
-      // Reset the editing state
-      setIsEditing(false);
-    };
-  
-    return (
-      <div className="sidePanel">
-        <div className="centerTitle">
-          <div className="names"></div>
-        </div>
-        <div className="techUsed">
-          {isEditing ? (
-            <CreatableSelect
-              required
-              className="formLinks"
-              id="tech"
-              isMulti
-              options={techOptions}
-              maxMenuHeight={250}
-              onChange={handleChangeTechnologies}
-              placeholder="Select from the drop down or type the technologies you used in the project"
-            />
-          ) : (
-            selectedTechnologies.map((tech, i) => (
-              <div className="tech" key={`TechKey${i}`}>
-                <p>{tech.value}</p>
-              </div>
-            ))
-          )}
-        </div>
-        <div className="techUsed">
-          {isEditing ? (
-            <CreatableSelect
-              required
-              className="formLinks"
-              id="awards"
-              isMulti
-              options={awarded}
-              maxMenuHeight={250}
-              onChange={handleChangeAwards}
-              placeholder="Select or type the awards for the project"
-            />
-          ) : (
-            selectedAwards.map((award, i) => (
-              <div className="tech" key={`AwardKey${i}`}>
-                <p>{award.value}</p>
-              </div>
-            ))
-          )}
-        </div>
-        <div className="pv-buttons">
-          {isEditing ? (
-            <button onClick={handleSave} className="btn btn-primary">
-              Save
-            </button>
-          ) : (
-            <button onClick={handleEdit} className="btn btn-primary">
-              Edit
-            </button>
-          )}
-        </div>
-        <ApproveOrDelete />
-      </div>
-    );
-  };
-  
-
   const ApproveOrDelete = ({}) =>{
     return (
         <div style={{
@@ -407,125 +298,213 @@ const AdminProjectView = () => {
         </div>
       );
   }
-  const AdminProjectTabs = ({ projects }) => {
-  const [selectedTab, setSelectedTab] = useState(0);
-  const [projectIntro, setProjectIntro] = useState('');
-  const [projectApproach, setProjectApproach] = useState('');
-  const [isEditing, setIsEditing] = useState(false);
-
-  useEffect(() => {
-    setProjectIntro(projects && projects.map((project) => project.ProjectIntro).join(' '));
-    setProjectApproach(projects && projects.map((project) => project.Project_Approach).join(' '));
-  }, [projects]);
-
-  const handleChange = (event, newValue) => {
-    setSelectedTab(newValue);
-  };
-
-  const handleEdit = () => {
-    setIsEditing(true);
-  };
-
-  const handleSave = () => {
-    // Save the edited project information
-    console.log({
-      projectIntro: projectIntro,
-      projectApproach: projectApproach
-    });
-
-    // Perform the necessary saving logic here
-
-    // Reset the editing state
-    setIsEditing(false);
-  };
-
-  return (
-    <Box sx={{ width: "100%" }}>
-      <Tabs
-        value={selectedTab}
-        onChange={handleChange}
-        indicatorColor="primary"
-        textColor="primary"
-        variant="fullWidth"
-      >
-        <Tab label="About Project" />
-        <Tab label="Project Poster" />
-      </Tabs>
-      {selectedTab === 0 && (
-        <div className="projectInformation">
-          <h2>
-            About {projects && projects.map((project) => project.ProjectName)}
-          </h2>
-          {isEditing ? (
-            <textarea
-              value={projectIntro}
-              onChange={(event) => setProjectIntro(event.target.value)}
-            ></textarea>
-          ) : (
-            <p className="about">{projectIntro}</p>
-          )}
-          <h2>Project Approach</h2>
-          {isEditing ? (
-            <textarea
-              value={projectApproach}
-              onChange={(event) => setProjectApproach(event.target.value)}
-            ></textarea>
-          ) : (
-            <p className="projectApproach">{projectApproach}</p>
-          )}
-          {isEditing ? (
-            <button onClick={handleSave} className="btn btn-primary">Save</button>
-          ) : (
-            <button onClick={handleEdit} className="btn btn-primary">Edit</button>
-          )}
-        </div>
-      )}
-      {selectedTab === 1 && (
-        <div className="projectInformation">
-          <h2>
-            This project poster will be displayed here.
-            <br></br>
-          </h2>
-        </div>
-      )}
-    </Box>
-  );
-  }
+  // This is passed all the components 
   return (
     <div>
-          <div className="bluebox">
-              <div className="p-row">
-                  <div className="column headerleft">
-                      <div className="image">
-                          <Slideshow />
-                      </div>
-                  </div>
-                  <div className="column headerright">
-                      <div className="teammembers">
-                          {projects &&
-                              projects.map((project) => (
-                                  <Header key={project.id} project={project} />
-                              ))}
-                      </div>
-                  </div>
-              </div>
+      <div className="bluebox">
+        <div className="p-row">
+          <div className="column headerleft">
+            <div className="image">
+              <Slideshow />
+            </div>
           </div>
-          <div className="projectInformation-wrapper">
-              <div style={{ display: "flex" }}>
-                  <div className="projectTabs" style={{ width: "75%" }}>
-                      <AdminProjectTabs
-                          projects={projects} />
+          <div className="column headerright">
+            <div className="teammembers">
+              {projects &&
+                projects.map((project) => (
+                  <div className="titlePanel">
+                    <div className="centerTitle">
+                      <p className="semesterTag">
+                        {isEditing ? (
+                          <>
+                            <input
+                              type="text"
+                              value={capstoneYear}
+                              onChange={(e) => setCapstoneYear(e.target.value)}
+                            />
+                            Semester{" "}
+                            <input
+                              type="text"
+                              value={capstoneSemester}
+                              onChange={(e) => setCapstoneSemester(e.target.value)}
+                            />
+                          </>
+                        ) : (
+                          `${capstoneYear} Semester ${capstoneSemester}`
+                        )}
+                      </p>
+                      <p className="projecttitle">
+                        {isEditing ? (
+                          <input
+                            type="text"
+                            value={ProjectName}
+                            onChange={handleProjectNameChange}
+                          />
+                        ) : (
+                          ProjectName
+                        )}
+                      </p>
+                      <div className="names">
+                        <p className="companyname">
+                          By{" "}
+                          {isEditing ? (
+                            <input
+                              type="text"
+                              value={TeamName}
+                              onChange={(e) => setTeamName(e.target.value)}
+                            />
+                          ) : (
+                            TeamName
+                          )}
+                        </p>
+                      </div>
+                      <p className="proj-desc">{project.ProjectIntro}</p>
+                      <div className="pv-buttons">
+                        {isEditing ? (
+                          <input
+                            type="text"
+                            value={githubLink}
+                            onChange={(e) => setgithubLink(e.target.value)}
+                          />
+                        ) : (
+                          <CButton>
+                            <a href={githubLink} target="_blank" rel="noreferrer">
+                              <img src={gitHubLogo} alt="GitHub Logo" /> GitHub
+                            </a>
+                          </CButton>
+                        )}
+                        {isEditing ? (
+                          <input
+                            type="text"
+                            value={VideoLink}
+                            onChange={(e) => setVideoLink(e.target.value)}
+                          />
+                        ) : (
+                          <CButton>
+                            <a href={VideoLink} target="_blank" rel="noreferrer">
+                              <YouTubeIcon /> YouTube
+                            </a>
+                          </CButton>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  <div className="sidepanel-div" style={{ width: "25%" }}>
-                      {projects &&
-                          projects.map((project) => (
-                              <ProjectSidePanel key={project.id} project={project} />
-                          ))}
-                  </div>
-              </div>
+                ))}
+              <div className="pv-buttons">
+              {isEditing ? (
+                <button onClick={handleSave} className="btn btn-primary">
+                  Save
+                </button>
+              ) : (
+                <button onClick={handleEdit} className="btn btn-primary">
+                  Edit
+                </button>
+              )}
+            </div>
+            </div>
           </div>
+        </div>
       </div>
+      <div className="projectInformation-wrapper">
+        <div style={{ display: "flex" }}>
+          <div className="projectTabs" style={{ width: "75%" }}>
+            <Box sx={{ width: "100%" }}>
+              <Tabs
+                value={selectedTab}
+                onChange={handleChange}
+                indicatorColor="primary"
+                textColor="primary"
+                variant="fullWidth"
+              >
+                <Tab label="About Project" />
+                <Tab label="Project Poster" />
+              </Tabs>
+              {selectedTab === 0 && (
+                <div className="projectInformation">
+                  <h2>
+                    About{" "}
+                    {projects &&
+                      projects.map((project) => project.ProjectName)}
+                  </h2>
+                  {isEditing ? (
+                    <textarea
+                      value={projectIntro}
+                      onChange={(event) => setProjectIntro(event.target.value)}
+                    ></textarea>
+                  ) : (
+                    <p className="about">{projectIntro}</p>
+                  )}
+                  <h2>Project Approach</h2>
+                  {isEditing ? (
+                    <textarea
+                      value={projectApproach}
+                      onChange={(event) => setProjectApproach(event.target.value)}
+                    ></textarea>
+                  ) : (
+                    <p className="about">{projectApproach}</p>
+                  )}
+                </div>
+              )}
+              {selectedTab === 1 && (
+                <div className="projectInformation">
+                  <h2>This project poster will be displayed here.</h2>
+                  <br />
+                </div>
+              )}
+            </Box>
+          </div>
+          {!isEditing && (
+            <div className="sidepanel-div" style={{ width: "25%" }}>
+              <div className="sidePanel">
+                <div className="centerTitle">
+                  <div className="names"></div>
+                </div>
+                <div className="techUsed">
+                  <CreatableSelect
+                    required
+                    className="formLinks"
+                    id="tech"
+                    isMulti
+                    options={techOptions}
+                    maxMenuHeight={250}
+                    onChange={handleChangeTechnologies}
+                    placeholder="Select from the drop down or type the technologies you used in the project"
+                  />
+                </div>
+                <div className="techUsed">
+                  <CreatableSelect
+                    required
+                    className="formLinks"
+                    id="awards"
+                    isMulti
+                    options={awarded}
+                    maxMenuHeight={250}
+                    onChange={handleChangeAwards}
+                    placeholder="Select or type the awards for the project"
+                  />
+                </div>
+          <div style={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "20px", // Adjust the margin value as needed
+          }}> 
+            <Stack direction="row" spacing={2}>
+                <Button variant="outlined" startIcon={<DeleteIcon />} onClick={handleApproveProject} color="error">
+                    Delete
+                </Button>
+                <Button variant="contained" endIcon={<SendIcon />} color="success">
+                    Approve
+                </Button>
+            </Stack>
+        </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   );
+  
 };
 
 export default AdminProjectView;

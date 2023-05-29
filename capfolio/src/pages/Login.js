@@ -3,7 +3,8 @@ import {Link} from "react-router-dom";
 import { useContext } from 'react';
 import { AuthContext } from '../AuthContext';
 import './pages.css';
-import GoogleLogin from '../images/btn_google_signin_dark_pressed_web@2x.png';
+import Button from '@mui/material/Button';
+import GoogleIcon from '@mui/icons-material/Google';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -91,9 +92,9 @@ const Login = () => {
                 Don't have an account? <Link to="/sign-up">Sign Up</Link>
               </p>
               <div>
-                <a id="loginButton" href="http://localhost:3000/auth/google">
-                <img className='resize-google-button' src={GoogleLogin}/>
-                </a>
+                <Button variant="outlined" href="http://localhost:3000/auth/google">
+                  <GoogleIcon />  Sign In With Google
+                </Button>
               </div>
             </form>
           </div>
