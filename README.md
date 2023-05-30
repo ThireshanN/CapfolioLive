@@ -1,16 +1,14 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Capfolio
+The link to deployed [version](https://www.capfolio.live)
 
-## Available Scripts
+A link to your Project Management tool.
 
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## A short description of what the project is about. (You may put a link to your final report here, after it has been completed).
+### Technologies that are used to build the project (include the languages used, the libraries and their versions).
+Instructions on how to install and setup the project (specify all dependencies).
+Usage Examples (if available).
+URL of the website where the project has been deployed (if applicable).
+Future Plan (Ideas for future releases)
+Acknowledgements (if any) - You can list tutorials used, projects referred to, people consulted etc.
 
