@@ -1,6 +1,6 @@
 
 # Capfolio
-The link to deployed [version](https://www.capfolio.live)
+The link to deployed version. [https://www.capfolio.live](https://www.capfolio.live)
 
 A link to your Project Management tool.
 
