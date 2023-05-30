@@ -134,7 +134,7 @@ profileRouter.get('/userInfo', async (req, res) => {
             return res.status(400).setHeader("Content-Type", "application/json").send("log in to view the profile");
         }
         const sql = `
-        SELECT FirstName, lastName, Picture, linkedin, githublink,userDescription,profession
+        SELECT UserTypeID, FirstName, lastName, Picture, linkedin, githublink,userDescription,profession
         FROM Users
         WHERE UserID=${currentUserId};`;
         const user = (await executeSQLstatement(sql))[0]//.catch(err => console.log("The following error generated:\n" + err));
