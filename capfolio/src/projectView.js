@@ -29,6 +29,7 @@ const ProjectView = () => {
   const [students, setStudents] = useState([]);
   const [pdf, setPDF] = useState()
   const getProject = async () => {
+    
     const response = await fetch("/projects/project?id=" + params.id).then(
       (response) => response.json()
     );
@@ -39,8 +40,6 @@ const ProjectView = () => {
 
     let string = response[0].technologies.split(",");
     setTech(string);
-
-    // Assuming you have the data stored in a variable called 'responseData'
     
 
     // Get all the images for the slideshow//

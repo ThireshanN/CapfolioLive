@@ -53,33 +53,52 @@ const AdminProjectView = () => {
   const [projectId, setProjectId] = useState();
   const [isEditing, setIsEditing] = useState(false);
   
+  const [pdf, setPDF] = useState()
+  const [img, setImage] = useState([]);
+  const [students, setStudents] = useState([]);
 
   const getProject = async () => {
+    
     const response = await fetch("/projects/project?id=" + params.id).then(
       (response) => response.json()
     );
 
-    let string1 = response[0].technologies.split(",");
-    setTech(string1);
-
-    fetch("/project/listTeamFiles/" + response[0].TeamName)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log(data);
-        setData(data);
-      })
-      .catch((error) => {
-        console.error("There was a problem fetching the data:", error);
-      });
+    const files = await fetch(`/project/listTeamFiles/${response[0].TeamId}`);
+    const data = await files.json();
+    setProject(response);
 
     let string = response[0].technologies.split(",");
-    setProject(response);
+    setTech(string);
+    
+
+    // Get all the images for the slideshow//
+    const filteredFiles = data.filter((file) => !(file.endsWith("/") || file.includes('lowres') || file.includes('/projectPoster/')));
+    const extractPDF = data.filter((file) => file.includes('/projectPoster/'));
+    console.log(extractPDF)
+    console.log(filteredFiles);
+    const url = "https://capfoliostorage.s3.ap-southeast-2.amazonaws.com/";
+    const getPDF = url + extractPDF
+    console.log(getPDF)
+    setPDF(getPDF)
+
+    const reposnceArray = [];
+    for (let i = 0; i < filteredFiles.length; i++) {
+      let getHighRes = "";
+      getHighRes = url + filteredFiles[i];
+      reposnceArray.push(getHighRes);
+    }
+    console.log(reposnceArray)
+    setImage(reposnceArray);
+
+    const processedUsers = response.map((item) => ({
+      name: item.studentNames.split(","),
+      upi: item.studentUPIs.split(","),
+    }));
+    setStudents(processedUsers);
+    //=====================================//
   };
+
+
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -264,16 +283,17 @@ const AdminProjectView = () => {
     };
     return (
       <Slider className="slideshow" {...settings}>
-        {responses.map((response, index) => (
+        {img.map((response, index) => (
           <div className="each-slide-effect" key={index}>
             <div
               style={{
-                backgroundImage: `url(${response})`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 width: "100%",
               }}
-            ></div>
+            >
+              <img src={response} alt={`Slide ${index + 1}`} />
+            </div>
           </div>
         ))}
       </Slider>
