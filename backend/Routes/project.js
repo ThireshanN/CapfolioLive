@@ -271,7 +271,7 @@ projectRouter.put('/addTeamMembers', async (req, res) => {
         const memberUPIs = req.body.memberUPIs; //['kcou558', 'kcou559'];
         const projectID = req.body.projectID; //7;
         const { TeamLeader, ProjectName } = (await executeSQLstatement(`SELECT TeamLeader, ProjectName FROM Capfolio.Project WHERE ProjectID = ${projectID}`))[0][0];
-        const currentLoggedInUser = currentUserId;
+        const currentLoggedInUser = currentUserId; //84
         let additionalMessage = '';
 
         if (!TeamLeader) {
@@ -296,8 +296,37 @@ projectRouter.put('/addTeamMembers', async (req, res) => {
         memberUPIs.forEach(member => {
             studentUPIsArray.includes(member) ? '' : MissingUPI.push(member);
         });
-        if (MissingUPI != []) {
+        if (MissingUPI.length != 0) {
             additionalMessage = `However the following students have not logged in with their uni email: ${MissingUPI}`;
+            const connection = await mysql.createConnection(config.db);
+            await connection.beginTransaction();
+            // console.log(MissingUPI);
+            try {
+                for (let upi of MissingUPI) { //student = 'kcou558'
+                    const userExists = (await executeSQLstatement(`SELECT COUNT(*) AS userExists FROM Users WHERE Email = '${upi}@aucklanduni.ac.nz';`, connection))[0][0].userExists;
+                    if (userExists) { //user record found but no student record
+                        const getUserId = (await executeSQLstatement2(`SELECT UserID FROM Capfolio.Users WHERE Email = '${upi}@aucklanduni.ac.nz';`, connection))[0][0].UserID;
+                        // console.log('userExists and id is ' + getUserId);
+                        // console.log('studentIsUnregistered');
+                        const studentSql = `INSERT INTO Capfolio.Student (UserID, projectID, UserTypeID, StudentUPI, isRegistered) VALUES (${getUserId}, ${projectID}, 1, '${upi}', 0)`;
+                        await executeSQLstatement2(studentSql, connection);
+                    } else { //no user record but no student record
+                        const addedUser = (await executeSQLstatement2(`INSERT INTO Capfolio.Users (UserTypeID, Email) VALUES (1, '${upi}@aucklanduni.ac.nz')`, connection))[0];
+                        const userInsertId = addedUser["insertId"];
+                        // console.log('no user found but inserted id is ' + userInsertId);
+                        // console.log('studentIsUnregistered');
+                        const studentSql = `INSERT INTO Capfolio.Student (UserID, projectID, UserTypeID, StudentUPI, isRegistered) VALUES (${userInsertId}, ${projectID}, 1, '${upi}', 0)`;
+                        await executeSQLstatement2(studentSql, connection);
+                        //however is student exists but user doesnt, inconsistent data
+                    }
+                }
+                await connection.commit();
+                await connection.end();
+            } catch (err) {
+                console.log(err.message);
+                await connection.rollback();
+                await connection.end();
+            }
         }
 
         res.status(200).send(`Successfully updated ${ProjectName}. ${additionalMessage}`);
@@ -344,13 +373,22 @@ projectRouter.post('/FormAddProject', express.json(), async (req, res) => { //
 
         //ProjectTech TABLE
         const techArray = reqBodyFromClient.Technologies;
+        let finalQueries = [];
+
+        const selectNewTech = techArray.map(tech => { return `SELECT \'${tech}\' AS NewTech`; });
+        const newTechSql = `SELECT v.NewTech FROM (${selectNewTech.join(' UNION ALL ')}) v WHERE v.NewTech NOT IN (SELECT technologyName FROM Capfolio.technologiesUsed);`
+        const newTechArr = ((await executeSQLstatement2(newTechSql, connection))[0]).map(ele => ele.NewTech);
+        for (let newTech of newTechArr) {
+            console.log(newTech);
+            (await executeSQLstatement2(`INSERT INTO Capfolio.technologiesUsed (technologyName) VALUES (\'${newTech}\');`, connection));
+        }
+
         const sqlQueryTech = `SELECT techID, technologyName FROM Capfolio.technologiesUsed WHERE technologiesUsed.technologyName IN (\'${techArray.join('\', \'')}\')`;
         const selectedTechs = (await executeSQLstatement2(sqlQueryTech, connection))[0];
-        let finalTechQueries = [];
         selectedTechs.forEach(row => {
-            finalTechQueries.push(`INSERT INTO Capfolio.ProjectTech (techID_FK, ProjectID_FK) VALUES (${row.techID}, ${projectInsertId})`)
+            finalQueries.push(`INSERT INTO Capfolio.ProjectTech (techID_FK, ProjectID_FK) VALUES (${row.techID}, ${projectInsertId})`)
         });
-        const addedProjectTech = await executeMultipleSQLstatement2(finalTechQueries, connection);
+        const addedProjectTech = await executeMultipleSQLstatement2(finalQueries, connection);
         console.log("successfully added technologies");
 
         //###################################################################################################################
@@ -551,13 +589,13 @@ projectRouter.delete('/deleteFiles/:TeamId', async (req, res) => {
     const TeamId = req.params.TeamId + "/";
     const files = req.body.files;   //["autumn.jpg", "zeus.png"];
     const filesToDelete = [];        // = [{ Key: `${TeamId}/autumn.jpg` }, { Key: `${TeamId}/zeus.png` }];
-    for (let filename of files) { 
+    for (let filename of files) {
         console.log(filename + " " + TeamId);
         if (filename == TeamId) { //delete folder DeleteME3
-            filesToDelete.push({ Key: `${TeamId}` }); 
-        } 
-        else { 
-            filesToDelete.push({ Key: `${TeamId}${filename}` }); 
+            filesToDelete.push({ Key: `${TeamId}` });
+        }
+        else {
+            filesToDelete.push({ Key: `${TeamId}${filename}` });
         }
     }
 
