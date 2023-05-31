@@ -21,6 +21,8 @@ import AWS from "aws-sdk";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
+import ProjectPoster from "./components/ProjectPoster";
+
 
 const bucketName = "capfoliostorage";
 const bucketRegion = "ap-southeast-2";
@@ -52,7 +54,8 @@ const AdminProjectView = () => {
   const [technologies, setTechnologies] = useState([]);
   const [projectId, setProjectId] = useState();
   const [isEditing, setIsEditing] = useState(false);
-  
+  const [isLoading, setIsLoading] = useState(true); // Added loading state
+
   const [pdf, setPDF] = useState()
   const [img, setImage] = useState([]);
   const [students, setStudents] = useState([]);
@@ -467,9 +470,8 @@ const AdminProjectView = () => {
               )}
               {selectedTab === 1 && (
                 <div className="projectInformation">
-                  <h2>This project poster will be displayed here.</h2>
-                  <br />
-                </div>
+                <ProjectPoster pdf={pdf} onDocumentLoad={setIsLoading} isLoad={isLoading}/>
+            </div>
               )}
             </Box>
           </div>
