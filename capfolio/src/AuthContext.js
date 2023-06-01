@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
                     setUser({
                         name: `${data.FirstName} ${data.LastName}`,
                         email: data.Email,
-                        userType: data.UserType,
+                        userType: `${data.UserType}`,
                         photo: data.Photo
                     });
                 }
