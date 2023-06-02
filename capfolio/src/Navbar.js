@@ -24,7 +24,7 @@ export default function Navbar() {
 
     const handleLogout = async () => {
         try {
-            const response = await fetch("http://localhost:3000/auth/logout");
+            const response = await fetch("/auth/logout");
             if (response.ok) {
                 const data = await response.json();
                 Cookies.remove('connect.sid', { path: '/' });
