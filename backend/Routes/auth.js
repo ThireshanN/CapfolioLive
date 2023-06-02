@@ -140,7 +140,7 @@ passport.use(
     {
       clientID: GOOGLE_CLIENT_ID,
       clientSecret: GOOGLE_CLIENT_SECRET,
-      callbackURL: "http://localhost:3000/auth/google/callback",
+      callbackURL: "/auth/google/callback",
     },
     async (accessToken, refreshToken, profile, cb) => {
       //const sql = `Insert into Visitors(UserID, UserTypeID, FirstName, lastName) values (40, 4, "Paul", "Pogba")`;
@@ -165,7 +165,7 @@ passport.use(
       if (!exists) {
         const id = await next_id();
         console.log(emailToCheck);
-        if (emailToCheck === "mdes954@aucklanduni.ac.nz") {
+        if (emailToCheck === "asma.shakil@auckland.ac.nz") {
           console.log("T1");
           type = 3;
           console.log("T2");
@@ -381,8 +381,8 @@ router.post('/signup', async (req, res) => {
   const userTypeID = 4;
   const userID = await next_id();
   const verified = 0;
-  const pic = 'https://upload.wikimedia.org/wikipedia/en/7/7a/Manchester_United_FC_crest.svg';
-  //const pic = '/images/icon.png';
+  const pic = 'https://www.shareicon.net/data/128x128/2016/07/26/802013_man_512x512.png';
+  //const pic = 'https://www.shareicon.net/data/128x128/2016/07/26/802013_man_512x512.png';
 
   const sql = `INSERT INTO Users (UserID, UserTypeID, FirstName, lastName, Email, password, Verfified, Picture) VALUES (?, ?, ?, ?, ?, ?, ?, ?);`;
   const sql2 = `Insert into Visitor(UserID, UserTypeID) values (${userID}, ${userTypeID});`;
