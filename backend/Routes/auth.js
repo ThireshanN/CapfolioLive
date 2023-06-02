@@ -165,7 +165,7 @@ passport.use(
       if (!exists) {
         const id = await next_id();
         console.log(emailToCheck);
-        if (emailToCheck === "tnai955@aucklanduni.ac.nz") {
+        if (emailToCheck === "mdes954@aucklanduni.ac.nz") {
           console.log("T1");
           type = 3;
           console.log("T2");

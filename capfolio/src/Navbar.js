@@ -11,12 +11,15 @@ export default function Navbar() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const navigate = useNavigate();
     const [menuOpen, setMenuOpen] = useState(false);
-    
-
+    const [isAdmin, setIsAdmin] = useState(false);
     
 
     useEffect(() => {
+        if (user && user.userType === '3') {
+            setIsAdmin(true);
+        } 
         setIsAuthenticated(user !== null);
+        console.log(user, isAdmin);
     }, [user]);
 
     const handleLogout = async () => {
@@ -37,10 +40,12 @@ export default function Navbar() {
         }
     };
 
+
+
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
       };
-    return (
+      return (
         <nav className="navtop">
             <Link to="/" className="site-title">
                 <div className="logo">
@@ -65,7 +70,12 @@ export default function Navbar() {
                         <CustomLink to="/profile" className="login">
                             Profile
                         </CustomLink>
-                        <CustomLink to="/"className="signup" onClick={handleLogout}>
+                        {isAdmin && (
+                            <CustomLink to="/Admin-Page" className="login">
+                                Admin Panel
+                            </CustomLink>
+                        )}
+                        <CustomLink to="/" className="signup" onClick={handleLogout}>
                             Logout
                         </CustomLink>
                     </>
