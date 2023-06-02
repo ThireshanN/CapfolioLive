@@ -92,7 +92,7 @@ const Login = () => {
                 Don't have an account? <Link to="/sign-up">Sign Up</Link>
               </p>
               <div>
-                <Button variant="outlined" href="http://localhost:3000/auth/google">
+                <Button variant="outlined" href="/auth/google">
                   <GoogleIcon />  Sign In With Google
                 </Button>
               </div>
