@@ -10,12 +10,6 @@ Technologies that are used to build the project (include the languages used, the
 
 Instructions on how to install and setup the project (specify all dependencies).
 
-Usage Examples (if available).
-
-URL of the website where the project has been deployed (if applicable).
-
-Future Plan (Ideas for future releases)
-
 Acknowledgements (if any) - You can list tutorials used, projects referred to, people consulted etc.
 
 # Usage Examples
@@ -57,6 +51,8 @@ THE PDF IS NOT SHOWING WE NEED TO FIX THAT
 ![image](https://github.com/uoa-compsci399-s1-2023/project-team-11/assets/48738772/42dae11b-4014-468f-ab99-5a873389fef9)
 ![image](https://github.com/uoa-compsci399-s1-2023/project-team-11/assets/48738772/483eef1b-6fcb-4127-a0d2-41b1d9a0a4f6)
 
+# Future Plan 
+In the future we would like to add more functionalities for the the eymployer user type, allowing them to also submit project ideas and proposals for our client to consider in the future semesters. Another feature we would like to add is for to students to bid and submit project prefrences and who they would like to be paired with in a group. Another feature would be for all users to have the ability to privately message each other to discuss about projects ideas, group pairing and other discussions.  
 
 
 
