@@ -18,3 +18,10 @@ Future Plan (Ideas for future releases)
 
 Acknowledgements (if any) - You can list tutorials used, projects referred to, people consulted etc.
 
+# Usage Examples
+Home Gallery Page
+![image](https://github.com/uoa-compsci399-s1-2023/project-team-11/assets/48738772/c570e550-8b99-45d8-bcba-47ee42f1ee5b)
+![image](https://github.com/uoa-compsci399-s1-2023/project-team-11/assets/48738772/1ed398e3-0276-4b38-ba96-9918b2bd047a)
+
+
+
