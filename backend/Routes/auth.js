@@ -32,18 +32,18 @@ async function sendEmail(firstname, email) {
   });
 
   transporter
-    .sendMail({
-      from: 'noreplycapfolio@gmail.com',
-      to: email,
-      subject: 'Verify your Capfolio Account',
-      html: html,
-    })
-    .then((info) => {
-      console.log('Message Sent:' + info.message);
-    })
-    .catch((error) => {
-      console.error('Failed to send email:', error);
-    });
+      .sendMail({
+        from: 'noreplycapfolio@gmail.com',
+        to: email,
+        subject: 'Verify your Capfolio Account',
+        html: html,
+      })
+      .then((info) => {
+        console.log('Message Sent:' + info.message);
+      })
+      .catch((error) => {
+        console.error('Failed to send email:', error);
+      });
 }
 
 
@@ -554,18 +554,18 @@ async function sendPasswordResetEmail(email) {
   //console.log("Sub8");
 
   transporter
-    .sendMail({
-      from: 'noreplycapfolio@gmail.com',
-      to: email,
-      subject: 'Password Reset Code',
-      html: html,
-    })
-    .then((info) => {
-      //console.log('Message Sent:' + info.message);
-    })
-    .catch((error) => {
-      //console.error('Failed to send email:', error);
-    });
+      .sendMail({
+        from: 'noreplycapfolio@gmail.com',
+        to: email,
+        subject: 'Password Reset Code',
+        html: html,
+      })
+      .then((info) => {
+        //console.log('Message Sent:' + info.message);
+      })
+      .catch((error) => {
+        //console.error('Failed to send email:', error);
+      });
 }
 
 
