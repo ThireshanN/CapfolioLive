@@ -88,8 +88,16 @@ If you get this error message: "Error [ERR_MODULE_NOT_FOUND]: Cannot find packag
 
 ```
 npm i nodemailer
+npm run buildstart
 ```
 
+If you get this error message: "Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'express'" 
+``` 
+cd .\backend\ 
+npm i express 
+cd .. 
+npm run buildstart
+```
 ---
 ## Usage Examples ##
 ---
