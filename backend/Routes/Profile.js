@@ -147,3 +147,20 @@ profileRouter.get('/userInfo', async (req, res) => {
 });
 
 
+//http://localhost:3000/profile/userInfo?id=1
+//http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/profile/userInfo
+profileRouter.get('/viewStudentProfile', async (req, res) => { 
+    try {
+        const sql = `
+        SELECT UserID, UserTypeID, FirstName, LastName, Picture, LinkedIn, GithubLink, UserDescription, Profession
+        FROM Users
+        WHERE Email = CONCAT('${req.query.id}', '@aucklanduni.ac.nz');`;
+        const user = (await executeSQLstatement(sql))[0]//.catch(err => console.log("The following error generated:\n" + err));
+        return res.status(200).setHeader("Content-Type", "application/json").send(user);
+    }
+    catch (err) {
+        //console.log(err.message);
+        return res.status(400).setHeader("Content-Type", "application/json").send("failed to fetch user data because of " + err);
+    }
+});
+

@@ -1,6 +1,6 @@
 import { Collapse, CButton } from "@coreui/react";
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import Slider from "react-slick";
 import "react-slideshow-image/dist/styles.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -12,7 +12,6 @@ import { ReactComponent as Heart } from "./images/heart.svg";
 import { ReactComponent as Views } from "./images/views.svg";
 import AwardBanner from "./components/awardBanner.js";
 import "./projectView.css";
-
 
 const ProjectView = () => {
   const navigate = useNavigate();
@@ -27,9 +26,8 @@ const ProjectView = () => {
   const [img, setImage] = useState([]);
   const [lowRes, setLowRes] = useState();
   const [students, setStudents] = useState([]);
-  const [pdf, setPDF] = useState()
+  const [pdf, setPDF] = useState();
   const getProject = async () => {
-    
     const response = await fetch("/projects/project?id=" + params.id).then(
       (response) => response.json()
     );
@@ -40,17 +38,23 @@ const ProjectView = () => {
 
     let string = response[0].technologies.split(",");
     setTech(string);
-    
 
     // Get all the images for the slideshow//
-    const filteredFiles = data.filter((file) => !(file.endsWith("/") || file.includes('lowres') || file.includes('/projectPoster/')));
-    const extractPDF = data.filter((file) => file.includes('/projectPoster/'));
-    console.log(extractPDF)
+    const filteredFiles = data.filter(
+      (file) =>
+        !(
+          file.endsWith("/") ||
+          file.includes("lowres") ||
+          file.includes("/projectPoster/")
+        )
+    );
+    const extractPDF = data.filter((file) => file.includes("/projectPoster/"));
+    console.log(extractPDF);
     console.log(filteredFiles);
     const url = "https://capfoliostorage.s3.ap-southeast-2.amazonaws.com/";
-    const getPDF = url + extractPDF
-    console.log(getPDF)
-    setPDF(getPDF)
+    const getPDF = url + extractPDF;
+    console.log(getPDF);
+    setPDF(getPDF);
 
     const firstElement = filteredFiles[0];
     const lastSlashIndex = firstElement.lastIndexOf("/");
@@ -64,7 +68,7 @@ const ProjectView = () => {
       getHighRes = url + filteredFiles[i];
       reposnceArray.push(getHighRes);
     }
-    console.log(reposnceArray)
+    console.log(reposnceArray);
     setImage(reposnceArray);
 
     const processedUsers = response.map((item) => ({
@@ -183,17 +187,18 @@ const ProjectView = () => {
           <p className="proj-desc">{project.ProjectIntro}</p>
         </div>
 
-
         <div className="sidePanel-mobile">
           <div className="centerTitle">
             <div className="project-stats">
               <p>
                 {" "}
-                <Heart /> {project.likes}{" Likes "}
+                <Heart /> {project.likes}
+                {" Likes "}
               </p>
               <p>
                 {" "}
-                <Views /> {project.viewCount}{" Views"}
+                <Views /> {project.viewCount}
+                {" Views"}
               </p>
             </div>
             <div className="pv-buttons">
@@ -206,10 +211,10 @@ const ProjectView = () => {
               </CButton>
               <div>
                 <div className="pv-likeButton">
-                  <LikeButton likenumber={params.id}  />
+                  <LikeButton likenumber={params.id} />
                 </div>
               </div>
-          </div>
+            </div>
           </div>
           <div className="techUsed">
             {tech &&
@@ -228,30 +233,32 @@ const ProjectView = () => {
     return (
       <div className="sidePanel">
         <div className="centerTitle">
-        <div className="project-stats">
+          <div className="project-stats">
             <p>
               {" "}
-              <Heart /> {project.likes}{" Likes "}
+              <Heart /> {project.likes}
+              {" Likes "}
             </p>
             <p>
               {" "}
-              <Views /> {project.viewCount}{" Views"}
+              <Views /> {project.viewCount}
+              {" Views"}
             </p>
           </div>
-        <div className="pv-buttons">
-          <CButton>
-            {" "}
-            <a href={project.githubLink} target="_blank">
+          <div className="pv-buttons">
+            <CButton>
               {" "}
-              <img src={gitHubLogo}></img> GitHub
-            </a>
-          </CButton>
-          <div>
-            <div className="pv-likeButton">
-              <LikeButton likenumber={params.id} />
+              <a href={project.githubLink} target="_blank">
+                {" "}
+                <img src={gitHubLogo}></img> GitHub
+              </a>
+            </CButton>
+            <div>
+              <div className="pv-likeButton">
+                <LikeButton likenumber={params.id} />
+              </div>
             </div>
           </div>
-        </div>
         </div>
         <p className="sp-subtitle">Made with</p>
         <div className="techUsed">
@@ -263,16 +270,21 @@ const ProjectView = () => {
             ))}
         </div>
         <div className="names">
-            <p className="sp-subtitle">Team members</p>
+          <p className="sp-subtitle">Team members</p>
 
-            {students.map((user, index) => (
-              <div className="name" key={index}>
-                  {user.name.map((name, nameIndex) => (
-                      <p key={nameIndex}>{name}<br/></p>
-                  ))}
-              </div>
+          {students.map((user, index) => (
+            <div className="name" key={index}>
+              {user.name.map((name, i) => (
+                <Link to={`/profile/${user.upi[i]}`} key={i}>
+                  <p>
+                    {name}
+                    <br />
+                  </p>
+                </Link>
+              ))}
+            </div>
           ))}
-          </div>
+        </div>
       </div>
     );
   };

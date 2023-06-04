@@ -14,7 +14,7 @@ import ResetPassword from "./pages/ResetPassword";
 import PasswordResetCode from "./pages/PasswordResetCode";
 import Admin from "./Admin";
 import AdminProjectView from "./AdminProjectView";
-
+import ViewStudentProfile from "./pages/viewStudentProfile";
 
 
 function App() {
@@ -28,6 +28,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/sign-up" element={<Signup />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="profile/:id" element={<ViewStudentProfile/>}/>
           <Route path="/project-view/:id" element={<ProjectView />} />
           <Route path="/project-submit" element={<ProjectSubmit />} />
           <Route path="/Code-Confirmation" element={<CodeConfirmation />} />
