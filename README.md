@@ -156,9 +156,13 @@ THE PDF IS NOT SHOWING WE NEED TO FIX THAT
 
 - [Creating Amazon EC2 Instances for NGINX Open Source and NGINX Plus](https://docs.nginx.com/nginx/deployment-guides/amazon-web-services/ec2-instances-for-nginx/)
 
+- [React Doc](https://legacy.reactjs.org/docs/getting-started.html) 
+
+- [MUI Library Doc](https://mui.com/material-ui/getting-started/overview/)
+
 
 ---
-## Future insight: - PROBZ NEED TO ADD MORE ##
+## Future insight: ##
 ---
 
 * Allow employers to submit potential projects for our client to approve and stendents to work on
