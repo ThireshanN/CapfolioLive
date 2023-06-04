@@ -6,11 +6,11 @@ The link to deployed version. [https://www.capfolio.live](https://www.capfolio.l
 Also an alternative URL for our deployed version: [http://ec2-54-79-153-66.ap-southeast-2.compute.amazonaws.com:3000](http://ec2-54-79-153-66.ap-southeast-2.compute.amazonaws.com:3000)
 
 ---
-## PM Tool - INCOMPLETE ##
+## PM Tool -
 ---
 
 A link to your Project Management tool: 
-Notion Link:
+DISCLAIMER: PLEASE LOGIN USING GOOGLE TO ACCESS NOTION TOOL
 https://www.notion.so/a3ba2f0d40ce42068c40c6d9f0d5d088?v=cabc49691dc6494e810ac4d6431616b7&pvs=4
 
 ---
