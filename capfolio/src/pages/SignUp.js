@@ -42,7 +42,7 @@ const SignUp = () => {
       return;
     }
 
-    const response = await fetch('http://localhost:3000/auth/signup', {
+    const response = await fetch('/auth/signup', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -128,7 +128,7 @@ const SignUp = () => {
                 Already registered <Link to="/login">Sign In?</Link>
               </p>
               <div>
-              <Button variant="outlined" href="http://localhost:3000/auth/google">
+              <Button variant="outlined" href="/auth/google">
                   <GoogleIcon />  Sign In With Google
                 </Button>
               </div>

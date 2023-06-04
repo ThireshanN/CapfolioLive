@@ -49,7 +49,7 @@ const Profile = () => {
     const fetchUserData = async () => {
       let userData;
       try {
-        const response = await fetch("http://localhost:3000/auth/user");
+        const response = await fetch("/auth/user");
         if (!response.ok) {
           throw new Error("User not authenticated");
         }
@@ -71,7 +71,7 @@ const Profile = () => {
 
       try {
         const projectResponse = await fetch(
-          "http://localhost:3000/profile/likedProjects?id=" + userData.UserID
+          "/profile/likedProjects?id=" + userData.UserID
         );
         if (!projectResponse.ok) {
           throw new Error("Error getting project data");
@@ -85,7 +85,7 @@ const Profile = () => {
 
       try {
         const userProjectResponse = await fetch(
-          "http://localhost:3000/profile/userproject?id=" + userData.UserID
+          "/profile/userproject?id=" + userData.UserID
         );
         if (!userProjectResponse.ok) {
           throw new Error("Error getting project data");

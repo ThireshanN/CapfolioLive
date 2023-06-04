@@ -7,14 +7,14 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch("http://localhost:3000/auth/user")
+        fetch("/auth/user")
             .then((res) => res.json())
             .then((data) => {
                 if (data.Email) {
                     setUser({
                         name: `${data.FirstName} ${data.LastName}`,
                         email: data.Email,
-                        userType: data.UserType,
+                        userType: `${data.UserType}`,
                         photo: data.Photo
                     });
                 }

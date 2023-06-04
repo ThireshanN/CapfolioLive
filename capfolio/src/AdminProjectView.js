@@ -22,6 +22,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import ProjectPoster from "./components/ProjectPoster";
+import { red } from "@mui/material/colors";
 
 
 const bucketName = "capfoliostorage";
@@ -35,15 +36,17 @@ const s3 = new AWS.S3({
   secretAccessKey: secretAccessKey,
 });
 
+const url = "https://capfoliostorage.s3.ap-southeast-2.amazonaws.com/";
+
 const AdminProjectView = () => {
   const [data, setData] = useState([]);
   const [responses, setResponses] = useState([]);
-  const params = useParams(); 
+  const params = useParams();
   const [projects, setProject] = useState("");
   const [tech, setTech] = useState("");
   const [capstoneYear, setCapstoneYear] = useState('');
   const [capstoneSemester, setCapstoneSemester] = useState('');
-  const [ProjectName, setProjectName] = useState(''); 
+  const [ProjectName, setProjectName] = useState('');
   const [TeamName, setTeamName] = useState('');
   const [githubLink, setgithubLink] = useState('');
   const [VideoLink, setVideoLink] = useState('');
@@ -56,12 +59,13 @@ const AdminProjectView = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(true); // Added loading state
 
+
   const [pdf, setPDF] = useState()
   const [img, setImage] = useState([]);
   const [students, setStudents] = useState([]);
 
   const getProject = async () => {
-    
+
     const response = await fetch("/projects/project?id=" + params.id).then(
       (response) => response.json()
     );
@@ -72,7 +76,7 @@ const AdminProjectView = () => {
 
     let string = response[0].technologies.split(",");
     setTech(string);
-    
+
 
     // Get all the images for the slideshow//
     const filteredFiles = data.filter((file) => !(file.endsWith("/") || file.includes('lowres') || file.includes('/projectPoster/')));
@@ -84,14 +88,14 @@ const AdminProjectView = () => {
     console.log(getPDF)
     setPDF(getPDF)
 
-    const reposnceArray = [];
+    const responseArray = [];
     for (let i = 0; i < filteredFiles.length; i++) {
       let getHighRes = "";
       getHighRes = url + filteredFiles[i];
-      reposnceArray.push(getHighRes);
+      responseArray.push(getHighRes);
     }
-    console.log(reposnceArray)
-    setImage(reposnceArray);
+    console.log(responseArray)
+    setImage(responseArray);
 
     const processedUsers = response.map((item) => ({
       name: item.studentNames.split(","),
@@ -243,10 +247,10 @@ const AdminProjectView = () => {
     class: "arrows",
   };
   const [selectedTab, setSelectedTab] = useState(0);
-  
-    const handleChange = (event, newValue) => {
-      setSelectedTab(newValue);
-    };
+
+  const handleChange = (event, newValue) => {
+    setSelectedTab(newValue);
+  };
 
 
   const properties = {
@@ -284,18 +288,105 @@ const AdminProjectView = () => {
       autoplay: true,
       autoplaySpeed: 3000,
     };
+
+    const [modalVisible, setModalVisible] = useState(false);
+    const [slideSettings, setSlideSettings] = useState(settings);
+
+    const removeImage = async (imageSrc) => {
+      const file = imageSrc.split(url)[1];
+      console.log("file: " + file);
+
+      try {
+        const complexData = {
+          method: "DELETE",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ "files": [`${file}`] }),
+        };
+        const result = await fetch("/project/deleteFiles", complexData);
+        console.log("result: " + result);
+
+        //Now update the images array
+        getProject();
+
+        setModalVisible(false);
+
+      } catch (error) {
+        console.log("Failed to delete file: " + error.message);
+      }
+    }
+
+    const dontRemoveImage = () => {
+      // alert(`close modal`);
+      setModalVisible(false);
+      // settings.autoplay = true;
+      // setSlideSettings(settings);
+    }
+    const displayModal = () => {
+      // alert(`open modal`);
+      setModalVisible(true);
+      // slideSettings.autoplay = false;
+      // setSlideSettings(settings);
+      // console.log(slideSettings);
+    }
+
+    const buttonStyle = {
+      color: "white",
+      backgroundColor: "#d61f2c",
+      padding: "2px",
+      fontFamily: "Arial",
+      position: "absolute",
+      right: "8px",
+      top: "15px"
+    };
+    const imageDivStyle = {
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      width: "100%",
+      position: "relative",
+    };
+    const displayMessageStyle = {
+      display: "block",
+      width: "50%",
+      height: "50%",
+      'align-self': "center",
+      'justify-content': "center",
+      position: "absolute",
+      top: "auto",
+      bottom: "auto",
+      'z-index': "100"
+    }
+
     return (
-      <Slider className="slideshow" {...settings}>
+      <Slider className="slideshow" {...slideSettings}>
         {img.map((response, index) => (
           <div className="each-slide-effect" key={index}>
-            <div
-              style={{
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                width: "100%",
-              }}
-            >
+            <div style={imageDivStyle}>
+
               <img src={response} alt={`Slide ${index + 1}`} />
+              
+              {modalVisible ? (
+                <div id="displayMessage" class="popup">
+                  <h2>Confirmation</h2>
+                  <p>Are you sure you want to proceed?</p>
+                  <div class="popup-buttons">
+                    <button class="btn-yes" style={{ 'background-color': "green", color: "black" }} onClick={() => removeImage(`${response}`)}>YES</button>
+                    <button class="btn-no" style={{ 'background-color': "red", color: "black" }} onClick={dontRemoveImage}>NO</button>
+                  </div>
+                </div>
+              ) : ("")}
+
+              {/* <button style={buttonStyle} class="btn btn-primary" onClick={displayModal}>&times;</button> */}
+              <button style={buttonStyle} class="btn btn-primary" onClick={displayModal}>
+                <span style={{'background-color': 'transparent', color: 'black', 'font-size': '16px', 'padding': '0px', 'margin-left': '5px'}}>Delete</span>
+                <svg id="deleteComment" class="icon-trash" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 40" width="40" height="40">
+                  <path class="trash-lid" fill-rule="evenodd" d="M6 15l4 0 0-3 8 0 0 3 4 0 0 2 -16 0zM12 14l4 0 0 1 -4 0z" />
+                  <path class="trash-can" d="M8 17h2v9h8v-9h2v9a2 2 0 0 1-2 2h-8a2 2 0 0 1-2-2z" />
+                </svg>
+              </button>
+
             </div>
           </div>
         ))}
@@ -303,23 +394,23 @@ const AdminProjectView = () => {
     );
   };
 
-  const ApproveOrDelete = ({}) =>{
+  const ApproveOrDelete = ({ }) => {
     return (
-        <div style={{
-            display: "flex",
-            justifyContent: "center",
-            marginTop: "20px", // Adjust the margin value as needed
-          }}> 
-            <Stack direction="row" spacing={2}>
-                <Button variant="outlined" startIcon={<DeleteIcon />}  color="error">
-                    Delete
-                </Button>
-                <Button variant="contained" endIcon={<SendIcon />} color="success">
-                    Approve
-                </Button>
-            </Stack>
-        </div>
-      );
+      <div style={{
+        display: "flex",
+        justifyContent: "center",
+        marginTop: "20px", // Adjust the margin value as needed
+      }}>
+        <Stack direction="row" spacing={2}>
+          <Button variant="outlined" startIcon={<DeleteIcon />} color="error">
+            Delete
+          </Button>
+          <Button variant="contained" endIcon={<SendIcon />} color="success">
+            Approve
+          </Button>
+        </Stack>
+      </div>
+    );
   }
   // This is passed all the components 
   return (
@@ -414,16 +505,16 @@ const AdminProjectView = () => {
                   </div>
                 ))}
               <div className="pv-buttons">
-              {isEditing ? (
-                <button onClick={handleSave} className="btn btn-primary">
-                  Save
-                </button>
-              ) : (
-                <button onClick={handleEdit} className="btn btn-primary">
-                  Edit
-                </button>
-              )}
-            </div>
+                {isEditing ? (
+                  <button onClick={handleSave} className="btn btn-primary">
+                    Save
+                  </button>
+                ) : (
+                  <button onClick={handleEdit} className="btn btn-primary">
+                    Edit
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -470,8 +561,8 @@ const AdminProjectView = () => {
               )}
               {selectedTab === 1 && (
                 <div className="projectInformation">
-                <ProjectPoster pdf={pdf} onDocumentLoad={setIsLoading} isLoad={isLoading}/>
-            </div>
+                  <ProjectPoster pdf={pdf} onDocumentLoad={setIsLoading} isLoad={isLoading} />
+                </div>
               )}
             </Box>
           </div>
@@ -505,20 +596,20 @@ const AdminProjectView = () => {
                     placeholder="Select or type the awards for the project"
                   />
                 </div>
-          <div style={{
-            display: "flex",
-            justifyContent: "center",
-            marginTop: "20px", // Adjust the margin value as needed
-          }}> 
-            <Stack direction="row" spacing={2}>
-                <Button variant="outlined" startIcon={<DeleteIcon />}  color="error">
-                    Delete
-                </Button>
-                <Button variant="contained" endIcon={<SendIcon />} onClick={handleApproveProject} color="success">
-                    Approve
-                </Button>
-            </Stack>
-        </div>
+                <div style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  marginTop: "20px", // Adjust the margin value as needed
+                }}>
+                  <Stack direction="row" spacing={2}>
+                    <Button variant="outlined" startIcon={<DeleteIcon />} color="error">
+                      Delete
+                    </Button>
+                    <Button variant="contained" endIcon={<SendIcon />} onClick={handleApproveProject} color="success">
+                      Approve
+                    </Button>
+                  </Stack>
+                </div>
               </div>
             </div>
           )}
@@ -526,7 +617,7 @@ const AdminProjectView = () => {
       </div>
     </div>
   );
-  
+
 };
 
 export default AdminProjectView;

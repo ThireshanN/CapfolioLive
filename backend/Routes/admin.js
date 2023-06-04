@@ -181,3 +181,28 @@ adminRouter.get("/awards", async (req, res) => {
         return res.status(400).setHeader("Content-Type", "text/plain").send("failed to fetch award data because of " + err);
     }
 });
+
+
+//http://localhost:3000/admin/deleteProject
+//http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/admin/deleteProject
+
+adminRouter.post("/deleteProject", async (req, res) => { 
+    const id = req.body.id;
+    try {
+        const sqlStatements = [`DELETE FROM likes WHERE ProjectID_FK=${id};`,
+        `DELETE FROM Comment WHERE ProjectID_FK=${id};`,
+        `DELETE FROM Student WHERE projectID=${id};`,
+        `DELETE FROM ProjectTech WHERE ProjectID_FK=${id};`,
+        `DELETE FROM ProjectAward WHERE ProjectID_FK=${id};`,
+        `DELETE FROM Project WHERE ProjectID=${id};`]
+        for (const sql of sqlStatements) {
+            await executeSQLstatement(sql);
+          }
+        return res.status(200).setHeader("Content-Type", "text/plain").send("Project deleted successfully");
+    }
+    catch (err) {
+        console.log(err.message);
+        return res.status(400).setHeader("Content-Type", "text/plain").send("failed to fetch award data because of " + err);
+    }
+});
+
