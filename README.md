@@ -146,8 +146,7 @@ Acknowledgements (if any) - You can list tutorials used, projects referred to, p
 * Enable a bidding system for students for choosing project preference
 * Implement a messaging system that allows all users to communicate privately and securely.
 * Implement a subsystem that allows students to create, search for and join teams. 
-* Live updates
-      * Implement a feature where any updates to a students projects, clients projects, messages, approvals needing done by the admin are either emailed or pop up as a phone notification
+* Live updates - Implement a feature where any updates to a students projects, clients projects, messages, approvals needing done by the admin are either emailed or pop up as a phone notification
 
 
 
