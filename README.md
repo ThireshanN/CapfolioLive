@@ -1,18 +1,95 @@
 
-# Capfolio
+# Capfolio #
+
 The link to deployed version. [https://www.capfolio.live](https://www.capfolio.live)
+Also an alternative URL for our deployed version: [http://ec2-54-79-153-66.ap-southeast-2.compute.amazonaws.com:3000](http://ec2-54-79-153-66.ap-southeast-2.compute.amazonaws.com:3000)
+
+---
+## PM Tool - INCOMPLETE ##
+---
 
 A link to your Project Management tool.
 
-A short description of what the project is about. (You may put a link to your final report here, after it has been completed).
+---
+## Project description: ##
+---
 
-Technologies that are used to build the project (include the languages used, the libraries and their versions).
+Capfolio, developed by WebZen, is a transformative platform that revolutionizes the computer science capstone course experience. It offers a comprehensive range of functionalities designed to enhance project showcasing and communication. With Capfolio, students can upload their capstone projects, including comprehensive details such as project titles, descriptions, images, YouTube videos, and GitHub repositories. These features allow students to accurately represent their work and attract the attention of potential employers and clients.
 
-Instructions on how to install and setup the project (specify all dependencies).
+Furthermore, Capfolio provides a user-friendly interface for visitors, students, and administrators. Visitors have the option to create an account through a streamlined signup process or utilize Google OAuth for seamless sign-in. Students, particularly those affiliated with the University of Auckland, can log in directly using their university email addresses. The platform distinguishes between user types, granting specific privileges and access levels to guests, students, and administrators.
 
-Acknowledgements (if any) - You can list tutorials used, projects referred to, people consulted etc.
+For administrators, Capfolio offers a robust admin panel that enables them to review and manage student projects. They have the authority to refine project details, assign awards to outstanding projects, and approve them for public display. This ensures the quality and appropriateness of showcased projects.
 
-# Usage Examples
+Overall, Capfolio empowers students to showcase their capstone projects to a global audience, facilitates direct communication and engagement with employers and clients, and provides administrators with effective project management tools. The platform's comprehensive functionalities and user-friendly interface make it an invaluable tool for bridging the gap between academia and industry, fostering meaningful connections, and propelling students' career opportunities in the field of computer science.
+
+---
+## Technologies used ##
+---
+
+- AWS --> EC2, S3, RDS
+- JavaScript
+- Node.js
+- Express.js
+- CSS
+- HTML
+- React
+- SQL
+- GoogleOAuth 2.0
+- Bootstrap
+
+---
+## Dependencies and installation ##
+---
+
+From the root directory:
+```
+npm run buildstart
+```
+
+### Possible Errors encountered and there fixes: ###
+
+If you get this error message: "Plugin "react" was conflicted between package.json » eslint-config-react-app"
+```
+# FOR WINDOWS
+
+cd Capfolio
+rd /s /q "node_modules"
+del package-lock.json
+del -f yarn.lock
+npm cache clean --force
+cd ..
+rd /s /q "node_modules"
+del package-lock.json
+del -f yarn.lock
+npm cache clean --force
+npm i nodemailer
+npm run buildstart
+
+# FOR MAC
+
+cd Capfolio
+rm -rf node_modules
+rm -f package-lock.json
+rm -f yarn.lock
+npm cache clean --force
+cd ..
+rm -rf node_modules
+rm -f package-lock.json
+rm -f yarn.lock
+npm cache clean --force
+npm i nodemailer
+npm run buildstart
+```
+
+If you get this error message: "Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'nodemailer'"
+
+```
+npm i nodemailer
+```
+
+---
+## Usage Examples ##
+---
 
 * Home Gallery Page
 ![image](https://github.com/uoa-compsci399-s1-2023/project-team-11/assets/48738772/c570e550-8b99-45d8-bcba-47ee42f1ee5b)
@@ -54,8 +131,22 @@ THE PDF IS NOT SHOWING WE NEED TO FIX THAT
 ![image](https://github.com/uoa-compsci399-s1-2023/project-team-11/assets/48738772/42dae11b-4014-468f-ab99-5a873389fef9)
 ![image](https://github.com/uoa-compsci399-s1-2023/project-team-11/assets/48738772/483eef1b-6fcb-4127-a0d2-41b1d9a0a4f6)
 
-# Future Plan 
-In the future we would like to add more functionalities for the the eymployer user type, allowing them to also submit project ideas and proposals for our client to consider in the future semesters. Another feature we would like to add is for to students to bid and submit project prefrences and who they would like to be paired with in a group. Another feature would be for all users to have the ability to privately message each other to discuss about projects ideas, group pairing and other discussions.  
+---
+## Acknowledgements - INCOMPLETE ##
+---
+
+Acknowledgements (if any) - You can list tutorials used, projects referred to, people consulted etc.
+
+---
+## Future insight: - PROBZ NEED TO ADD MORE ##
+---
+
+* Allow employers to submit potential projects for our client to approve and stendents to work on
+* Enable a bidding system for students for choosing project preference
+* Implement a messaging system that allows all users to communicate privately and securely.
+* Implement a subsystem that allows students to create, search for and join teams. 
+* Live updates
+      * Implement a feature where any updates to a students projects, clients projects, messages, approvals needing done by the admin are either emailed or pop up as a phone notification
 
 
 
