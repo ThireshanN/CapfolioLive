@@ -9,7 +9,9 @@ Also an alternative URL for our deployed version: [http://ec2-54-79-153-66.ap-so
 ## PM Tool - INCOMPLETE ##
 ---
 
-A link to your Project Management tool.
+A link to your Project Management tool: 
+Notion Link:
+https://www.notion.so/a3ba2f0d40ce42068c40c6d9f0d5d088?v=cabc49691dc6494e810ac4d6431616b7&pvs=4
 
 ---
 ## Project description: ##
