@@ -131,8 +131,7 @@ export const authRouter = router;
 
 // Replace these with your own Google Client ID and Secret
 // adding a commit
-const GOOGLE_CLIENT_ID =
-  "659834162586-hq30vt8gf1vu39pr2u4055t8djk0394d.apps.googleusercontent.com";
+const GOOGLE_CLIENT_ID = "659834162586-hq30vt8gf1vu39pr2u4055t8djk0394d.apps.googleusercontent.com";
 const GOOGLE_CLIENT_SECRET = "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";
 
 const googleAuth = (req, res, next) => {
