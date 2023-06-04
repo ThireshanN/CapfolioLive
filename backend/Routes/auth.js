@@ -141,7 +141,7 @@ const googleAuth = (req, res, next) => {
           {
             clientID: GOOGLE_CLIENT_ID,
             clientSecret: GOOGLE_CLIENT_SECRET,
-            callbackURL: `${req.protocol}://${req.headers.host}/auth/google/callback`,
+            callbackURL: "https://www.capfolio.live/auth/google/callback",
           },
           async (accessToken, refreshToken, profile, cb) => {
             //const sql = `Insert into Visitors(UserID, UserTypeID, FirstName, lastName) values (40, 4, "Paul", "Pogba")`;
@@ -390,7 +390,40 @@ router.post('/signup', async (req, res) => {
   if (exists) {
     return res.status(400).send({ error: 'Email already exists' });
   }
-
+  //////
+  let sql;
+  console.log("h1");
+  let sql2;
+  let type;
+  const id = await next_id();
+  const passwordHash = await generatePasswordHash(password);
+  const verified = 0;
+  const pic_logo = 'https://www.svgrepo.com/show/165192/avatar.svg';
+  console.log("h2");
+  if (email === "asma.shakil@auckland.ac.nz") {
+    type = 3;
+    console.log("h3");
+    sql = `Insert into Users(UserID, UserTypeID, FirstName, lastName, Email, password, Verfified, Picture) values (${id}, ${type}, "${firstName}", "${lastName}", "${email}","${passwordHash}", "${verified}", "${pic_logo}");`;
+    sql2 = `Insert into Admins(UserID, UserTypeID) values (${id}, 3);`;
+    const var1 = await executeSQLstatement(sql);
+    const var2 = await executeSQLstatement(sql2);
+  } else if (email.endsWith("@aucklanduni.ac.nz")) {
+    type = 1;
+    console.log("h4");
+    sql = `Insert into Users(UserID, UserTypeID, FirstName, lastName, Email, password, Verfified, Picture) values (${id}, ${type}, "${firstName}", "${lastName}", "${email}", "${passwordHash}", "${verified}", "${pic_logo}");`;
+    sql2 = `Insert into Student(UserID, UserTypeID,  StudentUPI) values (${id}, 1, "${email.substring(0, 7)}");`;
+    const var1 = (await executeSQLstatement(sql));
+    const var2 = (await executeSQLstatement(sql2));
+  } else {
+    type = 4;
+    console.log("h5");
+    const sql = `INSERT INTO Users (UserID, UserTypeID, FirstName, lastName, Email, password, Verfified, Picture) VALUES (?, ?, ?, ?, ?, ?, ?, ?);`;
+    const sql2 = `Insert into Visitor(UserID, UserTypeID) values (${id}, ${type});`;
+    await executeSQLstatement(sql, [id, type, firstName, lastName, email, passwordHash, verified, pic_logo]);
+    await executeSQLstatement(sql2);
+  }
+  //////
+  /*
   const passwordHash = await generatePasswordHash(password);
   const userTypeID = 4;
   const userID = await next_id();
@@ -402,6 +435,7 @@ router.post('/signup', async (req, res) => {
   const sql2 = `Insert into Visitor(UserID, UserTypeID) values (${userID}, ${userTypeID});`;
   await executeSQLstatement(sql, [userID, userTypeID, firstName, lastName, email, passwordHash, verified, pic]);
   await executeSQLstatement(sql2);
+   */
   console.log("A2")
   try {
     sendEmail(firstName, email);
