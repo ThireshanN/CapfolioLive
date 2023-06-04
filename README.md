@@ -133,10 +133,19 @@ THE PDF IS NOT SHOWING WE NEED TO FIX THAT
 ![image](https://github.com/uoa-compsci399-s1-2023/project-team-11/assets/48738772/483eef1b-6fcb-4127-a0d2-41b1d9a0a4f6)
 
 ---
-## Acknowledgements - INCOMPLETE ##
+## Acknowledgements:
 ---
 
-Acknowledgements (if any) - You can list tutorials used, projects referred to, people consulted etc.
+- [How to Deploy a Node.js Application On AWS EC2 Server](https://ourcodeworld.com/articles/read/977/how-to-deploy-a-node-js-application-on-aws-ec2-server)
+
+- [Using AWS RDS with Node.js and Express.js](https://stackabuse.com/using-aws-rds-with-node-js-and-express-js/)
+
+- [How to Set up a Node.js Express Server for React | Engineering Education (EngEd)](https://www.section.io/engineering-education/how-to-setup-nodejs-express-for-react/)
+
+- [Node React Tutorial - How to connect React with backend Node.js?](https://codedamn.com/news/reactjs/how-to-connect-react-with-node-js)
+
+- [Creating Amazon EC2 Instances for NGINX Open Source and NGINX Plus](https://docs.nginx.com/nginx/deployment-guides/amazon-web-services/ec2-instances-for-nginx/)
+
 
 ---
 ## Future insight: - PROBZ NEED TO ADD MORE ##
