@@ -1,6 +1,6 @@
 import { Collapse, CButton } from "@coreui/react";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Slider from "react-slick";
 import "react-slideshow-image/dist/styles.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -14,7 +14,6 @@ import YouTubeIcon from '@mui/icons-material/YouTube';
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SendIcon from '@mui/icons-material/Send';
-import AddIcon from '@mui/icons-material/Add';
 import Stack from '@mui/material/Stack';
 import CreatableSelect from "react-select/creatable";
 import Select from "react-select";
@@ -37,9 +36,12 @@ const s3 = new AWS.S3({
   secretAccessKey: secretAccessKey,
 });
 
+
 const url = "https://capfoliostorage.s3.ap-southeast-2.amazonaws.com/";
 
 const AdminProjectView = () => {
+
+  const navigate = useNavigate()
   const [data, setData] = useState([]);
   const [responses, setResponses] = useState([]);
   const params = useParams();
@@ -60,8 +62,6 @@ const AdminProjectView = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(true); // Added loading state
 
-  const [preTech, setPreTech] = useState("");
-
 
   const [pdf, setPDF] = useState()
   const [img, setImage] = useState([]);
@@ -78,7 +78,7 @@ const AdminProjectView = () => {
     setProject(response);
 
     let string = response[0].technologies.split(",");
-    setPreTech(string);
+    setTech(string);
 
 
     // Get all the images for the slideshow//
@@ -109,19 +109,7 @@ const AdminProjectView = () => {
   };
 
 
-  const handleDeleteProject = (e) => {
-    e.preventDefault();
-    fetch("/admin/deleteProject", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id: projectId
-      }),
-    });
-  }
+
   const handleEdit = () => {
     setIsEditing(true);
   };
@@ -139,6 +127,15 @@ const AdminProjectView = () => {
       selectedTechnologies,
       selectedAwards,
     });
+
+    const techoo = selectedTechnologies;
+    techoo.forEach((e) => arrayTech.push(e.label));
+    const arrayTech = [];
+    for (let i = 0; i < arrayTech.length; i++) {
+      arrayTech[i] = arrayTech[i].replace(/'/g, '"');
+    }
+
+
     // STILL HAVE TO DO THE ARRAY THING LIKE YOU DID IN TECHOO FOR AWARDS
 
     //UPDATING THE DATABASE
@@ -182,71 +179,8 @@ const AdminProjectView = () => {
         id: projectId
       }),
     });
+    navigate("/Admin-Page")
   }
-
-  const handleGiveAward = (e) => {
-    e.preventDefault();
-    const arrayAward = [];
-    selectedAwards.forEach((e) => arrayAward.push(e.label));
-    // Variable to store the number based on the award
-    let awardNumber;
-
-    // Set the variable based on the selected award
-     if (arrayAward[0] === "Excellence Award") {
-      awardNumber = 1;
-    } else if (arrayAward[0] === "Community Award") {
-      awardNumber = 3;
-    } else if (arrayAward[0] === "People's Choice Award") {
-      awardNumber = 5;
-    } else {
-      // Handle invalid or unrecognized award
-      awardNumber = -1;
-    }
-
-    fetch("/admin/postAward", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        AwardID:awardNumber,
-        ProjectID: projectId,
-        Year: capstoneYear,
-        Semester: capstoneSemester
-      }),
-    });
-  }
-
-  const handleUpdateTech = async (e) => {
-    e.preventDefault();
-    const arrayTech = [];
-    selectedTechnologies.forEach((e) => arrayTech.push(e.label));
-    try {
-      const complexData = {
-        method: "PUT",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: projectId,
-          tech: arrayTech,
-        }),
-      };
-      const result = await fetch("/admin/updateTech", complexData);
-      console.log("result: " + result);
-  
-      // Now update the technologies or perform any necessary actions
-      // after the tech update.
-      
-      getProject();
-      
-    } catch (error) {
-      console.log("Failed to update tech: " + error.message);
-    }
-  };
-
   const handleProjectNameChange = (e) => {
     setProjectName(e.target.value);
   }
@@ -304,6 +238,7 @@ const AdminProjectView = () => {
   };
 
   const awarded = [
+    { value: "None", label: "None" },
     { value: "Excellence Award", label: "Excellence Award" },
     { value: "Community Award", label: "Community Award" },
     { value: "People's Choice Award", label: "People's Choice Award" },
@@ -642,12 +577,6 @@ const AdminProjectView = () => {
                   <div className="names"></div>
                 </div>
                 <div className="techUsed">
-                {preTech &&
-                  preTech.map((tech, i) => (
-                    <div className="tech">
-                      <p key={`Key${i}`}>{tech}</p>
-                    </div>
-                  ))}
                   <CreatableSelect
                     required
                     className="formLinks"
@@ -677,21 +606,7 @@ const AdminProjectView = () => {
                   marginTop: "20px", // Adjust the margin value as needed
                 }}>
                   <Stack direction="row" spacing={2}>
-                    <Button variant="contained" startIcon={<AddIcon />} onClick={handleUpdateTech}>
-                      Update Tech
-                    </Button>
-                    <Button variant="contained" endIcon={<AddIcon />} onClick={handleGiveAward}>
-                      Give Award
-                    </Button>
-                  </Stack>
-                </div>
-                <div style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  marginTop: "20px", // Adjust the margin value as needed
-                }}>
-                  <Stack direction="row" spacing={2}>
-                    <Button variant="outlined" startIcon={<DeleteIcon />} onClick={handleDeleteProject} color="error">
+                    <Button variant="outlined" startIcon={<DeleteIcon />} color="error">
                       Delete
                     </Button>
                     <Button variant="contained" endIcon={<SendIcon />} onClick={handleApproveProject} color="success">
