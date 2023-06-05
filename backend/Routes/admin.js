@@ -44,6 +44,56 @@ adminRouter.get("/approved/projects", async (req, res) => {
     }
 });
 
+
+/*
+{
+    id: 261,
+    tech:["Java","CSS"]
+}
+*/
+
+//http://localhost:3000/admin/updateTech
+//http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/admin/updateProject
+
+async function updateTechnologies(project){
+
+    const technologies = project.tech;
+
+    for (let i = 0; i < technologies.length; i++) {
+        const sql = `INSERT IGNORE INTO technologiesUsed (technologyName) VALUES ('${technologies[i]}');`
+        const result = (await executeSQLstatement(sql));
+        if(result[0].warningStatus==0){
+            const sqlIn = `Insert into ProjectTech(techID_FK,ProjectID_FK) values (${result[0].insertId},${project.id});`;
+            await executeSQLstatement(sqlIn);
+        }
+        if(result[0].warningStatus==1){
+            const sqlIn = `INSERT INTO ProjectTech (techID_FK, ProjectID_FK) VALUES ((SELECT techID FROM technologiesUsed WHERE technologyName = "${technologies[i]}"),${project.id});`;
+            await executeSQLstatement(sqlIn);
+        }
+    }
+    const message = 'Tech updated successfully\n'
+
+    return {message}
+  }
+
+  
+adminRouter.put('/updateTech', express.json(), async (req, res) => {
+    try {
+        let response = await updateTechnologies(req.body);
+        if (response==="Error"){
+            res.status(400).setHeader("Content-Type", "application/json").send("Error when running the SQL statement");
+        }
+        else{
+            res.json(response);
+        }
+    } catch (err) {
+      console.error(`Error while updating the project`, err.message);
+    }
+});
+
+
+
+
 //http://localhost:3000/admin/approveProject
 //the id here is the same ProjectId as http://localhost:3000/admin/approveProject
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/admin/approveProject
