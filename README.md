@@ -101,6 +101,7 @@ sudo chmod +x /home/ec2-user/project-team-11/capfolio/node_modules/.bin/react-sc
 if you get a 'NODE_MODULES NOT FOUND' error:
 ```
 cd capfolio && npm i
+cd ..
 cd backend && npm i
 
 ```
