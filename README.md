@@ -5,17 +5,17 @@ The link to deployed version. [https://www.capfolio.live](https://www.capfolio.l
 
 Also an alternative URL for our deployed version: [http://ec2-54-79-153-66.ap-southeast-2.compute.amazonaws.com:3000](http://ec2-54-79-153-66.ap-southeast-2.compute.amazonaws.com:3000)
 
----
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## PM Tool -
----
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 A link to your Project Management tool: 
 DISCLAIMER: PLEASE LOGIN USING GOOGLE TO ACCESS NOTION TOOL
 https://www.notion.so/a3ba2f0d40ce42068c40c6d9f0d5d088?v=cabc49691dc6494e810ac4d6431616b7&pvs=4
 
----
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## Project description: ##
----
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Capfolio, developed by WebZen, is a transformative platform that revolutionizes the computer science capstone course experience. It offers a comprehensive range of functionalities designed to enhance project showcasing and communication. With Capfolio, students can upload their capstone projects, including comprehensive details such as project titles, descriptions, images, YouTube videos, and GitHub repositories. These features allow students to accurately represent their work and attract the attention of potential employers and clients.
 
@@ -25,9 +25,9 @@ For administrators, Capfolio offers a robust admin panel that enables them to re
 
 Overall, Capfolio empowers students to showcase their capstone projects to a global audience, facilitates direct communication and engagement with employers and clients, and provides administrators with effective project management tools. The platform's comprehensive functionalities and user-friendly interface make it an invaluable tool for bridging the gap between academia and industry, fostering meaningful connections, and propelling students' career opportunities in the field of computer science.
 
----
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## Technologies used ##
----
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 - AWS --> EC2, S3, RDS
 - JavaScript
@@ -40,13 +40,14 @@ Overall, Capfolio empowers students to showcase their capstone projects to a glo
 - GoogleOAuth 2.0
 - Bootstrap
 
----
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## Dependencies and installation ##
----
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 From the root directory:
 ```
 npm run buildstart
+then navigate to www.capfolio.live
 ```
 
 ### Possible Errors encountered and there fixes: ###
@@ -98,9 +99,9 @@ npm i express
 cd .. 
 npm run buildstart
 ```
----
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## Usage Examples ##
----
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 * Home Gallery Page
 ![image](https://github.com/uoa-compsci399-s1-2023/project-team-11/assets/48738772/c570e550-8b99-45d8-bcba-47ee42f1ee5b)
@@ -142,9 +143,29 @@ THE PDF IS NOT SHOWING WE NEED TO FIX THAT
 ![image](https://github.com/uoa-compsci399-s1-2023/project-team-11/assets/48738772/42dae11b-4014-468f-ab99-5a873389fef9)
 ![image](https://github.com/uoa-compsci399-s1-2023/project-team-11/assets/48738772/483eef1b-6fcb-4127-a0d2-41b1d9a0a4f6)
 
----
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## URL:
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+https://www.capfolio.live
+https://capfolio.live
+https://ec2-54-79-153-66.ap-southeast-2.compute.amazonaws.com/
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## Future insight: ##
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+* Allow employers to submit potential projects for our client to approve and stendents to work on
+* Enable a bidding system for students for choosing project preference
+* Implement a messaging system that allows all users to communicate privately and securely.
+* Implement a subsystem that allows students to create, search for and join teams. 
+* Live updates - Implement a feature where any updates to a students projects, clients projects, messages, approvals needing done by the admin are either emailed or pop up as a phone notification
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## Acknowledgements:
----
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 - [How to Deploy a Node.js Application On AWS EC2 Server](https://ourcodeworld.com/articles/read/977/how-to-deploy-a-node-js-application-on-aws-ec2-server)
 
@@ -160,16 +181,18 @@ THE PDF IS NOT SHOWING WE NEED TO FIX THAT
 
 - [MUI Library Doc](https://mui.com/material-ui/getting-started/overview/)
 
+- https://sehannrathnayake.medium.com/how-to-handle-mysql-database-transactions-with-nodejs-b7a2bf1fd203 
+- https://stackabuse.com/using-aws-rds-with-node-js-and-express-js/
+- https://javascript.plainenglish.io/how-to-use-an-aws-sql-database-with-node-js-and-mysql-workbench-f77a71ac12be
+- https://stackabuse.com/uploading-files-to-aws-s3-with-node-js/
+- https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/javascript_s3_code_examples.html
+- https://blog.logrocket.com/modern-api-data-fetching-methods-react/
+- https://www.youtube.com/watch?v=DYqfdw4Kvbg&ab_channel=HyperBall
+- https://www.linkedin.com/pulse/how-integrate-third-party-dns-provider-route-53-milad-rezaeighale
+- https://betterprogramming.pub/setup-nginx-for-your-nodejs-server-on-ec2-ae46a3d0cb1b
+- https://www.coderrocketfuel.com/article/default-nginx-configuration-file-inside-sites-available-default
+- https://antonlytvynov.medium.com/nginx-sites-available-sites-enabled-3bd025bc4d25
 
----
-## Future insight: ##
----
-
-* Allow employers to submit potential projects for our client to approve and stendents to work on
-* Enable a bidding system for students for choosing project preference
-* Implement a messaging system that allows all users to communicate privately and securely.
-* Implement a subsystem that allows students to create, search for and join teams. 
-* Live updates - Implement a feature where any updates to a students projects, clients projects, messages, approvals needing done by the admin are either emailed or pop up as a phone notification
 
 
 
