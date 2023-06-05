@@ -49,7 +49,7 @@ From the root directory:
 npm run buildstart
 ```
 
-### Possible Errors encountered and there fixes: ###
+### Possible Errors encountered and their fixes: ###
 
 If you get this error message: "Plugin "react" was conflicted between package.json » eslint-config-react-app"
 ```
@@ -88,6 +88,19 @@ If you get this error message: "Error [ERR_MODULE_NOT_FOUND]: Cannot find packag
 
 ```
 npm i nodemailer
+```
+
+If you get this error message: "sh: line 1: /home/ec2-user/project-team-11/capfolio/node_modules/.bin/react-scripts: Permission denied"
+
+```
+sudo chmod +x /home/ec2-user/project-team-11/capfolio/node_modules/.bin/react-scripts
+```
+
+if you get a 'NODE_MODULES NOT FOUND' error:
+```
+cd capfolio && npm i
+cd backend && npm i
+
 ```
 
 ---
