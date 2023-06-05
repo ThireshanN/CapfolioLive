@@ -135,7 +135,7 @@ const googleAuth = (req, res, next) => {
       {
         clientID: GOOGLE_CLIENT_ID,
         clientSecret: GOOGLE_CLIENT_SECRET,
-        callbackURL: "https://capfolio.live/auth/google/callback"
+        callbackURL: "/auth/google/callback"
       },
       async (accessToken, refreshToken, profile, cb) => {
         //const sql = `Insert into Visitors(UserID, UserTypeID, FirstName, lastName) values (40, 4, "Paul", "Pogba")`;
