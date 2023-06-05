@@ -2,13 +2,11 @@ import express from "express";
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 
-
-import { Router } from 'express';
-import mysql from 'mysql2/promise';
-import { config } from '../sqlconfig.js';
-import bcrypt from 'bcrypt';
-import nodemailer from 'nodemailer';
-
+import { Router } from "express";
+import mysql from "mysql2/promise";
+import { config } from "../sqlconfig.js";
+import bcrypt from "bcrypt";
+import nodemailer from "nodemailer";
 
 export let currentUserId = null;
 
@@ -17,37 +15,33 @@ async function sendEmail(firstname, email) {
   const sql = `UPDATE Users SET Verfified = ? WHERE Email = ?;`;
   await executeSQLstatement(sql, [code, email]);
 
-
   const html = `
         <h1> Welcome to Capfolio ${firstname} </h1>
         <p> Your verification code is: <h3> ${code} </h3> </p>
     `;
 
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    service: "gmail",
     auth: {
-      user: 'noreplycapfolio@gmail.com',
-      pass: 'okuuldsavlqwnzdn'
-    }
+      user: "noreplycapfolio@gmail.com",
+      pass: "okuuldsavlqwnzdn",
+    },
   });
 
   transporter
     .sendMail({
-      from: 'noreplycapfolio@gmail.com',
+      from: "noreplycapfolio@gmail.com",
       to: email,
-      subject: 'Verify your Capfolio Account',
+      subject: "Verify your Capfolio Account",
       html: html,
     })
     .then((info) => {
-      console.log('Message Sent:' + info.message);
+      console.log("Message Sent:" + info.message);
     })
     .catch((error) => {
-      console.error('Failed to send email:', error);
+      console.error("Failed to send email:", error);
     });
 }
-
-
-
 
 async function executeSQLstatement(sql, values) {
   const connection = await mysql.createConnection(config.db);
@@ -156,12 +150,20 @@ passport.use(
       let sql2;
       let var1;
       let var2;
-      let pic_logo = profile._json.picture;
+      const checkPictureSQL = `SELECT Picture FROM Users WHERE Email = '${emailToCheck}'`;
+      const userPicture = (await executeSQLstatement(checkPictureSQL))[0];
+  
+      let pic_logo;
+      const userPic = userPicture[0].Picture;
+
+      if (!userPic || !userPic.includes("capfoliostorage")) {
+        pic_logo = profile._json.picture;
+      } else {
+        pic_logo = userPic;
+      }
 
       const exists = await emailExists(emailToCheck);
       const studentUpi = emailToCheck.slice(0, emailToCheck.indexOf("@"));
-      //console.log("Email exists:", exists);
-      console.log(pic_logo);
       if (!exists) {
         const id = await next_id();
         console.log(emailToCheck);
@@ -183,11 +185,14 @@ passport.use(
           console.log("T8");
           sql = `Insert into Users(UserID, UserTypeID, FirstName, lastName, Email, Picture) values (${id}, ${type}, "${first_name}", "${last_name}", "${emailToCheck}", "${pic_logo}");`;
           console.log("T9");
-          sql2 = `Insert into Student(UserID, UserTypeID,  StudentUPI) values (${id}, 1, "${emailToCheck.substring(0, 7)}");`;
+          sql2 = `Insert into Student(UserID, UserTypeID,  StudentUPI) values (${id}, 1, "${emailToCheck.substring(
+            0,
+            7
+          )}");`;
           console.log("T10");
-          const var1 = (await executeSQLstatement(sql));
+          const var1 = await executeSQLstatement(sql);
           console.log("T11");
-          const var2 = (await executeSQLstatement(sql2));
+          const var2 = await executeSQLstatement(sql2);
           console.log("T12");
         } else {
           console.log("T13");
@@ -197,9 +202,9 @@ passport.use(
           console.log("T15");
           sql2 = `Insert into Visitor(UserID, UserTypeID) values (${id}, 4);`;
           console.log("T16");
-          const var1 = (await executeSQLstatement(sql));
+          const var1 = await executeSQLstatement(sql);
           console.log("T17");
-          const var2 = (await executeSQLstatement(sql2));
+          const var2 = await executeSQLstatement(sql2);
           console.log("T18");
         }
       } else {
@@ -229,13 +234,13 @@ passport.use(
         await executeSQLstatement(sql2, [pic_logo, emailToCheck]);
       }
       console.log("T19");
-      profile.photo = profile._json.picture;
+  
+  
       console.log("T20");
       //Insert into Admins(UserID) values (40);
       console.log("T21");
       return cb(null, profile);
       console.log("T22");
-
     }
   )
 );
@@ -250,8 +255,6 @@ passport.deserializeUser((obj, cb) => {
 
 authRouter.use(passport.initialize());
 authRouter.use(passport.session());
-
-
 
 authRouter.get(
   "/google",
@@ -304,23 +307,25 @@ router.get("/user", async (req, res) => {
 
     //const sql = `SELECT u.FirstName, u.LastName, u.UserTypeID FROM Users u WHERE u.Email = ?;`;
     const sql = `
-        SELECT Users.UserID, Users.FirstName, Users.LastName, Users.Email, Users.Password, Users.UserTypeID, Users.linkedin, Users.githubLink, Users.userDescription, Users.profession as Type
+        SELECT Users.UserID, Users.Picture, Users.FirstName, Users.LastName, Users.Email, Users.Password, Users.UserTypeID, Users.linkedin, Users.githubLink, Users.userDescription, Users.profession as Type
         FROM Users
         WHERE Users.Email = ?;
     `;
     const [rows] = await executeSQLstatement(sql, [email]);
     const userData = rows[0];
+
     //console.log("Picture URL:", photo);
     //console.log("T6")
     currentUserId = userData.UserID;
-
+    console.log(userData.Picture);
+    console.log(userData);
     res.send({
       UserID: userData.UserID,
       FirstName: userData.FirstName,
       LastName: userData.LastName,
       Email: email,
       UserType: userData.UserTypeID,
-      Photo: photo,
+      Photo: userData.Picture,
       OAuth: isGoogleOAuth,
       githubLink: userData.githubLink,
       linkedin: userData.linkedin,
@@ -361,46 +366,52 @@ router.get("/logout", (req, res) => {
   });
 });
 
-
-
-router.post('/signup', async (req, res) => {
-  console.log("A1")
+router.post("/signup", async (req, res) => {
+  console.log("A1");
   const { firstName, lastName, email, password } = req.body;
 
   if (!firstName || !lastName || !email || !password) {
-    return res.status(400).send({ error: 'All fields are required' });
+    return res.status(400).send({ error: "All fields are required" });
   }
 
   const exists = await emailExists(email);
 
   if (exists) {
-    return res.status(400).send({ error: 'Email already exists' });
+    return res.status(400).send({ error: "Email already exists" });
   }
 
   const passwordHash = await generatePasswordHash(password);
   const userTypeID = 4;
   const userID = await next_id();
   const verified = 0;
-  const pic = 'https://www.shareicon.net/data/128x128/2016/07/26/802013_man_512x512.png';
+  const pic =
+    "https://www.shareicon.net/data/128x128/2016/07/26/802013_man_512x512.png";
   //const pic = 'https://www.shareicon.net/data/128x128/2016/07/26/802013_man_512x512.png';
 
   const sql = `INSERT INTO Users (UserID, UserTypeID, FirstName, lastName, Email, password, Verfified, Picture) VALUES (?, ?, ?, ?, ?, ?, ?, ?);`;
   const sql2 = `Insert into Visitor(UserID, UserTypeID) values (${userID}, ${userTypeID});`;
-  await executeSQLstatement(sql, [userID, userTypeID, firstName, lastName, email, passwordHash, verified, pic]);
+  await executeSQLstatement(sql, [
+    userID,
+    userTypeID,
+    firstName,
+    lastName,
+    email,
+    passwordHash,
+    verified,
+    pic,
+  ]);
   await executeSQLstatement(sql2);
-  console.log("A2")
+  console.log("A2");
   try {
     sendEmail(firstName, email);
-    res.status(200).send({ message: 'User successfully registered' });
+    res.status(200).send({ message: "User successfully registered" });
   } catch (error) {
-    console.error('Error sending verification email:', error);
-    res.status(500).send({ error: 'Failed to send verification email' });
+    console.error("Error sending verification email:", error);
+    res.status(500).send({ error: "Failed to send verification email" });
   }
-  console.log("A3")
+  console.log("A3");
   //res.status(200).send({ message: 'User successfully registered' });
 });
-
-
 
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
@@ -421,7 +432,6 @@ router.post("/login", async (req, res) => {
     return res.status(400).send({ error: "Invalid email or password" });
   }
 
-
   console.log(userData.Verfified);
 
   if (userData.Verfified != 1) {
@@ -429,7 +439,10 @@ router.post("/login", async (req, res) => {
     const sql2 = `DELETE FROM Users WHERE UserID = ?;`;
     await executeSQLstatement(sql1, [userData.UserID]);
     await executeSQLstatement(sql2, [userData.UserID]);
-    return res.status(400).send({ error: 'Account not verified. Pls Sign up again and a new verification link will be sent' });
+    return res.status(400).send({
+      error:
+        "Account not verified. Pls Sign up again and a new verification link will be sent",
+    });
   }
 
   // Create a session and redirect the user to the home page with a different navbar
@@ -442,38 +455,33 @@ router.post("/login", async (req, res) => {
     isFormLogin: true,
   };
 
-
   res.status(200).send({ message: "Logged in successfully" });
   console.log("Logged in successfully");
 });
 
-
-
-
-router.post('/emailVerify', async (req, res) => {
+router.post("/emailVerify", async (req, res) => {
   const { code } = req.body;
 
   if (!code) {
-    return res.status(400).send({ error: 'No code entered' });
+    return res.status(400).send({ error: "No code entered" });
   }
 
-  const exists = await codeExists(code)
+  const exists = await codeExists(code);
   console.log("exists: ", exists);
   if (exists) {
     const userData = await fetchUserDataByCode(code);
     console.log("userdata: ", userData);
     const id = userData.UserID;
-    const value = 1
+    const value = 1;
     const sql2 = `UPDATE Users SET Verfified = ? WHERE UserID = ?;`;
     await executeSQLstatement(sql2, [value, id]);
-    console.log('YesSir');
-    return res.status(200).send({ message: 'Verified' });
+    console.log("YesSir");
+    return res.status(200).send({ message: "Verified" });
   } else {
-    return res.status(400).send({ error: 'Invalid Verification code' });
+    return res.status(400).send({ error: "Invalid Verification code" });
   }
 
-  return res.status(400).send({ error: 'Invalid Verification code' });
-
+  return res.status(400).send({ error: "Invalid Verification code" });
 });
 
 async function sendPasswordResetEmail(email) {
@@ -491,26 +499,25 @@ async function sendPasswordResetEmail(email) {
   await executeSQLstatement(sql, [hash, email]);
   //console.log("Sub6");
 
-
   const html = `
         <h1> This email was sent because you forgot your password. </h1>
         <p> Your passowrd reset code is: <h3> ${hash} </h3> </p>
     `;
   //console.log("Sub7");
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    service: "gmail",
     auth: {
-      user: 'noreplycapfolio@gmail.com',
-      pass: 'okuuldsavlqwnzdn'
-    }
+      user: "noreplycapfolio@gmail.com",
+      pass: "okuuldsavlqwnzdn",
+    },
   });
   //console.log("Sub8");
 
   transporter
     .sendMail({
-      from: 'noreplycapfolio@gmail.com',
+      from: "noreplycapfolio@gmail.com",
       to: email,
-      subject: 'Password Reset Code',
+      subject: "Password Reset Code",
       html: html,
     })
     .then((info) => {
@@ -521,42 +528,38 @@ async function sendPasswordResetEmail(email) {
     });
 }
 
-
-router.post('/resetPasswordEmail', async (req, res) => {
+router.post("/resetPasswordEmail", async (req, res) => {
   const { email } = req.body;
   //console.log("RPE1");
   //console.log(email);
   if (!email) {
-    return res.status(400).send({ error: 'No code entered' });
+    return res.status(400).send({ error: "No code entered" });
   }
   //console.log("RPE2");
-  const exists = await emailExists(email)
+  const exists = await emailExists(email);
   if (exists) {
     try {
       //console.log("RPE3");
       sendPasswordResetEmail(email);
       //console.log("RPE4");
-      res.status(200).send({ message: 'Email Sent' });
+      res.status(200).send({ message: "Email Sent" });
       //console.log("RPE5");
     } catch (error) {
       //console.error('Error sending email:', error);
       //console.log("RPE6");
-      res.status(500).send({ error: 'Failed to send verification email' });
+      res.status(500).send({ error: "Failed to send verification email" });
       //console.log("RPE7");
     }
     //console.log("RPE8");
     //return res.status(200).send({ message: 'Password reset code sent to your email' });
   } else {
     //console.log("RPE9");
-    return res.status(400).send({ error: 'Email dont exist bruhhhh' });
+    return res.status(400).send({ error: "Email dont exist bruhhhh" });
   }
 
   //console.log("RPE10");
   //return res.status(400).send({ error: 'Invalid Verification code' });
-
 });
-
-
 
 async function pcodeExists(code) {
   const sql = `SELECT COUNT(*) as count FROM Users WHERE PassReset = ?;`;
@@ -574,17 +577,17 @@ async function fetchUserDataBypCode(code) {
   return rows[0];
 }
 
-router.post('/reset-password', async (req, res) => {
+router.post("/reset-password", async (req, res) => {
   const { code, password } = req.body;
   console.log("RPE1");
   console.log(code);
   console.log(password);
   if (!code) {
-    return res.status(400).send({ error: 'No code entered' });
+    return res.status(400).send({ error: "No code entered" });
   }
 
   if (!password) {
-    return res.status(400).send({ error: 'No Password entered' });
+    return res.status(400).send({ error: "No Password entered" });
   }
 
   const exists = await pcodeExists(code);
@@ -592,17 +595,16 @@ router.post('/reset-password', async (req, res) => {
     const userData = await fetchUserDataBypCode(code);
     console.log("userdata: ", userData);
     const id = userData.UserID;
-    const value = 0
+    const value = 0;
     const new_password = await generatePasswordHash(password);
     const sql2 = `UPDATE Users SET PassReset = ? WHERE UserID = ?;`;
     await executeSQLstatement(sql2, [value, id]);
     const sql3 = `UPDATE Users SET password = ? WHERE UserID = ?;`;
     await executeSQLstatement(sql3, [new_password, id]);
-    console.log('YesSir');
-    return res.status(200).send({ message: 'Password Updated' });
+    console.log("YesSir");
+    return res.status(200).send({ message: "Password Updated" });
   } else {
-    return res.status(400).send({ error: 'Invalid code' });
+    return res.status(400).send({ error: "Invalid code" });
   }
   //return res.status(400).send({ error: 'Invalid Verification code' });
-
 });

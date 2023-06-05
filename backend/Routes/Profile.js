@@ -96,12 +96,12 @@ profileRouter.get('/userProject', async (req, res) => {
 async function updateUser(project){
     if(currentUserId===null){return "login"}
     const sql = `UPDATE Users 
-    SET FirstName="${project.firstName}", lastName="${project.lastName}", linkedin="${project.linkedin}", githublink="${project.github}", userDescription="${project.userDesc}", profession="${project.profession}"
+    SET FirstName="${project.firstName}", lastName="${project.lastName}", linkedin="${project.linkedin}", githublink="${project.github}", userDescription="${project.userDesc}", profession="${project.profession}", Picture="${project.Picture}"
     WHERE UserID=${currentUserId};`;
     const userupdate = (await executeSQLstatement(sql));
     let message = 'Error';
     if (userupdate.length!==0) {
-      message = 'User updated successfully\n';
+      message = 'User updated successfully\n'; 
     }
     return {message};
   }
@@ -109,7 +109,7 @@ async function updateUser(project){
   
 profileRouter.put('/updateUser', express.json(), async (req, res) => {
     try {
-        //console.log(req.body);
+        console.log(req.body);
         //res.json(await updateUser(req.body));
         let response = await updateUser(req.body);
         if(response==="login"){
