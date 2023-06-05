@@ -44,11 +44,22 @@ Overall, Capfolio empowers students to showcase their capstone projects to a glo
 ## Dependencies and installation ##
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-From the root directory:
+From the root directory (EC2 instance):
 ```
+cd project-team-11
+cd capfolio && npm run build
+pm2 restart app.js
+```
+then navigate to https://www.capfolio.live or https://capfolio.live
+
+
+From the root directory (locally):
+```
+cd project-team-11
 npm run buildstart
-then navigate to www.capfolio.live
 ```
+then navigate to localhost:3000
+
 
 ### Possible Errors encountered and their fixes: ###
 
