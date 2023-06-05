@@ -29,18 +29,18 @@ async function sendEmail(firstname, email) {
   });
 
   transporter
-    .sendMail({
-      from: "noreplycapfolio@gmail.com",
-      to: email,
-      subject: "Verify your Capfolio Account",
-      html: html,
-    })
-    .then((info) => {
-      console.log("Message Sent:" + info.message);
-    })
-    .catch((error) => {
-      console.error("Failed to send email:", error);
-    });
+      .sendMail({
+        from: 'noreplycapfolio@gmail.com',
+        to: email,
+        subject: 'Verify your Capfolio Account',
+        html: html,
+      })
+      .then((info) => {
+        console.log('Message Sent:' + info.message);
+      })
+      .catch((error) => {
+        console.error('Failed to send email:', error);
+      });
 }
 
 async function executeSQLstatement(sql, values) {
@@ -114,30 +114,30 @@ export const requireAucklandEmail = (req, res, next) => {
     if (userEmail.endsWith("@aucklanduni.ac.nz")) {
       return next();
     } else {
-      return res.status(403).send("Uni students only, besides madavi");
+      return res.status(403).send("Uni students only, ");
     }
   } else {
-    return res.status(401).send("Uni students only, besides madavi");
+    return res.status(401).send("Uni students only,");
   }
 };
 
 export const authRouter = router;
 
 // Replace these with your own Google Client ID and Secret
-
-const GOOGLE_CLIENT_ID =
-  "659834162586-hq30vt8gf1vu39pr2u4055t8djk0394d.apps.googleusercontent.com";
+// adding a commit
+const GOOGLE_CLIENT_ID = "659834162586-hq30vt8gf1vu39pr2u4055t8djk0394d.apps.googleusercontent.com";
 const GOOGLE_CLIENT_SECRET = "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";
 
-passport.use(
-  new GoogleStrategy(
-    {
-      clientID: GOOGLE_CLIENT_ID,
-      clientSecret: GOOGLE_CLIENT_SECRET,
-      callbackURL: "/auth/google/callback",
-    },
-    async (accessToken, refreshToken, profile, cb) => {
-      //const sql = `Insert into Visitors(UserID, UserTypeID, FirstName, lastName) values (40, 4, "Paul", "Pogba")`;
+const googleAuth = (req, res, next) => {
+  passport.use(
+      new GoogleStrategy(
+          {
+            clientID: GOOGLE_CLIENT_ID,
+            clientSecret: GOOGLE_CLIENT_SECRET,
+            callbackURL: "https://capfolio.live/auth/google/callback",
+          },
+          async (accessToken, refreshToken, profile, cb) => {
+            //const sql = `Insert into Visitors(UserID, UserTypeID, FirstName, lastName) values (40, 4, "Paul", "Pogba")`;
 
       const emailToCheck = profile.emails[0].value;
       const name = profile.displayName;
@@ -242,8 +242,12 @@ passport.use(
       return cb(null, profile);
       console.log("T22");
     }
-  )
+    )
 );
+next();
+}
+  
+  
 
 passport.serializeUser((user, cb) => {
   cb(null, user);
@@ -256,15 +260,13 @@ passport.deserializeUser((obj, cb) => {
 authRouter.use(passport.initialize());
 authRouter.use(passport.session());
 
-authRouter.get(
-  "/google",
-  passport.authenticate("google", {
-    scope: [
-      "https://www.googleapis.com/auth/userinfo.profile",
-      "https://www.googleapis.com/auth/userinfo.email",
-    ],
-  })
-);
+
+authRouter.get('/google', googleAuth, passport.authenticate('google', {
+  scope: [
+    'https://www.googleapis.com/auth/userinfo.profile',
+    'https://www.googleapis.com/auth/userinfo.email',
+  ],
+}));
 
 router.get("/user", async (req, res) => {
   try {
@@ -339,22 +341,7 @@ router.get("/user", async (req, res) => {
   }
 });
 
-authRouter.get(
-  "/google/callback",
-  passport.authenticate("google", { failureRedirect: "/login" }),
-  (req, res) => {
-    // Store user data in the session
-    req.session.user = {
-      id: req.user.id,
-      displayName: req.user.displayName,
-      email: req.user.emails[0].value,
-      photo: req.user.photo,
-    };
 
-    // Successful authentication, redirect to the desired page.
-    res.redirect("/");
-  }
-);
 
 router.get("/logout", (req, res) => {
   req.logout(() => {
@@ -379,13 +366,45 @@ router.post("/signup", async (req, res) => {
   if (exists) {
     return res.status(400).send({ error: "Email already exists" });
   }
-
+  //////
+  let sql;
+  console.log("h1");
+  let sql2;
+  let type;
+  const id = await next_id();
+  const passwordHash = await generatePasswordHash(password);
+  const verified = 0;
+  const pic_logo = 'https://www.svgrepo.com/show/165192/avatar.svg';
+  console.log("h2");
+  if (email === "asma.shakil@auckland.ac.nz") {
+    type = 3;
+    console.log("h3");
+    sql = `Insert into Users(UserID, UserTypeID, FirstName, lastName, Email, password, Verfified, Picture) values (${id}, ${type}, "${firstName}", "${lastName}", "${email}","${passwordHash}", "${verified}", "${pic_logo}");`;
+    sql2 = `Insert into Admins(UserID, UserTypeID) values (${id}, 3);`;
+    const var1 = await executeSQLstatement(sql);
+    const var2 = await executeSQLstatement(sql2);
+  } else if (email.endsWith("@aucklanduni.ac.nz")) {
+    type = 1;
+    console.log("h4");
+    sql = `Insert into Users(UserID, UserTypeID, FirstName, lastName, Email, password, Verfified, Picture) values (${id}, ${type}, "${firstName}", "${lastName}", "${email}", "${passwordHash}", "${verified}", "${pic_logo}");`;
+    sql2 = `Insert into Student(UserID, UserTypeID,  StudentUPI) values (${id}, 1, "${email.substring(0, 7)}");`;
+    const var1 = (await executeSQLstatement(sql));
+    const var2 = (await executeSQLstatement(sql2));
+  } else {
+    type = 4;
+    console.log("h5");
+    const sql = `INSERT INTO Users (UserID, UserTypeID, FirstName, lastName, Email, password, Verfified, Picture) VALUES (?, ?, ?, ?, ?, ?, ?, ?);`;
+    const sql2 = `Insert into Visitor(UserID, UserTypeID) values (${id}, ${type});`;
+    await executeSQLstatement(sql, [id, type, firstName, lastName, email, passwordHash, verified, pic_logo]);
+    await executeSQLstatement(sql2);
+  }
+  //////
+  /*
   const passwordHash = await generatePasswordHash(password);
   const userTypeID = 4;
   const userID = await next_id();
   const verified = 0;
-  const pic =
-    "https://www.shareicon.net/data/128x128/2016/07/26/802013_man_512x512.png";
+  const pic = 'https://www.svgrepo.com/show/165192/avatar.svg';
   //const pic = 'https://www.shareicon.net/data/128x128/2016/07/26/802013_man_512x512.png';
 
   const sql = `INSERT INTO Users (UserID, UserTypeID, FirstName, lastName, Email, password, Verfified, Picture) VALUES (?, ?, ?, ?, ?, ?, ?, ?);`;
@@ -401,7 +420,8 @@ router.post("/signup", async (req, res) => {
     pic,
   ]);
   await executeSQLstatement(sql2);
-  console.log("A2");
+   */
+  console.log("A2")
   try {
     sendEmail(firstName, email);
     res.status(200).send({ message: "User successfully registered" });
