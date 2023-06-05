@@ -162,6 +162,12 @@ THE PDF IS NOT SHOWING WE NEED TO FIX THAT
 ![image](https://github.com/uoa-compsci399-s1-2023/project-team-11/assets/48738772/483eef1b-6fcb-4127-a0d2-41b1d9a0a4f6)
 
 
+NOTE: For admin access use:
+    Username:  capfolioadm1n@gmail.com 
+    Password:  admin
+    
+    or sign in through google OAuth using "asma.shakil@auckland.ac.nz". You can also manually create an account with this email address and it will grant you admin access but we reccomend using google OAuth as its easier. 
+
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## URL:
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
