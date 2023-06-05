@@ -67,6 +67,7 @@ app.get(
     }
 );
 
+app.set('trust proxy', true);
 
 
 

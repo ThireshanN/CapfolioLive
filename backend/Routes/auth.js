@@ -29,18 +29,18 @@ async function sendEmail(firstname, email) {
   });
 
   transporter
-      .sendMail({
-        from: 'noreplycapfolio@gmail.com',
-        to: email,
-        subject: 'Verify your Capfolio Account',
-        html: html,
-      })
-      .then((info) => {
-        console.log('Message Sent:' + info.message);
-      })
-      .catch((error) => {
-        console.error('Failed to send email:', error);
-      });
+    .sendMail({
+      from: "noreplycapfolio@gmail.com",
+      to: email,
+      subject: "Verify your Capfolio Account",
+      html: html,
+    })
+    .then((info) => {
+      console.log("Message Sent:" + info.message);
+    })
+    .catch((error) => {
+      console.error("Failed to send email:", error);
+    });
 }
 
 async function executeSQLstatement(sql, values) {
@@ -125,129 +125,157 @@ export const authRouter = router;
 
 // Replace these with your own Google Client ID and Secret
 // adding a commit
-const GOOGLE_CLIENT_ID = "659834162586-hq30vt8gf1vu39pr2u4055t8djk0394d.apps.googleusercontent.com";
+const GOOGLE_CLIENT_ID =
+  "659834162586-hq30vt8gf1vu39pr2u4055t8djk0394d.apps.googleusercontent.com";
 const GOOGLE_CLIENT_SECRET = "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";
 
 const googleAuth = (req, res, next) => {
   passport.use(
-      new GoogleStrategy(
-          {
-            clientID: GOOGLE_CLIENT_ID,
-            clientSecret: GOOGLE_CLIENT_SECRET,
-            callbackURL: "https://capfolio.live/auth/google/callback",
-          },
-          async (accessToken, refreshToken, profile, cb) => {
-            //const sql = `Insert into Visitors(UserID, UserTypeID, FirstName, lastName) values (40, 4, "Paul", "Pogba")`;
+    new GoogleStrategy(
+      {
+        clientID: GOOGLE_CLIENT_ID,
+        clientSecret: GOOGLE_CLIENT_SECRET,
+        callbackURL: "https://capfolio.live/auth/google/callback"
+      },
+      async (accessToken, refreshToken, profile, cb) => {
+        //const sql = `Insert into Visitors(UserID, UserTypeID, FirstName, lastName) values (40, 4, "Paul", "Pogba")`;
 
-      const emailToCheck = profile.emails[0].value;
-      const name = profile.displayName;
-      const sep_name = name.split(" ");
-      const first_name = sep_name[0];
-      const last_name = sep_name[1];
-      let type;
-      let sql;
-      let sql1;
-      let sql2;
-      let var1;
-      let var2;
-      const checkPictureSQL = `SELECT Picture FROM Users WHERE Email = '${emailToCheck}'`;
-      const userPicture = (await executeSQLstatement(checkPictureSQL))[0];
-  
-      let pic_logo;
-      const userPic = userPicture[0].Picture;
+        const emailToCheck = profile.emails[0].value;
+        const name = profile.displayName;
+        const sep_name = name.split(" ");
+        const first_name = sep_name[0];
+        const last_name = sep_name[1];
+        let type;
+        let sql;
+        let sql1;
+        let sql2;
+        let var1;
+        let var2;
+        const checkPictureSQL = `SELECT Picture FROM Users WHERE Email = '${emailToCheck}'`;
+        const userPicture = (await executeSQLstatement(checkPictureSQL))[0];
 
-      if (!userPic || !userPic.includes("capfoliostorage")) {
-        pic_logo = profile._json.picture;
-      } else {
-        pic_logo = userPic;
-      }
+        let pic_logo;
+        const userPic = userPicture[0].Picture;
 
-      const exists = await emailExists(emailToCheck);
-      const studentUpi = emailToCheck.slice(0, emailToCheck.indexOf("@"));
-      if (!exists) {
-        const id = await next_id();
-        console.log(emailToCheck);
-        if (emailToCheck === "asma.shakil@auckland.ac.nz") {
-          console.log("T1");
-          type = 3;
-          console.log("T2");
-          sql = `Insert into Users(UserID, UserTypeID, FirstName, lastName, Email, Picture) values (${id}, ${type}, "${first_name}", "${last_name}", "${emailToCheck}", "${pic_logo}");`;
-          console.log("T3");
-          sql2 = `Insert into Admins(UserID, UserTypeID) values (${id}, 3);`;
-          console.log("T4");
-          const var1 = await executeSQLstatement(sql);
-          console.log("T5");
-          const var2 = await executeSQLstatement(sql2);
-          console.log("T6");
-        } else if (emailToCheck.endsWith("@aucklanduni.ac.nz")) {
-          console.log("T7");
-          type = 1;
-          console.log("T8");
-          sql = `Insert into Users(UserID, UserTypeID, FirstName, lastName, Email, Picture) values (${id}, ${type}, "${first_name}", "${last_name}", "${emailToCheck}", "${pic_logo}");`;
-          console.log("T9");
-          sql2 = `Insert into Student(UserID, UserTypeID,  StudentUPI) values (${id}, 1, "${emailToCheck.substring(
-            0,
-            7
-          )}");`;
-          console.log("T10");
-          const var1 = await executeSQLstatement(sql);
-          console.log("T11");
-          const var2 = await executeSQLstatement(sql2);
-          console.log("T12");
+        if (!userPic || !userPic.includes("capfoliostorage")) {
+          pic_logo = profile._json.picture;
         } else {
-          console.log("T13");
-          type = 4;
-          console.log("T14");
-          sql = `Insert into Users(UserID, UserTypeID, FirstName, lastName, Email, Picture) values (${id}, ${type}, "${first_name}", "${last_name}", "${emailToCheck}", "${pic_logo}");`;
-          console.log("T15");
-          sql2 = `Insert into Visitor(UserID, UserTypeID) values (${id}, 4);`;
-          console.log("T16");
-          const var1 = await executeSQLstatement(sql);
-          console.log("T17");
-          const var2 = await executeSQLstatement(sql2);
-          console.log("T18");
+          pic_logo = userPic;
         }
-      } else {
-        //unregistered student
-        //they have a user and student record, but the field 'isRegistered' in Student table is SET to 0
-        //the above occurs from ./FormAddProject Route
-        //SO NOW SET 'isRegistered' to 1 (student table), and also set firstname and lastname (users table)
-        console.log("T18");
-        if (emailToCheck.endsWith("@aucklanduni.ac.nz")) {
-          const isRegistered = (
-            await executeSQLstatement(
-              `SELECT isRegistered FROM Capfolio.Student WHERE StudentUPI = '${studentUpi}'`
-            )
-          )[0][0].isRegistered;
-          if (isRegistered === 0) {
+
+        const exists = await emailExists(emailToCheck);
+        const studentUpi = emailToCheck.slice(0, emailToCheck.indexOf("@"));
+        //console.log("Email exists:", exists);
+        console.log(pic_logo);
+        if (!exists) {
+          const id = await next_id();
+          console.log(emailToCheck);
+          if (emailToCheck === "asma.shakil@auckland.ac.nz") {
+            console.log("T1");
+            type = 3;
+            console.log("T2");
+            sql = `Insert into Users(UserID, UserTypeID, FirstName, lastName, Email, Picture) values (${id}, ${type}, "${first_name}", "${last_name}", "${emailToCheck}", "${pic_logo}");`;
+            console.log("T3");
+            sql2 = `Insert into Admins(UserID, UserTypeID) values (${id}, 3);`;
+            console.log("T4");
+            const var1 = await executeSQLstatement(sql);
+            console.log("T5");
+            const var2 = await executeSQLstatement(sql2);
+            console.log("T6");
+          } else if (emailToCheck.endsWith("@aucklanduni.ac.nz")) {
+            console.log("T7");
             type = 1;
-            sql = `SELECT UserID FROM Users WHERE Email = '${emailToCheck}'`;
-            const aUserId = (await executeSQLstatement(sql))[0][0].UserID;
-            sql1 = `UPDATE Capfolio.Users SET FirstName = "${first_name}", lastName = "${last_name}" WHERE Capfolio.Users.UserID = ${aUserId}`;
-            const sql2 = `UPDATE Capfolio.Student SET isRegistered = 1 WHERE Capfolio.Student.StudentUPI = '${studentUpi}'`;
-            await executeSQLstatement(sql1);
-            await executeSQLstatement(sql2);
-            //console.log('unregistered student has logged in through google!')
+            console.log("T8");
+            sql = `Insert into Users(UserID, UserTypeID, FirstName, lastName, Email, Picture) values (${id}, ${type}, "${first_name}", "${last_name}", "${emailToCheck}", "${pic_logo}");`;
+            console.log("T9");
+            sql2 = `Insert into Student(UserID, UserTypeID,  StudentUPI) values (${id}, 1, "${emailToCheck.substring(
+              0,
+              7
+            )}");`;
+            console.log("T10");
+            const var1 = await executeSQLstatement(sql);
+            console.log("T11");
+            const var2 = await executeSQLstatement(sql2);
+            console.log("T12");
+          } else {
+            console.log("T13");
+            type = 4;
+            console.log("T14");
+            sql = `Insert into Users(UserID, UserTypeID, FirstName, lastName, Email, Picture) values (${id}, ${type}, "${first_name}", "${last_name}", "${emailToCheck}", "${pic_logo}");`;
+            console.log("T15");
+            sql2 = `Insert into Visitor(UserID, UserTypeID) values (${id}, 4);`;
+            console.log("T16");
+            const var1 = await executeSQLstatement(sql);
+            console.log("T17");
+            const var2 = await executeSQLstatement(sql2);
+            console.log("T18");
           }
+        } else {
+          //unregistered student
+          //they have a user and student record, but the field 'isRegistered' in Student table is SET to 0
+          //the above occurs from ./FormAddProject Route
+          //SO NOW SET 'isRegistered' to 1 (student table), and also set firstname and lastname (users table)
+          console.log("T18");
+          if (emailToCheck.endsWith("@aucklanduni.ac.nz")) {
+            const isRegistered = (
+              await executeSQLstatement(
+                `SELECT isRegistered FROM Capfolio.Student WHERE StudentUPI = '${studentUpi}'`
+              )
+            )[0][0].isRegistered;
+            if (isRegistered === 0) {
+              type = 1;
+              sql = `SELECT UserID FROM Users WHERE Email = '${emailToCheck}'`;
+              const aUserId = (await executeSQLstatement(sql))[0][0].UserID;
+              sql1 = `UPDATE Capfolio.Users SET FirstName = "${first_name}", lastName = "${last_name}" WHERE Capfolio.Users.UserID = ${aUserId}`;
+              const sql2 = `UPDATE Capfolio.Student SET isRegistered = 1 WHERE Capfolio.Student.StudentUPI = '${studentUpi}'`;
+              await executeSQLstatement(sql1);
+              await executeSQLstatement(sql2);
+              //console.log('unregistered student has logged in through google!')
+            }
+          }
+          const sql2 = `UPDATE Users SET Picture = ? WHERE Email = ?;`;
+          await executeSQLstatement(sql2, [pic_logo, emailToCheck]);
         }
-        const sql2 = `UPDATE Users SET Picture = ? WHERE Email = ?;`;
-        await executeSQLstatement(sql2, [pic_logo, emailToCheck]);
+        console.log("T19");
+        profile.photo = profile._json.picture;
+        console.log("T20");
+        //Insert into Admins(UserID) values (40);
+        console.log("T21");
+        return cb(null, profile);
+        console.log("T22");
       }
-      console.log("T19");
-  
-  
-      console.log("T20");
-      //Insert into Admins(UserID) values (40);
-      console.log("T21");
-      return cb(null, profile);
-      console.log("T22");
-    }
     )
+  );
+  next();
+};
+
+authRouter.get(
+  "/google",
+  googleAuth,
+  passport.authenticate("google", {
+    scope: [
+      "https://www.googleapis.com/auth/userinfo.profile",
+      "https://www.googleapis.com/auth/userinfo.email",
+    ],
+  })
 );
-next();
-}
-  
-  
+
+authRouter.get(
+  "/google/callback",
+  passport.authenticate("google", { failureRedirect: "/login" }),
+  (req, res) => {
+    // Store user data in the session
+    req.session.user = {
+      id: req.user.id,
+      displayName: req.user.displayName,
+      email: req.user.emails[0].value,
+      photo: req.user.photo,
+    };
+
+    // Successful authentication, redirect to the desired page.
+    res.redirect("/");
+  }
+);
 
 passport.serializeUser((user, cb) => {
   cb(null, user);
@@ -260,13 +288,18 @@ passport.deserializeUser((obj, cb) => {
 authRouter.use(passport.initialize());
 authRouter.use(passport.session());
 
+/*
+authRouter.get(
+  "/google",
+  passport.authenticate("google", {
+    scope: [
+      "https://www.googleapis.com/auth/userinfo.profile",
+      "https://www.googleapis.com/auth/userinfo.email",
+    ],
+  })
+);
 
-authRouter.get('/google', googleAuth, passport.authenticate('google', {
-  scope: [
-    'https://www.googleapis.com/auth/userinfo.profile',
-    'https://www.googleapis.com/auth/userinfo.email',
-  ],
-}));
+ */
 
 router.get("/user", async (req, res) => {
   try {
@@ -309,25 +342,23 @@ router.get("/user", async (req, res) => {
 
     //const sql = `SELECT u.FirstName, u.LastName, u.UserTypeID FROM Users u WHERE u.Email = ?;`;
     const sql = `
-        SELECT Users.UserID, Users.Picture, Users.FirstName, Users.LastName, Users.Email, Users.Password, Users.UserTypeID, Users.linkedin, Users.githubLink, Users.userDescription, Users.profession as Type
+        SELECT Users.UserID, Users.FirstName, Users.LastName, Users.Email, Users.Password, Users.UserTypeID, Users.linkedin, Users.githubLink, Users.userDescription, Users.profession as Type
         FROM Users
         WHERE Users.Email = ?;
     `;
     const [rows] = await executeSQLstatement(sql, [email]);
     const userData = rows[0];
-
     //console.log("Picture URL:", photo);
     //console.log("T6")
     currentUserId = userData.UserID;
-    console.log(userData.Picture);
-    console.log(userData);
+
     res.send({
       UserID: userData.UserID,
       FirstName: userData.FirstName,
       LastName: userData.LastName,
       Email: email,
       UserType: userData.UserTypeID,
-      Photo: userData.Picture,
+      Photo: photo,
       OAuth: isGoogleOAuth,
       githubLink: userData.githubLink,
       linkedin: userData.linkedin,
@@ -340,8 +371,6 @@ router.get("/user", async (req, res) => {
     res.status(400).send({ error: "Failed to fetch user data" });
   }
 });
-
-
 
 router.get("/logout", (req, res) => {
   req.logout(() => {
@@ -374,7 +403,7 @@ router.post("/signup", async (req, res) => {
   const id = await next_id();
   const passwordHash = await generatePasswordHash(password);
   const verified = 0;
-  const pic_logo = 'https://www.svgrepo.com/show/165192/avatar.svg';
+  const pic_logo = "https://www.svgrepo.com/show/165192/avatar.svg";
   console.log("h2");
   if (email === "asma.shakil@auckland.ac.nz") {
     type = 3;
@@ -387,15 +416,27 @@ router.post("/signup", async (req, res) => {
     type = 1;
     console.log("h4");
     sql = `Insert into Users(UserID, UserTypeID, FirstName, lastName, Email, password, Verfified, Picture) values (${id}, ${type}, "${firstName}", "${lastName}", "${email}", "${passwordHash}", "${verified}", "${pic_logo}");`;
-    sql2 = `Insert into Student(UserID, UserTypeID,  StudentUPI) values (${id}, 1, "${email.substring(0, 7)}");`;
-    const var1 = (await executeSQLstatement(sql));
-    const var2 = (await executeSQLstatement(sql2));
+    sql2 = `Insert into Student(UserID, UserTypeID,  StudentUPI) values (${id}, 1, "${email.substring(
+      0,
+      7
+    )}");`;
+    const var1 = await executeSQLstatement(sql);
+    const var2 = await executeSQLstatement(sql2);
   } else {
     type = 4;
     console.log("h5");
     const sql = `INSERT INTO Users (UserID, UserTypeID, FirstName, lastName, Email, password, Verfified, Picture) VALUES (?, ?, ?, ?, ?, ?, ?, ?);`;
     const sql2 = `Insert into Visitor(UserID, UserTypeID) values (${id}, ${type});`;
-    await executeSQLstatement(sql, [id, type, firstName, lastName, email, passwordHash, verified, pic_logo]);
+    await executeSQLstatement(sql, [
+      id,
+      type,
+      firstName,
+      lastName,
+      email,
+      passwordHash,
+      verified,
+      pic_logo,
+    ]);
     await executeSQLstatement(sql2);
   }
   //////
@@ -409,19 +450,10 @@ router.post("/signup", async (req, res) => {
 
   const sql = `INSERT INTO Users (UserID, UserTypeID, FirstName, lastName, Email, password, Verfified, Picture) VALUES (?, ?, ?, ?, ?, ?, ?, ?);`;
   const sql2 = `Insert into Visitor(UserID, UserTypeID) values (${userID}, ${userTypeID});`;
-  await executeSQLstatement(sql, [
-    userID,
-    userTypeID,
-    firstName,
-    lastName,
-    email,
-    passwordHash,
-    verified,
-    pic,
-  ]);
+  await executeSQLstatement(sql, [userID, userTypeID, firstName, lastName, email, passwordHash, verified, pic]);
   await executeSQLstatement(sql2);
    */
-  console.log("A2")
+  console.log("A2");
   try {
     sendEmail(firstName, email);
     res.status(200).send({ message: "User successfully registered" });
@@ -459,10 +491,12 @@ router.post("/login", async (req, res) => {
     const sql2 = `DELETE FROM Users WHERE UserID = ?;`;
     await executeSQLstatement(sql1, [userData.UserID]);
     await executeSQLstatement(sql2, [userData.UserID]);
-    return res.status(400).send({
-      error:
-        "Account not verified. Pls Sign up again and a new verification link will be sent",
-    });
+    return res
+      .status(400)
+      .send({
+        error:
+          "Account not verified. Pls Sign up again and a new verification link will be sent",
+      });
   }
 
   // Create a session and redirect the user to the home page with a different navbar
