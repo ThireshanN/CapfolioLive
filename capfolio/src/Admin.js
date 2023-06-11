@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "./AdminPage.css";
+import { AuthContext } from "./AuthContext";
 import { Link } from "react-router-dom";
 import {
   CRow,
@@ -21,6 +22,17 @@ const AdminPage = () => {
   const [projectsToBeApproved, setProjectsToBeApproved] = useState([]);
   const [page, setPage] = useState(1);
   const projectsPerPage = 6;
+  const { user, setUser } = useContext(AuthContext);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+        if (user && user.userType === '3') {
+            setIsAdmin(true);
+        } 
+        setIsAuthenticated(user !== null);
+        console.log(user, isAdmin);
+    }, [user]);
 
   useEffect(() => {
     fetchAllProjects();
@@ -39,16 +51,30 @@ const AdminPage = () => {
   };
 
   return (
-    <div className="admin-page">
-      <div className="side-panel"></div>
-      <div className="project-list">
-        <AdminTabs
-          allProjects={allProjects}
-          projectToBeApproved={projectsToBeApproved}
-        />
-      </div>
+    <>
+      {isAdmin ? (
+        <div className="admin-page">
+          <div className="side-panel"></div>
+          <div className="project-list">
+            <AdminTabs
+              allProjects={allProjects}
+              projectToBeApproved={projectsToBeApproved}
+            />
+          </div>
+        </div>
+      ) : (
+        <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        height: "100vh",
+      }}
+    >
+      <h1>Nice Try....You gotta login as Admin </h1>
     </div>
+      )}
+    </>
   );
 };
-
 export default AdminPage;
