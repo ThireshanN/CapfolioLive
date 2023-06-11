@@ -2,7 +2,7 @@
 # Capfolio #
 
 The link to deployed version. [https://www.capfolio.live](https://www.capfolio.live)
-
+If Capfolio.live is slow or not working please go to the link below.
 Also an alternative URL for our deployed version: [http://ec2-54-79-153-66.ap-southeast-2.compute.amazonaws.com:3000](http://ec2-54-79-153-66.ap-southeast-2.compute.amazonaws.com:3000)
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -154,14 +154,13 @@ THE PDF IS NOT SHOWING WE NEED TO FIX THAT
 ![image](https://github.com/uoa-compsci399-s1-2023/project-team-11/assets/48738772/be62a085-56a9-492d-974b-1dea6fa4fe38)
 
 * Admin Panel 
-![image](https://github.com/uoa-compsci399-s1-2023/project-team-11/assets/48738772/f7d8dde9-9e8e-4fe3-8db1-5b70a332b512)
-![image](https://github.com/uoa-compsci399-s1-2023/project-team-11/assets/48738772/0f2340a8-021a-474b-be63-4ba2eed4db66)
+![image](https://github.com/uoa-compsci399-s1-2023/project-team-11/assets/48738772/97eb35b6-ecad-4eeb-a830-abde7804be1c)
+![image](https://github.com/uoa-compsci399-s1-2023/project-team-11/assets/48738772/48f1221c-5edb-49be-9c1a-ed1bf181a1a1)
 
 * Admin Project Approval Page
-![image](https://github.com/uoa-compsci399-s1-2023/project-team-11/assets/48738772/42dae11b-4014-468f-ab99-5a873389fef9)
-![image](https://github.com/uoa-compsci399-s1-2023/project-team-11/assets/48738772/483eef1b-6fcb-4127-a0d2-41b1d9a0a4f6)
-
-
+![image](https://github.com/uoa-compsci399-s1-2023/project-team-11/assets/48738772/c9e36a91-a8ce-4518-b09d-2416a69862ea)
+![image](https://github.com/uoa-compsci399-s1-2023/project-team-11/assets/48738772/44764c76-7900-4161-8ffa-2f85b31b1e62)
+![image](https://github.com/uoa-compsci399-s1-2023/project-team-11/assets/48738772/6c3ef8d6-6e73-4b86-af89-4227758af397)
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## Future insight: ##
