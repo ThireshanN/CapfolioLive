@@ -152,7 +152,7 @@ projectViewRouter.get("/comment", async (req, res) => {
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/projects/project?id=2
 
 async function deleteComnt(delBody) {
-  userId = await fetchUser();
+  const userId = await fetchUser();
   if (userId == null) {
     return "Only logged in Users can delete comments";
   }
@@ -237,7 +237,7 @@ projectViewRouter.get("/like", async (req, res) => {
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/projects/postComment?id=2
 
 async function newComment(comment, projectID) {
-  userId = await fetchUser();
+  const userId = await fetchUser();
   if (userId == null) {
     return "Only logged in Users can comment";
   }
@@ -267,7 +267,7 @@ projectViewRouter.post("/postComment", express.json(), async (req, res) => {
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/projects/postLike
 
 async function newLike(likeBody) {
-  userId = await fetchUser();
+  const userId = await fetchUser();
   let message = "Error in defining a new like";
   if (userId === null) {
     message = "Only logged in users can like";
@@ -296,7 +296,7 @@ projectViewRouter.post("/postLike", express.json(), async (req, res) => {
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/projects/project?id=2
 
 async function newDisLike(dislikeBody) {
-  userId = await fetchUser();
+  const userId = await fetchUser();
   if (userId === null) {
     return "Only logged in Users can dislike";
   }
@@ -367,7 +367,7 @@ projectViewRouter.get("/likedProjects", async (req, res) => {
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/projects/postLike
 
 projectViewRouter.get("/ProjectsLiked", async (req, res) => {
-  userId = await fetchUser();
+  const userId = await fetchUser();
   try {
     const projectID = req.query.id;
     const sql = `SELECT * 
