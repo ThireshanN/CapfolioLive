@@ -238,6 +238,7 @@ projectViewRouter.get("/like", async (req, res) => {
 
 async function newComment(comment, projectID) {
   const userId = await fetchUser();
+  console.log(userId);
   if (userId == null) {
     return "Only logged in Users can comment";
   }
@@ -368,6 +369,9 @@ projectViewRouter.get("/likedProjects", async (req, res) => {
 
 projectViewRouter.get("/ProjectsLiked", async (req, res) => {
   const userId = await fetchUser();
+  if (userId === null) {
+    return "only logged in users can view the projects they liked";
+  }
   try {
     const projectID = req.query.id;
     const sql = `SELECT * 
