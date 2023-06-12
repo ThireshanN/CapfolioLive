@@ -2,6 +2,7 @@ import express from "express";
 export const projectViewRouter = express.Router();
 import mysql from "mysql2/promise";
 import { config } from "../sqlconfig.js";
+import {currentUserId} from './auth.js';
 
 let viewCount = 0;
 
@@ -152,11 +153,10 @@ projectViewRouter.get("/comment", async (req, res) => {
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/projects/project?id=2
 
 async function deleteComnt(delBody) {
-  const userId = await fetchUser();
-  if (userId == null) {
+  if (currentUserId == null) {
     return "Only logged in Users can delete comments";
   }
-  if (userId !== delBody.UserID) {
+  if (currentUserId !== delBody.UserID) {
     return "Only the owner of the comment can delete the comment!";
   }
   const sql = `DELETE From Comment WHERE CommentID=${delBody.CommentID}`;
@@ -237,12 +237,10 @@ projectViewRouter.get("/like", async (req, res) => {
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/projects/postComment?id=2
 
 async function newComment(comment, projectID) {
-  const userId = await fetchUser();
-  console.log(userId);
-  if (userId == null) {
+  if (currentUserId == null) {
     return "Only logged in Users can comment";
   }
-  const sql = `Insert into Comment(CommentDesc, UserID_FK, ProjectID_FK) VALUES ("${comment.CommentDesc}", ${userID}, ${projectID});`;
+  const sql = `Insert into Comment(CommentDesc, UserID_FK, ProjectID_FK) VALUES ("${comment.CommentDesc}", ${currentUserId}, ${projectID});`;
   //console.log(sql);
   const all_comments = await executeSQLstatement(sql);
   let message = "Error in defining a new comment";
@@ -268,13 +266,12 @@ projectViewRouter.post("/postComment", express.json(), async (req, res) => {
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/projects/postLike
 
 async function newLike(likeBody) {
-  const userId = await fetchUser();
   let message = "Error in defining a new like";
-  if (userId === null) {
+  if (currentUserId === null) {
     message = "Only logged in users can like";
     return message;
   }
-  const sql = `Insert into likes(UserID_FK, ProjectID_FK) VALUES (${userId}, ${likeBody.projectId});`;
+  const sql = `Insert into likes(UserID_FK, ProjectID_FK) VALUES (${currentUserId}, ${likeBody.projectId});`;
   //console.log(sql);
   const likes = await executeSQLstatement(sql);
   if (likes.length !== 0) {
@@ -297,11 +294,10 @@ projectViewRouter.post("/postLike", express.json(), async (req, res) => {
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/projects/project?id=2
 
 async function newDisLike(dislikeBody) {
-  const userId = await fetchUser();
-  if (userId === null) {
+  if (currentUserId === null) {
     return "Only logged in Users can dislike";
   }
-  const sql = `DELETE From likes WHERE UserID_FK =${userId} and ProjectID_FK = ${dislikeBody.projectId}`;
+  const sql = `DELETE From likes WHERE UserID_FK =${currentUserId} and ProjectID_FK = ${dislikeBody.projectId}`;
   //console.log(sql);
   const dislikes = await executeSQLstatement(sql);
   let message = "Error in defining a new dislike";
@@ -368,8 +364,7 @@ projectViewRouter.get("/likedProjects", async (req, res) => {
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/projects/postLike
 
 projectViewRouter.get("/ProjectsLiked", async (req, res) => {
-  const userId = await fetchUser();
-  if (userId === null) {
+  if (currentUserId === null) {
     return "only logged in users can view the projects they liked";
   }
   try {
@@ -391,7 +386,7 @@ projectViewRouter.get("/ProjectsLiked", async (req, res) => {
         FROM Users
         INNER JOIN likes ON Users.UserId = likes.UserID_FK
         INNER JOIN Project ON Project.ProjectID = likes.ProjectID_FK
-        WHERE UserID=${userId}
+        WHERE UserID=${currentUserId}
         GROUP BY Project.ProjectID) result
         WHERE ProjectId = ${projectID} 
         ORDER BY ProjectID;`;
