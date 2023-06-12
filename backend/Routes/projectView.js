@@ -2,7 +2,7 @@ import express from "express";
 export const projectViewRouter = express.Router();
 import mysql from "mysql2/promise";
 import { config } from "../sqlconfig.js";
-import {currentUserId} from './auth.js';
+import { currentUserId } from "./auth.js";
 
 let viewCount = 0;
 
@@ -13,19 +13,6 @@ async function executeSQLstatement(sql) {
   //console.log(rows, result);
   return [rows, result];
 }
-
-const fetchUser = async () => {
-  try {
-    const response = await fetch("https://capfolio.live/auth/user");
-    const data = await response.json();
-    const userID = data.UserID;
-    return userID;
-  } catch (error) {
-    // Handle error here
-    console.error(error);
-  }
-};
-
 
 //have to make the technologies input field mandatory
 
@@ -153,7 +140,7 @@ projectViewRouter.get("/comment", async (req, res) => {
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/projects/project?id=2
 
 async function deleteComnt(delBody) {
-  if (currentUserId == null) {
+  if (currentUserId === null) {
     return "Only logged in Users can delete comments";
   }
   if (currentUserId !== delBody.UserID) {
@@ -237,7 +224,7 @@ projectViewRouter.get("/like", async (req, res) => {
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/projects/postComment?id=2
 
 async function newComment(comment, projectID) {
-  if (currentUserId == null) {
+  if (currentUserId === null) {
     return "Only logged in Users can comment";
   }
   const sql = `Insert into Comment(CommentDesc, UserID_FK, ProjectID_FK) VALUES ("${comment.CommentDesc}", ${currentUserId}, ${projectID});`;
@@ -364,9 +351,6 @@ projectViewRouter.get("/likedProjects", async (req, res) => {
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/projects/postLike
 
 projectViewRouter.get("/ProjectsLiked", async (req, res) => {
-  if (currentUserId === null) {
-    return "only logged in users can view the projects they liked";
-  }
   try {
     const projectID = req.query.id;
     const sql = `SELECT * 
