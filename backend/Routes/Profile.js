@@ -2,7 +2,6 @@ import express from 'express';
 export const profileRouter = express.Router();
 import mysql from 'mysql2/promise';
 import { config } from '../sqlconfig.js';
-import {currentUserId} from './auth.js';
 
 async function executeSQLstatement(sql) { 
     const connection = await mysql.createConnection(config.db);
@@ -11,6 +10,19 @@ async function executeSQLstatement(sql) {
     //console.log(rows, result);
     return [rows, result];
 }
+
+async function fetchUserId(email) {
+    const sql = `
+          SELECT Users.UserID
+          FROM Users
+          WHERE Users.Email = "${email}";
+      `;
+    const [rows] = await executeSQLstatement(sql);
+    if (rows.length > 0) {
+      return rows[0].UserID; // Return the UserID value
+    }
+    return null;
+  }
 
 /*
 {
@@ -93,11 +105,11 @@ profileRouter.get('/userProject', async (req, res) => {
 
 //http://localhost:3000/profile/updateUser
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/profile/updateUser
-async function updateUser(project){
-    if(currentUserId===null){return "login"}
+async function updateUser(project,userId){
+    if(userId===null){return "login"}
     const sql = `UPDATE Users 
     SET FirstName="${project.firstName}", lastName="${project.lastName}", linkedin="${project.linkedin}", githublink="${project.github}", userDescription="${project.userDesc}", profession="${project.profession}", Picture="${project.Picture}"
-    WHERE UserID=${currentUserId};`;
+    WHERE UserID=${userId};`;
     const userupdate = (await executeSQLstatement(sql));
     let message = 'Error';
     if (userupdate.length!==0) {
@@ -109,9 +121,14 @@ async function updateUser(project){
   
 profileRouter.put('/updateUser', express.json(), async (req, res) => {
     try {
-        console.log(req.body);
+        //console.log(req.body);
         //res.json(await updateUser(req.body));
-        let response = await updateUser(req.body);
+        let userId = null;
+        if(req.user){
+          const userEmail = await req.user.emails[0].value;
+          userId = await fetchUserId(userEmail);
+        }
+        let response = await updateUser(req.body,userId);
         if(response==="login"){
             res.status(400).setHeader("Content-Type", "application/json").send("Log in to update the profile page");
         }
@@ -130,13 +147,18 @@ profileRouter.put('/updateUser', express.json(), async (req, res) => {
 //http://ec2-3-26-95-151.ap-southeast-2.compute.amazonaws.com:3000/profile/userInfo
 profileRouter.get('/userInfo', async (req, res) => { 
     try {
-        if(currentUserId===null){
+        let userId = null;
+        if(req.user){
+            const userEmail = await req.user.emails[0].value;
+            userId = await fetchUserId(userEmail);
+        }
+        if(userId===null){
             return res.status(400).setHeader("Content-Type", "application/json").send("log in to view the profile");
         }
         const sql = `
         SELECT UserTypeID, FirstName, lastName, Picture, linkedin, githublink,userDescription,profession
         FROM Users
-        WHERE UserID=${currentUserId};`;
+        WHERE UserID=${userId};`;
         const user = (await executeSQLstatement(sql))[0]//.catch(err => console.log("The following error generated:\n" + err));
         return res.status(200).setHeader("Content-Type", "application/json").send(user);
     }
