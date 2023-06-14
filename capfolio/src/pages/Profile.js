@@ -162,7 +162,7 @@ const Profile = () => {
 
     try {
       await Promise.all(highResPromises);
-      setPicture(createURL);
+      // setPicture(createURL);
 
       await fetch("/profile/updateUser", {
         method: "PUT",
@@ -180,6 +180,7 @@ const Profile = () => {
           Picture: createURL ? createURL : picture,
         }),
       });
+      setPicture(createURL ? createURL : picture);
     } catch (error) {
       console.error(error);
     }
