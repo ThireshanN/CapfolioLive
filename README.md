@@ -1,9 +1,7 @@
 
 # Capfolio #
 
-The link to deployed version. [https://www.capfolio.live](https://www.capfolio.live)
-If Capfolio.live is slow or not working please go to the link below.
-Also an alternative URL for our deployed version: [http://ec2-54-79-153-66.ap-southeast-2.compute.amazonaws.com:3000](http://ec2-54-79-153-66.ap-southeast-2.compute.amazonaws.com:3000)
+The link to deployed version. http://ec2-54-252-62-121.ap-southeast-2.compute.amazonaws.com:3000/
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## PM Tool -
@@ -50,7 +48,7 @@ cd project-team-11
 cd capfolio && npm run build
 pm2 restart app.js
 ```
-then navigate to https://www.capfolio.live or https://capfolio.live
+then navigate to http://ec2-54-252-62-121.ap-southeast-2.compute.amazonaws.com:3000/
 
 
 From the root directory (locally):
