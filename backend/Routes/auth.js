@@ -135,10 +135,9 @@ const googleAuth = (req, res, next) => {
       {
         clientID: GOOGLE_CLIENT_ID,
         clientSecret: GOOGLE_CLIENT_SECRET,
-        callbackURL: "/auth/google/callback" 
+        callbackURL: "/auth/google/callback"
         //     https://capfolio.live/auth/google/callback (capfolio.live)
         //     /auth/google/callback (local)
-
       },
       async (accessToken, refreshToken, profile, cb) => {
         //const sql = `Insert into Visitors(UserID, UserTypeID, FirstName, lastName) values (40, 4, "Paul", "Pogba")`;
@@ -156,62 +155,45 @@ const googleAuth = (req, res, next) => {
         let var2;
         const checkPictureSQL = `SELECT Picture FROM Users WHERE Email = '${emailToCheck}'`;
         const userPicture = (await executeSQLstatement(checkPictureSQL))[0];
-
+        console.log(userPicture);
+        console.log('TEST 0');
         let pic_logo;
-        const userPic = userPicture[0].Picture;
-
+        const userPic = (userPicture[0])? userPicture[0].Picture : null;
+        console.log('TEST 1');
         if (!userPic || !userPic.includes("capfoliostorage")) {
           pic_logo = profile._json.picture;
+          console.log('TEST 2');
         } else {
           pic_logo = userPic;
+          console.log('TEST 3');
         }
-
-        const exists = await emailExists(emailToCheck);
-        const studentUpi = emailToCheck.slice(0, emailToCheck.indexOf("@"));
-        //console.log("Email exists:", exists);
+        console.log('TEST 4');
+        let exists = await emailExists(emailToCheck); //CHANGE TO CONST
+        let studentUpi = emailToCheck.slice(0, emailToCheck.indexOf("@")); //CHANGE TO CONST
+        console.log("Does email exists? ->", exists);
         console.log(pic_logo);
-        if (!exists) {
+        if (!exists) { //NEW people
           const id = await next_id();
           console.log(emailToCheck);
           if (emailToCheck === "asma.shakil@auckland.ac.nz") {
-            console.log("T1");
             type = 3;
-            console.log("T2");
             sql = `Insert into Users(UserID, UserTypeID, FirstName, lastName, Email, Picture) values (${id}, ${type}, "${first_name}", "${last_name}", "${emailToCheck}", "${pic_logo}");`;
-            console.log("T3");
             sql2 = `Insert into Admins(UserID, UserTypeID) values (${id}, 3);`;
-            console.log("T4");
             const var1 = await executeSQLstatement(sql);
-            console.log("T5");
             const var2 = await executeSQLstatement(sql2);
-            console.log("T6");
           } else if (emailToCheck.endsWith("@aucklanduni.ac.nz")) {
-            console.log("T7");
             type = 1;
-            console.log("T8");
             sql = `Insert into Users(UserID, UserTypeID, FirstName, lastName, Email, Picture) values (${id}, ${type}, "${first_name}", "${last_name}", "${emailToCheck}", "${pic_logo}");`;
-            console.log("T9");
-            sql2 = `Insert into Student(UserID, UserTypeID,  StudentUPI) values (${id}, 1, "${emailToCheck.substring(
-              0,
-              7
-            )}");`;
-            console.log("T10");
+            sql2 = `Insert into Student(UserID, UserTypeID,  StudentUPI) values (${id}, 1, "${studentUpi}");`;
             const var1 = await executeSQLstatement(sql);
-            console.log("T11");
             const var2 = await executeSQLstatement(sql2);
-            console.log("T12");
           } else {
-            console.log("T13");
+            console.log('I am a new person')
             type = 4;
-            console.log("T14");
             sql = `Insert into Users(UserID, UserTypeID, FirstName, lastName, Email, Picture) values (${id}, ${type}, "${first_name}", "${last_name}", "${emailToCheck}", "${pic_logo}");`;
-            console.log("T15");
             sql2 = `Insert into Visitor(UserID, UserTypeID) values (${id}, 4);`;
-            console.log("T16");
             const var1 = await executeSQLstatement(sql);
-            console.log("T17");
             const var2 = await executeSQLstatement(sql2);
-            console.log("T18");
           }
         } else {
           //unregistered student
