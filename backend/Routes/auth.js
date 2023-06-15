@@ -155,24 +155,23 @@ const googleAuth = (req, res, next) => {
         let var2;
         const checkPictureSQL = `SELECT Picture FROM Users WHERE Email = '${emailToCheck}'`;
         const userPicture = (await executeSQLstatement(checkPictureSQL))[0];
-        console.log(userPicture);
-        console.log('TEST 0');
+        
         let pic_logo;
         const userPic = (userPicture[0])? userPicture[0].Picture : null;
-        console.log('TEST 1');
+        
         if (!userPic || !userPic.includes("capfoliostorage")) {
           pic_logo = profile._json.picture;
-          console.log('TEST 2');
         } else {
           pic_logo = userPic;
-          console.log('TEST 3');
         }
-        console.log('TEST 4');
-        let exists = await emailExists(emailToCheck); //CHANGE TO CONST
-        let studentUpi = emailToCheck.slice(0, emailToCheck.indexOf("@")); //CHANGE TO CONST
+
+        const exists = await emailExists(emailToCheck);
+        const studentUpi = emailToCheck.slice(0, emailToCheck.indexOf("@"));
+
         console.log("Does email exists? ->", exists);
         console.log(pic_logo);
-        if (!exists) { //NEW people
+
+        if (!exists) { 
           const id = await next_id();
           console.log(emailToCheck);
           if (emailToCheck === "asma.shakil@auckland.ac.nz") {
