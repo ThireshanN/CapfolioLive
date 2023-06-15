@@ -2,6 +2,7 @@
 # Capfolio #
 
 The link to deployed version. http://ec2-54-252-62-121.ap-southeast-2.compute.amazonaws.com:3000/
+
 Alternative Links:
 - https://capfoliolive.com/
 - http://capfoliolive.com/
