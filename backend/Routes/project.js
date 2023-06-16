@@ -307,14 +307,14 @@ projectRouter.put('/addTeamMembers', async (req, res) => {
                     if (userExists) { //user record found but no student record
                         const getUserId = (await executeSQLstatement2(`SELECT UserID FROM Capfolio.Users WHERE Email = '${upi}@aucklanduni.ac.nz';`, connection))[0][0].UserID;
                         // console.log('userExists and id is ' + getUserId);
-                        // console.log('studentIsUnregistered');
+                        // console.log('studentDoesntExist');
                         const studentSql = `INSERT INTO Capfolio.Student (UserID, projectID, UserTypeID, StudentUPI, isRegistered) VALUES (${getUserId}, ${projectID}, 1, '${upi}', 0)`;
                         await executeSQLstatement2(studentSql, connection);
                     } else { //no user record but no student record
                         const addedUser = (await executeSQLstatement2(`INSERT INTO Capfolio.Users (UserTypeID, Email) VALUES (1, '${upi}@aucklanduni.ac.nz')`, connection))[0];
                         const userInsertId = addedUser["insertId"];
                         // console.log('no user found but inserted id is ' + userInsertId);
-                        // console.log('studentIsUnregistered');
+                        // console.log('studentDoesntExist');
                         const studentSql = `INSERT INTO Capfolio.Student (UserID, projectID, UserTypeID, StudentUPI, isRegistered) VALUES (${userInsertId}, ${projectID}, 1, '${upi}', 0)`;
                         await executeSQLstatement2(studentSql, connection);
                         //however is student exists but user doesnt, inconsistent data
@@ -344,7 +344,7 @@ projectRouter.post('/FormAddProject', express.json(), async (req, res) => { //
 
     try {
         //CLIENT DATA FROM FRONTEND
-        const reqBodyFromClient = req.body;
+        const reqBodyFromClient = req.body; 
 
         //###################################################################################################################
         //###################################################################################################################
@@ -363,10 +363,18 @@ projectRouter.post('/FormAddProject', express.json(), async (req, res) => { //
         fieldNames = fieldNames.join(', ');
         fieldValues = fieldValues.join(', ');
         //PROJECT TABLE SQL COMMANDS
+        console.log("llalalal");
         const projectSql = `INSERT INTO Capfolio.Project (${fieldNames}) VALUES (${fieldValues})`;
         const addedProject = (await executeSQLstatement2(projectSql, connection))[0];
         const projectInsertId = addedProject["insertId"];
         console.log("successfully added project")
+
+        const TeamLeaderId = reqBodyFromClient['TeamLeader'];
+        console.log(TeamLeaderId);
+        //update teamleader project is to the new one (team members are done, but not team leader)
+        let updateSql = `UPDATE Capfolio.Student SET projectID = ${projectInsertId} WHERE Capfolio.Student.UserID = ${TeamLeaderId}`;
+        await executeSQLstatement2(updateSql, connection);
+        console.log('updated for team leader');
 
         //###################################################################################################################
         //###################################################################################################################
@@ -412,14 +420,14 @@ projectRouter.post('/FormAddProject', express.json(), async (req, res) => { //
             let lastName = user.lastName.trim();
             let studentSql = '';
             const userExists = (await executeSQLstatement2(`SELECT COUNT(*) AS userExists FROM Users WHERE Email = '${upi}@aucklanduni.ac.nz';`, connection))[0][0].userExists;
-            const studentIsUnregistered = unRegUsers.includes(upi);
+            const studentDoesntExist = unRegUsers.includes(upi);
 
             if (userExists) { //user record found
                 const getUserId = (await executeSQLstatement2(`SELECT UserID FROM Capfolio.Users WHERE Email = '${upi}@aucklanduni.ac.nz';`, connection))[0][0].UserID;
                 console.log('userExists and id is ' + getUserId);
                 studentSql = `UPDATE Capfolio.Student SET UserID = ${getUserId}, projectID = ${projectInsertId}, UserTypeID = 1 WHERE Capfolio.Student.StudentUPI = \'${upi}\'`; //Found student record
-                if (studentIsUnregistered) { //student record NOT found
-                    console.log('studentIsUnregistered');
+                if (studentDoesntExist) { //student record NOT found
+                    console.log('studentDoesntExist');
                     studentSql = `INSERT INTO Capfolio.Student (UserID, projectID, UserTypeID, StudentUPI, isRegistered) VALUES (${getUserId}, ${projectInsertId}, 1, '${upi}', 0)`;
                 }
                 await executeSQLstatement2(studentSql, connection);
@@ -428,8 +436,8 @@ projectRouter.post('/FormAddProject', express.json(), async (req, res) => { //
                 const userInsertId = addedUser["insertId"];
                 console.log('no user found but inserted id is ' + userInsertId);
                 studentSql = `UPDATE Capfolio.Student SET UserID = ${userInsertId}, projectID = ${projectInsertId}, UserTypeID = 1 WHERE Capfolio.Student.StudentUPI = \'${upi}\'`; //nfound student record
-                if (studentIsUnregistered) { //student record NOT found
-                    console.log('studentIsUnregistered');
+                if (studentDoesntExist) { //student record NOT found
+                    console.log('studentDoesntExist');
                     studentSql = `INSERT INTO Capfolio.Student (UserID, projectID, UserTypeID, StudentUPI, isRegistered) VALUES (${userInsertId}, ${projectInsertId}, 1, '${upi}', 0)`;
                 }
                 await executeSQLstatement2(studentSql, connection);
@@ -485,7 +493,7 @@ projectRouter.post('/FormAddProject', express.json(), async (req, res) => { //
         return res.status(200).setHeader("Content-Type", "application/json").send(returnData);
     }
     catch (err) {
-        //console.log(err.message);
+        console.log(err.message);
         await connection.rollback();
         await connection.end();
         return res.status(400).setHeader("Content-Type", "text/plain").send("Sorry! " + err);
