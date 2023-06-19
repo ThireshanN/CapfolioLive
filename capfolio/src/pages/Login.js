@@ -86,15 +86,15 @@ const Login = () => {
                 </button>
               </div>
               <p className="forgot-password text-right">
-                Forgot <Link to="/Email-Password">password?</Link>
+                 <Link to="/Email-Password">Forgot password?</Link>
               </p>
               <p className="register text-center">
-                Don't have an account? <Link to="/sign-up">Sign Up</Link>
+                 <Link to="/sign-up">Don't have an account? Sign Up</Link>
               </p>
               <div>
-                <Button variant="outlined" href="/auth/google">
-                  <GoogleIcon />  Sign In With Google
-                </Button>
+              <Button variant="outlined" href="/auth/google" style={{ width: '378px', padding: '4.91px' }}>
+                <GoogleIcon /> Sign In With Google
+              </Button>
               </div>
             </form>
           </div>

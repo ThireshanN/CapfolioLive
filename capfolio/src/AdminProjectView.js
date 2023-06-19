@@ -24,7 +24,8 @@ import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import ProjectPoster from "./components/ProjectPoster";
 import { red } from "@mui/material/colors";
-
+import EditNoteTwoToneIcon from '@mui/icons-material/EditNoteTwoTone';
+import SaveAsIcon from '@mui/icons-material/SaveAs';
 
 const bucketName = "capfoliostorage";
 const bucketRegion = "ap-southeast-2";
@@ -569,21 +570,20 @@ const AdminProjectView = () => {
                             </a>
                           </CButton>
                         )}
+                        {isEditing ? (
+                          <CButton onClick={handleSave} className="btn btn-primary">
+                            <SaveAsIcon /> Save
+                          </CButton>
+                        ) : (
+                          <CButton onClick={handleEdit} className="btn btn-primary">
+                            <EditNoteTwoToneIcon /> Edit
+                          </CButton>
+                        )}
                       </div>
                     </div>
                   </div>
                 ))}
-              <div className="pv-buttons">
-                {isEditing ? (
-                  <button onClick={handleSave} className="btn btn-primary">
-                    Save
-                  </button>
-                ) : (
-                  <button onClick={handleEdit} className="btn btn-primary">
-                    Edit
-                  </button>
-                )}
-              </div>
+              
             </div>
           </div>
         </div>

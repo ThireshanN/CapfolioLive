@@ -125,12 +125,12 @@ const SignUp = () => {
                 </button>
               </div>
               <p className="forgot-password text-right">
-                Already registered <Link to="/login">Sign In?</Link>
+                 <Link to="/login">Already registered Sign In?</Link>
               </p>
               <div>
-              <Button variant="outlined" href="/auth/google">
-                  <GoogleIcon />  Sign In With Google
-                </Button>
+              <Button variant="outlined" href="/auth/google" style={{ width: '378px', padding: '4.61px' }}>
+                <GoogleIcon style={{  padding: '4px' }} />  Sign In With Google
+              </Button>
               </div>
             </form>
           </div>
