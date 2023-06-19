@@ -159,7 +159,7 @@ THE PDF IS NOT SHOWING WE NEED TO FIX THAT
 ![image](https://github.com/uoa-compsci399-s1-2023/project-team-11/assets/48738772/97eb35b6-ecad-4eeb-a830-abde7804be1c)
 ![image](https://github.com/uoa-compsci399-s1-2023/project-team-11/assets/48738772/48f1221c-5edb-49be-9c1a-ed1bf181a1a1)
 
-* Admin Project Approval Page
+* Admin Project Approval Page If the admin deletes or approves a project they must exit to the admin panel to see the updates.
 ![image](https://github.com/uoa-compsci399-s1-2023/project-team-11/assets/48738772/c9e36a91-a8ce-4518-b09d-2416a69862ea)
 ![image](https://github.com/uoa-compsci399-s1-2023/project-team-11/assets/48738772/44764c76-7900-4161-8ffa-2f85b31b1e62)
 ![image](https://github.com/uoa-compsci399-s1-2023/project-team-11/assets/48738772/6c3ef8d6-6e73-4b86-af89-4227758af397)
